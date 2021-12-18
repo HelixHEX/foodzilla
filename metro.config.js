@@ -1,12 +1,12 @@
 const path = require('path');
 const getWorkspaces = require('get-yarn-workspaces');
 const workspaces = getWorkspaces(__dirname);
-const pkg = require("./package.json")
+const pkg = require("./apps/app/package.json")
 
 const pkgName = pkg.name
 
 module.exports = {
-  // projectRoot: path.resolve(__dirname, 'apps/rnative'),
+  // projectRoot: path.resolve(__dirname, 'apps/app'),
 
   watchFolders: [path.resolve(__dirname, 'node_modules'), ...workspaces],
 
