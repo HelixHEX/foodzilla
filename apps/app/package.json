@@ -4,6 +4,11 @@
   "slug": "ezsnacks",
   "private": true,
   "version": "1.0.0",
+  "workspaces": {
+    "nohoist": [
+      "**"
+    ]
+  },
   "scripts": {
     "dev": "expo start --clear",
     "android": "expo run:android",
