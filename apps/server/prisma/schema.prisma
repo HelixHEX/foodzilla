@@ -14,28 +14,14 @@ model User {
   id                String      @id @default(cuid())
   name              String
   email             String      @unique
-  building          String
   password          String
-  room_number       Int
-  orders            Order[]     @relation("user")
-  // sessions          Session[]   @relation("user")
+  groups            Group[]
 }
 
-model Order {
+model Group {
   id                String      @id @default(cuid())
-  user              User        @relation(name: "user", fields: [userId], references: [id])
-  userId            String
-  items             Item[]     
+  name              String      
+  creatorId         String 
+  users             User[]
+  active            Boolean     @default(true)
 }
-
-model Item {
-  id                String      @id @default(cuid())
-  orders            Order[]
-}
-
-// model Session {
-//   id                String      @id @default(cuid())
-//   device_id         String
-//   user              User        @relation(name: "user", fields: [userId], references: [id])
-//   userId            String
-// }

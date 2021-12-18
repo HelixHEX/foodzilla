@@ -10,22 +10,23 @@ import Signup from './screens/Signup'
 import Home from './screens/Home'
 import Search from './screens/Search'
 import Profile from './screens/Profile'
+import Vote from './screens/Vote'
 
-import { AntDesign, Feather } from '@expo/vector-icons'
+import { AntDesign, Feather, MaterialIcons } from '@expo/vector-icons'
 import SWR from "./SWR";
+import { globalColors } from "./utils/styles";
 
 const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
-
 const HomeScreen = () => {
   return (
-    <Tab.Navigator screenOptions={{ tabBarLabel: () => null, headerShown: false, gestureEnabled: false, tabBarStyle: { borderTopWidth: 0, backgroundColor: '#1f1f1f', marginBottom: 20, marginLeft: 10, marginRight: 10, borderRadius: 10, height: 70 } }}>
+    <Tab.Navigator screenOptions={{ tabBarHideOnKeyboard:true, tabBarLabel: () => null, headerShown: false, gestureEnabled: false, tabBarStyle: { borderTopWidth: 0, backgroundColor: globalColors.gray, marginBottom: 20, marginLeft: '3%', marginRight: '3%', borderRadius: 10, height: 70} }}>
       <Tab.Screen
         options={{
           tabBarIcon: ({ focused }) => {
             let color;
-            color = focused ? '#f75483' : '#8395a7'
-            return <AntDesign name="home" size={30} color={color} />
+            color = focused ? globalColors.pink : globalColors.lightgray
+            return <AntDesign name="home" size={35} color={color} />
           },
         }}
         name="Home"
@@ -34,8 +35,8 @@ const HomeScreen = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             let color;
-            color = focused ? '#f75483' : '#8395a7'
-            return <Feather name="search" size={30} backgroundColor={color} color={color} />
+            color = focused ? globalColors.pink : globalColors.lightgray
+            return <Feather name="search" size={35} backgroundColor={color} color={color} />
           },
         }}
         name="Bookmark"
@@ -44,19 +45,19 @@ const HomeScreen = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             let color;
-            color = focused ? '#f75483' : '#8395a7'
-            return <Feather name="bookmark" size={30} backgroundColor={color} color={color} />
+            color = focused ? globalColors.pink : globalColors.lightgray
+            return <MaterialIcons name="how-to-vote" size={35} backgroundColor={color} color={color} />
           },
         }}
-        name="Search"
-        component={Search} />
+        name="Vote"
+        component={Vote} />
 
       <Tab.Screen
         options={{
           tabBarIcon: ({ focused }) => {
             let color;
-            color = focused ? '#f75483' : '#8395a7'
-            return <Feather name="user" size={30} color={color} />
+            color = focused ? globalColors.pink : globalColors.lightgray
+            return <Feather name="user" size={35} color={color} />
           },
         }}
         name="Profile"

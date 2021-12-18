@@ -13,7 +13,6 @@ import { PrismaClient } from '@prisma/client'
 
 const user = require('./routes/user')
 const auth = require('./routes/auth')
-const order = require('./routes/order')
 import jwt from 'jsonwebtoken'
 
 
@@ -71,7 +70,6 @@ const main = async () => {
 
     //routes
     app.use('/api/v1/user', user)
-    app.use('/api/v1/order', order)
     app.use('/api/v1/auth', auth)
 
     app.use((_, res: express.Response) => {

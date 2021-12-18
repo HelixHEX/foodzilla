@@ -32,7 +32,7 @@ const prisma = new client_1.PrismaClient();
 const saltRounds = 10;
 router.post('/signup', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
-    const { name, email, room_number, building, password } = body;
+    const { name, email, password } = body;
     try {
         const exists = yield prisma.user.findUnique({ where: { email } });
         if (exists) {
@@ -45,7 +45,7 @@ router.post('/signup', (req, res) => __awaiter(void 0, void 0, void 0, function*
                     hashPwd = hash;
                     const user = yield prisma.user.create({
                         data: {
-                            name, email, room_number, building, password: hashPwd
+                            name, email, password: hashPwd
                         }
                     });
                     const { password } = user, other = __rest(user, ["password"]);

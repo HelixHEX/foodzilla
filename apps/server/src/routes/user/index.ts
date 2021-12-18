@@ -22,29 +22,4 @@ router.post('/', async (req: express.Request, res) => {
     }
 })
 
-
-// router.post('/me', async (req, res) => {
-//     const {body} = req;
-// })
-
-// router.post('/me', (req, res) => {
-
-// })
-
-// router.post('/logout', (req, res) => {
-//     req.session.destroy(err => {
-//         if (err) {
-//             return console.log(err)
-//         } else {
-//             res.send({success: true})
-//         }
-//     })
-// })
-// router.post('/me', async (req, res) => {
-//     const { body } = req;
-//     const { email,}
-// })
-
-
-
 module.exports = router

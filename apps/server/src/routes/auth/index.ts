@@ -11,7 +11,7 @@ const saltRounds = 10;
 //authentication routes
 router.post('/signup', async (req, res) => {
     const { body } = req;
-    const { name, email, room_number, building, password } = body
+    const { name, email, password } = body
     try {
         //check if user exists
         const exists = await prisma.user.findUnique({ where: { email } })
@@ -25,7 +25,7 @@ router.post('/signup', async (req, res) => {
                     hashPwd = hash
                     const user = await prisma.user.create({
                         data: {
-                            name, email, room_number, building, password: hashPwd
+                            name, email, password: hashPwd
                         }
                     })
                     const { password, ...other } = user
