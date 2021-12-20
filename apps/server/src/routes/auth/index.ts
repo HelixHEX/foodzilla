@@ -18,7 +18,7 @@ router.post('/signup', async (req, res) => {
         if (exists) {
             res.json({ success: false, message: 'Email already in use' })
         } else {
-            if (password.length > 6) {
+            if (password.length > 0) {
                 //hash password 
                 let hashPwd: string;
                 bcrypt.hash(password, saltRounds, async (_, hash) => {

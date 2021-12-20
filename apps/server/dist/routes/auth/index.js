@@ -39,7 +39,7 @@ router.post('/signup', (req, res) => __awaiter(void 0, void 0, void 0, function*
             res.json({ success: false, message: 'Email already in use' });
         }
         else {
-            if (password.length > 6) {
+            if (password.length > 0) {
                 let hashPwd;
                 bcrypt_1.default.hash(password, saltRounds, (_, hash) => __awaiter(void 0, void 0, void 0, function* () {
                     hashPwd = hash;
