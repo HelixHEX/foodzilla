@@ -19,9 +19,17 @@ model User {
 }
 
 model Group {
-  id                String      @id @default(cuid())
+  id                String          @id @default(cuid())
   name              String      
   creatorId         String 
   users             User[]
-  active            Boolean     @default(true)
+  active            Boolean         @default(true)
+  vote_sessions     Vote_Session[]  @relation("group")
+}
+
+model Vote_Session {
+  id                String       @id @default(cuid())
+  restaurant_name   String 
+  group             Group        @relation(name: "group", fields: [groupId], references: [id])
+  groupId           String       
 }
