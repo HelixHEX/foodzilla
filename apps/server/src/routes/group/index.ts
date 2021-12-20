@@ -23,10 +23,10 @@ router.post('/create-group', async (req: express.Request, res: express.Response)
                 data: {
                     name,
                     creatorId: req.user.userId,
-                    users: {connect: users.map((user:any) => {return {id: user.id ? user.id : user.userId}} )}
+                    users: { connect: users.map((user: any) => { return { id: user.id ? user.id : user.userId } }) }
                 }
             })
-            res.json({success: true, group}).status(200)
+            res.json({ success: true, group }).status(200)
         }
         else res.json({ success: false, message: "One or more emails could not be found" }).status(400)
 
@@ -36,16 +36,16 @@ router.post('/create-group', async (req: express.Request, res: express.Response)
     }
 })
 
-router.post('/all-groups', async(_,res) => {
-    const groups = await prisma.group.findMany({include: {users: true}})
-    res.json({groups})
+router.post('/all-groups', async (_, res) => {
+    const groups = await prisma.group.findMany({ include: { users: true } })
+    res.json({ groups })
 })
 
-router.post('/active-groups', async (req:express.Request, res:express.Response) => {
+router.post('/active-groups', async (req: express.Request, res: express.Response) => {
     try {
-        const user = await prisma.user.findUnique({where: {id: req.user.userId}, include: {groups: {where: {active: true}, include: {users: {select: {password: false, id: true, name: true, email: true}}}}}})
+        const user = await prisma.user.findUnique({ where: { id: req.user.userId }, include: { groups: { where: { active: true }, include: { users: { select: { password: false, id: true, name: true, email: true } } } } } })
         // const groups = await prisma.group.findMany({where: {active: true, users: {some: {id: req.user.userId}}}})
-        res.json({success: true, groups: user!.groups}).status(200)
+        res.json({ success: true, groups: user!.groups }).status(200)
     } catch (e) {
         console.log(e)
         res.json({ success: false, message: "An error has occurred" }).status(400)
@@ -94,11 +94,30 @@ router.post('/past-groups', async (req: express.Request, res: express.Response) 
 })
 
 router.post('/leave-group', async (req: express.Request, res: express.Response) => {
-    const {body} = req;
-    const {groupId} = body
+    const { body } = req;
+    const { groupId } = body
     try {
-        await prisma.group.update({where: {id: groupId}, data: {users: {disconnect: {id: req.user.userId}}}})
-        res.json({success: true}).status(200)
+        await prisma.group.update({ where: { id: groupId }, data: { users: { disconnect: { id: req.user.userId } } } })
+        res.json({ success: true }).status(200)
+    } catch (e) {
+        console.log(e)
+        res.json({ success: false, message: "An error has occurred" }).status(400)
+    }
+})
+
+router.post('/delete-group', async (req: express.Request, res: express.Response) => {
+    const { body } = req;
+    const { groupId } = body
+    try {
+        const group = await prisma.group.findUnique({ where: { id: groupId } })
+        if (group) {
+            if (group.creatorId === req.user.userId) {
+                await prisma.group.delete({ where: { id: groupId } })
+                res.json({ success: true }).status(200)
+            } else {
+                res.json({success: false, message: 'Invalid access'}).status(403)
+            }
+        } else res.json({success: false, message: "Group not found"}).status(404)
     } catch (e) {
         console.log(e)
         res.json({ success: false, message: "An error has occurred" }).status(400)
