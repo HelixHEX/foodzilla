@@ -55,8 +55,8 @@ router.post('/all-groups', (_, res) => __awaiter(void 0, void 0, void 0, functio
 }));
 router.post('/active-groups', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const groups = yield prisma.group.findMany({ where: { active: true, users: { some: { id: req.user.userId } } } });
-        res.json({ success: true, groups }).status(200);
+        const user = yield prisma.user.findUnique({ where: { id: req.user.userId }, include: { groups: { where: { active: true }, include: { users: { select: { password: false, id: true, name: true, email: true } } } } } });
+        res.json({ success: true, groups: user.groups }).status(200);
     }
     catch (e) {
         console.log(e);
@@ -99,6 +99,18 @@ router.post('/past-groups', (req, res) => __awaiter(void 0, void 0, void 0, func
         else {
             res.json({ success: false, message: 'User not found' }).status(404);
         }
+    }
+    catch (e) {
+        console.log(e);
+        res.json({ success: false, message: "An error has occurred" }).status(400);
+    }
+}));
+router.post('/leave-group', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { body } = req;
+    const { groupId } = body;
+    try {
+        yield prisma.group.update({ where: { id: groupId }, data: { users: { disconnect: { id: req.user.userId } } } });
+        res.json({ success: true }).status(200);
     }
     catch (e) {
         console.log(e);

@@ -43,8 +43,9 @@ router.post('/all-groups', async(_,res) => {
 
 router.post('/active-groups', async (req:express.Request, res:express.Response) => {
     try {
-        const groups = await prisma.group.findMany({where: {active: true, users: {some: {id: req.user.userId}}}})
-        res.json({success: true, groups}).status(200)
+        const user = await prisma.user.findUnique({where: {id: req.user.userId}, include: {groups: {where: {active: true}, include: {users: {select: {password: false, id: true, name: true, email: true}}}}}})
+        // const groups = await prisma.group.findMany({where: {active: true, users: {some: {id: req.user.userId}}}})
+        res.json({success: true, groups: user!.groups}).status(200)
     } catch (e) {
         console.log(e)
         res.json({ success: false, message: "An error has occurred" }).status(400)
@@ -86,6 +87,18 @@ router.post('/past-groups', async (req: express.Request, res: express.Response) 
         } else {
             res.json({ success: false, message: 'User not found' }).status(404)
         }
+    } catch (e) {
+        console.log(e)
+        res.json({ success: false, message: "An error has occurred" }).status(400)
+    }
+})
+
+router.post('/leave-group', async (req: express.Request, res: express.Response) => {
+    const {body} = req;
+    const {groupId} = body
+    try {
+        await prisma.group.update({where: {id: groupId}, data: {users: {disconnect: {id: req.user.userId}}}})
+        res.json({success: true}).status(200)
     } catch (e) {
         console.log(e)
         res.json({ success: false, message: "An error has occurred" }).status(400)
