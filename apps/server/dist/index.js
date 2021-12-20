@@ -22,6 +22,7 @@ const client_1 = require("@prisma/client");
 const user = require('./routes/user');
 const auth = require('./routes/auth');
 const group = require('./routes/group');
+const restaurant = require('./routes/restaurant');
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 exports.prisma = new client_1.PrismaClient();
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -66,6 +67,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     app.use('/api/v1/user', user);
     app.use('/api/v1/auth', auth);
     app.use('/api/v1/group', group);
+    app.use('/api/v1/restaurant', restaurant);
     app.use((_, res) => {
         res.status(404).json({ status: "404" });
     });
