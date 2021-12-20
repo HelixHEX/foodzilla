@@ -10,6 +10,7 @@
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
+    "start": "turbo run start --parallel",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
@@ -24,13 +25,17 @@
         ],
         "outputs": [
           "dist/**"
-        ]
+        ],
+        "cache": true
       },
       "lint": {
         "outputs": []
       },
       "dev": {
         "cache": false
+      },
+      "start": {
+        "cache": true
       }
     }
   },

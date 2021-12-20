@@ -11,21 +11,21 @@ const saltRounds = 10;
 //authentication routes
 router.post('/signup', async (req, res) => {
     const { body } = req;
-    const { name, email, room_number, building, password } = body
+    const { name, email, password } = body
     try {
         //check if user exists
         const exists = await prisma.user.findUnique({ where: { email } })
         if (exists) {
             res.json({ success: false, message: 'Email already in use' })
         } else {
-            if (password.length > 6) {
+            if (password.length > 0) {
                 //hash password 
                 let hashPwd: string;
                 bcrypt.hash(password, saltRounds, async (_, hash) => {
                     hashPwd = hash
                     const user = await prisma.user.create({
                         data: {
-                            name, email, room_number, building, password: hashPwd
+                            name, email, password: hashPwd
                         }
                     })
                     const { password, ...other } = user
