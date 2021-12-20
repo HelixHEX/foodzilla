@@ -117,5 +117,27 @@ router.post('/leave-group', (req, res) => __awaiter(void 0, void 0, void 0, func
         res.json({ success: false, message: "An error has occurred" }).status(400);
     }
 }));
+router.post('/delete-group', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { body } = req;
+    const { groupId } = body;
+    try {
+        const group = yield prisma.group.findUnique({ where: { id: groupId } });
+        if (group) {
+            if (group.creatorId === req.user.userId) {
+                yield prisma.group.delete({ where: { id: groupId } });
+                res.json({ success: true }).status(200);
+            }
+            else {
+                res.json({ success: false, message: 'Invalid access' }).status(403);
+            }
+        }
+        else
+            res.json({ success: false, message: "Group not found" }).status(404);
+    }
+    catch (e) {
+        console.log(e);
+        res.json({ success: false, message: "An error has occurred" }).status(400);
+    }
+}));
 module.exports = router;
 //# sourceMappingURL=index.js.map
