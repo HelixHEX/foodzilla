@@ -25,18 +25,21 @@ router.post('/create-group', (req, res) => __awaiter(void 0, void 0, void 0, fun
         for (var email of emails) {
             if (email !== req.user.email) {
                 const user = yield prisma.user.findUnique({ where: { email } });
-                users.push(user);
+                if (user) {
+                    users.push(user);
+                }
+                else
+                    emailError = true;
             }
-            else
-                emailError = true;
         }
         if (!emailError) {
             users.push(req.user);
+            console.log(req.user.userId);
             let group = yield prisma.group.create({
                 data: {
                     name,
                     creatorId: req.user.userId,
-                    users: { connect: users.map((user) => { return { id: user.id ? user.id : user.userId }; }) }
+                    users: { connect: { id: req.user.userId } }
                 }
             });
             res.json({ success: true, group }).status(200);
