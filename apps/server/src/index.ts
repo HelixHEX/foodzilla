@@ -14,7 +14,7 @@ import { PrismaClient } from '@prisma/client'
 const user = require('./routes/user')
 const auth = require('./routes/auth')
 const group = require('./routes/group')
-const restaurant = require('./routes/restaurant')
+// const restaurant = require('./routes/restaurant')
 const vote = require('./routes/vote')
 
 import jwt from 'jsonwebtoken'

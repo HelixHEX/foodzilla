@@ -179,7 +179,7 @@ router.post('/all-votes', async (req: express.Request, res: express.Response) =>
     }
 })
 
-router.post('/delete', async(req, res) => {
+router.post('/delete', async() => {
     await prisma.vote.deleteMany()
 })
 
