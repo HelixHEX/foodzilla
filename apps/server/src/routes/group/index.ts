@@ -37,7 +37,7 @@ router.post('/create-group', async (req: express.Request, res: express.Response)
 })
 
 router.post('/all-groups', async (_, res) => {
-    const groups = await prisma.group.findMany({ include: { users: true } })
+    const groups = await prisma.group.findMany({ include: { users: { select: { id: true, name: true } } } })
     res.json({ groups })
 })
 
@@ -115,14 +115,13 @@ router.post('/delete-group', async (req: express.Request, res: express.Response)
                 await prisma.group.delete({ where: { id: groupId } })
                 res.json({ success: true }).status(200)
             } else {
-                res.json({success: false, message: 'Invalid access'}).status(403)
+                res.json({ success: false, message: 'Invalid access' }).status(403)
             }
-        } else res.json({success: false, message: "Group not found"}).status(404)
+        } else res.json({ success: false, message: "Group not found" }).status(404)
     } catch (e) {
         console.log(e)
         res.json({ success: false, message: "An error has occurred" }).status(400)
     }
 })
-
 
 module.exports = router

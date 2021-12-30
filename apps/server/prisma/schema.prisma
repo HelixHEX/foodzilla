@@ -11,11 +11,13 @@ datasource db {
 }
 
 model User {
-  id                String      @id @default(cuid())
+  id                String          @id @default(cuid())
   name              String
-  email             String      @unique
+  email             String          @unique
   password          String
   groups            Group[]
+  votes             Vote[]          @relation("user")
+  voteSessions      Vote_Session[]
 }
 
 model Group {
@@ -24,12 +26,27 @@ model Group {
   creatorId         String 
   users             User[]
   active            Boolean         @default(true)
-  vote_sessions     Vote_Session[]  @relation("group")
+  voteSessions     Vote_Session[]   @relation("group")
 }
 
 model Vote_Session {
-  id                String       @id @default(cuid())
-  restaurant_name   String 
-  group             Group        @relation(name: "group", fields: [groupId], references: [id])
-  groupId           String       
+  id                String          @id @default(cuid())
+  restaurants       String[]
+  createdBy         String          
+  group             Group           @relation(name: "group", fields: [groupId], references: [id])
+  groupId           String
+  votes             Vote[]          @relation("vote_session") 
+  users             User[]
+  ended             Boolean         @default(false)
+  anonymous         Boolean         @default(false)
+  winner            String?
+}
+
+model Vote {
+  id                String          @id @default(cuid())
+  resauarant_name   String        
+  user              User            @relation(name: "user", fields: [userId], references: [id])
+  userId            String
+  VoteSession       Vote_Session    @relation("vote_session", fields: [VoteSessionId], references: [id])
+  VoteSessionId     String
 }
