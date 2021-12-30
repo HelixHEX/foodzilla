@@ -36,14 +36,16 @@ router.post('/create-group', async (req: express.Request, res: express.Response)
     }
 })
 
-router.post('/all-groups', async (_, res) => {
+router.post('/all-groups-admin', async (_, res) => {
     const groups = await prisma.group.findMany({ include: { users: { select: { id: true, name: true } } } })
     res.json({ groups })
 })
 
+// router.post('/')
+
 router.post('/active-groups', async (req: express.Request, res: express.Response) => {
     try {
-        const user = await prisma.user.findUnique({ where: { id: req.user.userId }, include: { groups: { where: { active: true }, include: { users: { select: { password: false, id: true, name: true, email: true } } } } } })
+        const user = await prisma.user.findUnique({ where: { id: req.user.userId }, include: { groups: { where: { active: true }, include: { users: { select: { id: true, name: true } } } } } })
         // const groups = await prisma.group.findMany({where: {active: true, users: {some: {id: req.user.userId}}}})
         res.json({ success: true, groups: user!.groups }).status(200)
     } catch (e) {

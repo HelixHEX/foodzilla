@@ -12,6 +12,7 @@ datasource db {
 
 model User {
   id                String          @id @default(cuid())
+  createdAt         DateTime        @default(now())
   name              String
   email             String          @unique
   password          String
@@ -22,6 +23,7 @@ model User {
 
 model Group {
   id                String          @id @default(cuid())
+  createdAt         DateTime        @default(now())
   name              String      
   creatorId         String 
   users             User[]
@@ -31,6 +33,7 @@ model Group {
 
 model Vote_Session {
   id                String          @id @default(cuid())
+  createdAt         DateTime        @default(now())
   restaurants       String[]
   createdBy         String          
   group             Group           @relation(name: "group", fields: [groupId], references: [id])
@@ -44,7 +47,8 @@ model Vote_Session {
 
 model Vote {
   id                String          @id @default(cuid())
-  resauarant_name   String        
+  createdAt         DateTime        @default(now())
+  restaraunt_name   String        
   user              User            @relation(name: "user", fields: [userId], references: [id])
   userId            String
   VoteSession       Vote_Session    @relation("vote_session", fields: [VoteSessionId], references: [id])
