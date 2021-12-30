@@ -14,6 +14,8 @@ import { PrismaClient } from '@prisma/client'
 const user = require('./routes/user')
 const auth = require('./routes/auth')
 const group = require('./routes/group')
+// const restaurant = require('./routes/restaurant')
+const vote = require('./routes/vote')
 
 import jwt from 'jsonwebtoken'
 
@@ -74,6 +76,8 @@ const main = async () => {
     app.use('/api/v1/user', user)
     app.use('/api/v1/auth', auth)
     app.use('/api/v1/group', group)
+    // app.use('/api/v1/restaurant', restaurant)
+    app.use('/api/v1/vote', vote)
 
     app.use((_, res: express.Response) => {
         res.status(404).json({ status: "404" });

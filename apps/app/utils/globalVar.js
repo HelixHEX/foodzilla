@@ -22,7 +22,7 @@ export const deleteValue = async (key) => {
 }
 
 export const fetcher = params => async url => {
-    const res = await axios.post(url, {params}, {headers: {'Authorization': `token ${await getValue('token')}`}})
+    const res = await axios.post(url, params, {headers: {'Authorization': `token ${await getValue('token')}`}})
     if(res.status !== 200) {
         const error = new Error('An error occurred while fetching the data.')
         error.info = await res.data

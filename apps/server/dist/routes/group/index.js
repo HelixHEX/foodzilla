@@ -49,13 +49,13 @@ router.post('/create-group', (req, res) => __awaiter(void 0, void 0, void 0, fun
         res.json({ success: false, message: "An error has occurred" }).status(400);
     }
 }));
-router.post('/all-groups', (_, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const groups = yield prisma.group.findMany({ include: { users: true } });
+router.post('/all-groups-admin', (_, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const groups = yield prisma.group.findMany({ include: { users: { select: { id: true, name: true } } } });
     res.json({ groups });
 }));
 router.post('/active-groups', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield prisma.user.findUnique({ where: { id: req.user.userId }, include: { groups: { where: { active: true }, include: { users: { select: { password: false, id: true, name: true, email: true } } } } } });
+        const user = yield prisma.user.findUnique({ where: { id: req.user.userId }, include: { groups: { where: { active: true }, include: { users: { select: { id: true, name: true } } } } } });
         res.json({ success: true, groups: user.groups }).status(200);
     }
     catch (e) {

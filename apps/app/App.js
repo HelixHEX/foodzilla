@@ -8,7 +8,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Login from './screens/Login'
 import Signup from './screens/Signup'
 import Home from './screens/Home'
-import Search from './screens/Search'
+import Group from './screens/Group'
 import Profile from './screens/Profile'
 import Vote from './screens/Vote'
 
@@ -20,7 +20,7 @@ const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
 const HomeScreen = () => {
   return (
-    <Tab.Navigator screenOptions={{ tabBarHideOnKeyboard:true, tabBarLabel: () => null, headerShown: false, gestureEnabled: false, tabBarStyle: { borderTopWidth: 0, backgroundColor: globalColors.gray, marginBottom: 20, marginLeft: '3%', marginRight: '3%', borderRadius: 10, height: 70} }}>
+    <Tab.Navigator screenOptions={{ tabBarHideOnKeyboard: true, tabBarLabel: () => null, headerShown: false, gestureEnabled: false, tabBarStyle: { borderTopWidth: 0, backgroundColor: globalColors.gray, marginBottom: 20, marginLeft: '3%', marginRight: '3%', borderRadius: 10, height: 70 } }}>
       <Tab.Screen
         options={{
           tabBarIcon: ({ focused }) => {
@@ -31,16 +31,7 @@ const HomeScreen = () => {
         }}
         name="Home"
         component={Home} />
-      <Tab.Screen
-        options={{
-          tabBarIcon: ({ focused }) => {
-            let color;
-            color = focused ? globalColors.pink : globalColors.lightgray
-            return <Feather name="search" size={35} backgroundColor={color} color={color} />
-          },
-        }}
-        name="Bookmark"
-        component={Search} />
+
       <Tab.Screen
         options={{
           tabBarIcon: ({ focused }) => {
@@ -51,7 +42,16 @@ const HomeScreen = () => {
         }}
         name="Vote"
         component={Vote} />
-
+      <Tab.Screen
+        options={{
+          tabBarIcon: ({ focused }) => {
+            let color;
+            color = focused ? globalColors.pink : globalColors.lightgray
+            return <Feather name="users" size={35} backgroundColor={color} color={color} />
+          },
+        }}
+        name="Group"
+        component={Group} />
       <Tab.Screen
         options={{
           tabBarIcon: ({ focused }) => {
