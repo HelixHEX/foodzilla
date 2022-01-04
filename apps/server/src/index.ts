@@ -44,6 +44,7 @@ const main = async () => {
         const publicRoutes = ['/api/v1/auth/login', '/api/v1/auth/signup', '/']
         if (!publicRoutes.includes(`${req.originalUrl}`)) {
             const authHeader = req.get("Authorization") as any;
+            console.log(authHeader)
             if (!authHeader) {
                 res.status(401).json({ message: 'not authenticated' });
             };

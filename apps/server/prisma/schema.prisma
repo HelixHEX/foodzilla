@@ -43,6 +43,10 @@ model Vote_Session {
   ended             Boolean         @default(false)
   anonymous         Boolean         @default(false)
   winner            String?
+  ends              Boolean         @default(false)
+  endsAt            String?
+  name              String          @default("Default Name")
+  add_options       Boolean         @default(true)
 }
 
 model Vote {

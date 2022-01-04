@@ -3,20 +3,23 @@ import React from 'react'
 import {
     View,
     Text,
-    StyleSheet
+    StyleSheet,
+    TouchableOpacity
 } from 'react-native'
+import { globalColors } from '../utils/styles'
 
-const VoteSession = ({ data }) => {
+const VoteSession = ({ data, nav }) => {
     return (
         <>
-            <View style={styles.container}>
+            <TouchableOpacity onPress={() => nav.navigate('VoteSession', {id: data.id})} style={styles.container}>
                 {/* <Text>{data.}</Text> */}
                 <View>
-                    <Text style={styles.title}>Group: {data.group.name}</Text>
-                    <Text>Users: {data.users.length}</Text>
+                    <Text style={styles.title}>{data.name}</Text>
+                    <Text style={styles.subtitle}>Group: {data.group.name}</Text>
+                    <Text style={styles.subtitle}>Users: {data.users.length}</Text>
                 </View>
-                <Text style={styles.date}>{FormatDate(data.createdAt)}</Text>
-            </View>
+                <Text style={styles.date}>{data.ends ? FormatDate(data.endsAt) : data.ended ? "Closed" : "Open"}</Text>
+            </TouchableOpacity>
         </>
     )
 }
@@ -29,21 +32,25 @@ const FormatDate = string => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'white',
-        width: '90%',
-        height: 70,
-        padding: 10,
+        width: '100%',
+        height: 90,
         marginTop: 20,
+        // backgroundColor: 'red',
         flexDirection: 'row',
         display: 'flex',
         justifyContent: 'space-between',
-        alignSelf: 'center'
+        alignSelf: 'center',
+       
     },
     title: {
+        fontSize: 20
+    },
+    subtitle: {
         fontSize: 15
     },
     date: {
         alignSelf: 'center',
+        color: globalColors.pink
     }
 })
 

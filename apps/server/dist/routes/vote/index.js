@@ -205,5 +205,25 @@ router.post('/all-votes', (req, res) => __awaiter(void 0, void 0, void 0, functi
 router.post('/delete', () => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma.vote.deleteMany();
 }));
+router.post('/session', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { body } = req;
+    const { id } = body;
+    try {
+        const session = yield prisma.vote_Session.findUnique({ where: { id }, include: { users: { select: { id: true, name: true } } } });
+        if (session) {
+            if (session.users.find(user => user.id === req.user.userId)) {
+                res.json({ success: true, session }).status(200);
+            }
+            else
+                res.json({ success: false, message: 'Invalid access' }).status(403);
+        }
+        else
+            res.json({ success: false, message: 'Vote session not found' }).status(404);
+    }
+    catch (e) {
+        console.log(e);
+        res.json({ success: false, message: "An error has occurred" }).status(400);
+    }
+}));
 module.exports = router;
 //# sourceMappingURL=index.js.map

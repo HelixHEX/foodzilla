@@ -11,7 +11,6 @@ export const useUser = params => {
 }
 
 export const useVoteSessions = params => {
-    console.log(params)
     const { data, error } = useSWR(baseURL + `/vote/all-voting-sessions`, fetcher(params))
     return {
         data,
@@ -21,8 +20,16 @@ export const useVoteSessions = params => {
 }
 
 export const useActiveGroups = params => {
-    console.log(params)
     const { data, error } = useSWR(baseURL + `/group/active-groups`, fetcher(params))
+    return {
+        data,
+        isLoading: !error && !data,
+        isError: error
+    }
+}
+
+export const useVoteSession =params => {
+    const { data, error } = useSWR(baseURL + `/vote/session/${params.id}`, fetcher(params))
     return {
         data,
         isLoading: !error && !data,
