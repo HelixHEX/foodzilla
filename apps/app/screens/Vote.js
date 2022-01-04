@@ -10,7 +10,7 @@ import VoteSession from '../components/VoteSession'
 import { useVoteSessions } from '../utils/api'
 import { globalColors, styles } from '../utils/styles'
 
-const Vote = () => {
+const Vote = ({ navigation }) => {
     const { data: voteSessions, error, isLoading } = useVoteSessions({ groupId: 'ckxe7vzev0051m20gxivtbvhy' })
 
     if (error) return <Text>{error.info}</Text>
@@ -27,19 +27,19 @@ const Vote = () => {
                     {voteSessions.sessions.filter(session => session.ended === false).map((session, index) => (
                         <>
                             <View key={index}>
-                                <VoteSession data={session} />
+                                <VoteSession nav={navigation} data={session} />
+                                <View style={customStyle.line} />
                             </View>
-                            <View style={customStyle.line} />
-                        </>
 
+                        </>
                     ))}
                     <Text style={customStyle.label}>Past Voting Sessions</Text>
                     {voteSessions.sessions.filter(session => session.ended === true).map((session, index) => (
                         <>
                             <View key={index}>
-                                <VoteSession data={session} />
+                                <VoteSession nav={navigation} data={session} />
+                                <View style={customStyle.line} />
                             </View>
-                            <View style={customStyle.line} />
                         </>
                     ))}
                 </ScrollView>

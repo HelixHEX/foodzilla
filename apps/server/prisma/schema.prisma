@@ -46,6 +46,7 @@ model Vote_Session {
   ends              Boolean         @default(false)
   endsAt            String?
   name              String          @default("Default Name")
+  add_options       Boolean         @default(true)
 }
 
 model Vote {

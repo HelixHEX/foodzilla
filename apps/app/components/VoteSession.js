@@ -8,10 +8,10 @@ import {
 } from 'react-native'
 import { globalColors } from '../utils/styles'
 
-const VoteSession = ({ data }) => {
+const VoteSession = ({ data, nav }) => {
     return (
         <>
-            <TouchableOpacity style={styles.container}>
+            <TouchableOpacity onPress={() => nav.navigate('VoteSession', {id: data.id})} style={styles.container}>
                 {/* <Text>{data.}</Text> */}
                 <View>
                     <Text style={styles.title}>{data.name}</Text>

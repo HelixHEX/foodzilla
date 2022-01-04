@@ -38,7 +38,7 @@ router.post('/all-voting-sessions', async (req: express.Request, res: express.Re
     // const { body } = req;
     // const { groupId } = body
     try {
-        const sessions = await prisma.vote_Session.findMany({where: {users: {some: {id: req.user.userId}}}, include: {users: {select: {id: true, name: true}}, group: true}})
+        const sessions = await prisma.vote_Session.findMany({ where: { users: { some: { id: req.user.userId } } }, include: { users: { select: { id: true, name: true } }, group: true } })
         // const group = await prisma.group.findUnique({ where: { id: groupId }, include: { voteSessions: { include: { users: { select: { id: true, name: true } } } } } })
         if (sessions) {
             res.json({ success: true, sessions }).status(200)
@@ -59,7 +59,7 @@ router.post('/end-voting-session', async (req: express.Request, res: express.Res
         if (session) {
             if (!session.ended) {
                 if (session.createdBy === req.user.userId) {
-                    let votes = [{restaraunt_name: 'Wendys', votes: 1}, {restaraunt_name: 'Chic-fil-a', votes: 4}, {restaraunt_name: 'Jack in the box', votes: 2}] as any
+                    let votes = [{ restaraunt_name: 'Wendys', votes: 1 }, { restaraunt_name: 'Chic-fil-a', votes: 4 }, { restaraunt_name: 'Jack in the box', votes: 2 }] as any
                     session.votes.forEach(vote1 => {
                         let index = votes.findIndex((vote: any) => vote.restaraunt_name === vote1.restaraunt_name)
                         if (index >= 0) {
@@ -71,7 +71,7 @@ router.post('/end-voting-session', async (req: express.Request, res: express.Res
                             })
                         }
                     })
-                    votes = votes.sort((a:any, b:any) => b.votes - a.votes)
+                    votes = votes.sort((a: any, b: any) => b.votes - a.votes)
                     // await prisma.vote_Session.update({ where: { id: sessionId }, data: { ended: true } })
                     res.json({ success: true, votes }).status(200)
                 } else {
@@ -138,6 +138,7 @@ router.post('/new-vote', async (req: express.Request, res: express.Response) => 
                             res.json({ success: false, message: 'Restaraunt not found' }).status(404)
                         }
                     } else {
+                        console.log('hi')
                         res.json({ success: false, message: 'Already voted' }).status(400)
                     }
                 } else {
@@ -179,8 +180,25 @@ router.post('/all-votes', async (req: express.Request, res: express.Response) =>
     }
 })
 
-router.post('/delete', async() => {
+router.post('/delete', async () => {
     await prisma.vote.deleteMany()
+})
+
+router.post('/session/:id', async (req: express.Request, res: express.Response) => {
+    const { body } = req;
+    const { id } = body
+    try {
+        const session = await prisma.vote_Session.findUnique({ where: { id }, include: { users: { select: { id: true, name: true } }, votes: {include: {user: {select: {id: true, name: true}}}} } })
+        if (session) {
+            if (session.users.find(user => user.id === req.user.userId)) {
+                res.json({ success: true, session }).status(200)
+                console.log(session)
+            } else res.json({ success: false, message: 'Invalid access' }).status(403)
+        } else res.json({ success: false, message: 'Vote session not found' }).status(404)
+    } catch (e) {
+        console.log(e)
+        res.json({ success: false, message: "An error has occurred" }).status(400)
+    }
 })
 
 module.exports = router

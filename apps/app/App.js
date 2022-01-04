@@ -11,6 +11,7 @@ import Home from './screens/Home'
 import Group from './screens/Group'
 import Profile from './screens/Profile'
 import Vote from './screens/Vote'
+import VoteSession from "./screens/VoteSession";
 
 import { AntDesign, Feather, MaterialIcons } from '@expo/vector-icons'
 import SWR from "./SWR";
@@ -80,6 +81,7 @@ const App = () => {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen options={{ gestureEnabled: false }} name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen name='VoteSession' component={VoteSession} />
       </Stack.Navigator>
     </NavigationContainer>
   );
