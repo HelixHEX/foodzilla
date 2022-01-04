@@ -5,10 +5,10 @@ import {
 } from 'react-native'
 import Filter from './Filter'
 
-const Header = () => {
+const Header = ({selected, setSelected}) => {
     return (
         <>
-            <Filter />
+            <Filter selected={selected} setSelected={setSelected} />
             <Text style={customStyle.subtitle}>Trending</Text>
         </>
     )

@@ -3,9 +3,7 @@ import {
     View,
     Text,
     TouchableOpacity,
-    StyleSheet
 } from 'react-native'
-import Filter from '../components/Filter'
 import Restaraunts from '../components/Restaraunts'
 import Search from '../components/Search'
 import { useUser } from '../utils/api'
@@ -25,7 +23,7 @@ const Home = ({ navigation }) => {
     }
     return (
         <>
-            <View style={styles.contianer}>
+            <View style={styles.container}>
                 <View style={{ flexDirection: 'row' }}>
                     <Text style={styles.title}>
                         Discover
@@ -42,9 +40,5 @@ const Home = ({ navigation }) => {
         </>
     )
 }
-
-const customStyle = StyleSheet.create({
-    
-})
 
 export default Home

@@ -10,7 +10,7 @@ export const globalColors = {
 }
 
 export const styles = StyleSheet.create({
-    contianer: {
+    container: {
         flex: 1,
         marginLeft: '5%',
         marginRight: '5%',
@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     },
     title: {
         color: globalColors.gray,
-        fontSize: 50,
+        fontSize: 40,
         fontWeight: '200',
     },
     center: {

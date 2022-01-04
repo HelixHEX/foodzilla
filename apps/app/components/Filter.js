@@ -22,8 +22,7 @@ import DessertW from '../assets/icons/Dessert-white.png'
 import LatinoB from '../assets/icons/Latino-black.png'
 import LatinoW from '../assets/icons/Latino-white.png'
 
-const Filter = () => {
-    const [selected, setSelected] = useState('American')
+const Filter = ({selected, setSelected}) => {
     return (
         <>
             <View style={customStyle.container}>

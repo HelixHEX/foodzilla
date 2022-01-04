@@ -18,8 +18,8 @@ const RestarauntCard = ({ data }) => {
                     <AntDesign style={customStyle.likedHeart} name={data.liked ? "heart" : "hearto"} size={24} color="black" />
                 </TouchableOpacity>
                 <View style={customStyle.footer}>
-                    <View style={styles.center}>
-                        <Text style={customStyle.footerName}>{data.name}</Text>
+                    <View style={[styles.center, {width: '70%'}]}>
+                        <Text numberOfLines={1} style={customStyle.footerName}>{data.name}</Text>
                         <Text style={customStyle.footerType}>{data.type}</Text>
                     </View>
                     <TouchableOpacity style={[customStyle.footerMenu, styles.center]}>
@@ -56,7 +56,8 @@ const customStyle = StyleSheet.create({
     },
     footerName: {
         color: 'white',
-        fontSize: 25
+        fontSize: 25,
+        width: '100%'
     },
     footerType: {
         color: 'white',
