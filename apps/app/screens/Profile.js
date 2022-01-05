@@ -9,8 +9,8 @@ import { styles } from '../utils/styles'
 const Profile = () => {
     return (
         <>
-            <View>
-                <Text style={styles.title}>Settings Screen</Text>
+            <View style={styles.container}>
+                <Text style={styles.title}>Profile</Text>
             </View>
         </>
     )

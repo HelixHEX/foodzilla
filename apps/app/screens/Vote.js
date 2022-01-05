@@ -17,30 +17,24 @@ const Vote = ({ navigation }) => {
     if (isLoading) return <Text>loading...</Text>
     if (!voteSessions.sessions) return <Text>error</Text>
 
-
     return (
         <>
             <View style={styles.container}>
                 <Text style={styles.title}>Voting Sessions</Text>
-                <ScrollView style={{ marginTop: 50, marginBottom: 50 }}>
+                <ScrollView style={{ marginBottom: 50 }}>
                     <Text style={customStyle.label}>Active Voting Sessions</Text>
                     {voteSessions.sessions.filter(session => session.ended === false).map((session, index) => (
-                        <>
-                            <View key={index}>
-                                <VoteSession nav={navigation} data={session} />
-                                <View style={customStyle.line} />
-                            </View>
-
-                        </>
+                        <View key={index}>
+                            <VoteSession nav={navigation} data={session} />
+                            <View style={customStyle.line} />
+                        </View>
                     ))}
-                    <Text style={customStyle.label}>Past Voting Sessions</Text>
+                    <Text style={[customStyle.label, {marginTop: 50}]}>Past Voting Sessions</Text>
                     {voteSessions.sessions.filter(session => session.ended === true).map((session, index) => (
-                        <>
-                            <View key={index}>
-                                <VoteSession nav={navigation} data={session} />
-                                <View style={customStyle.line} />
-                            </View>
-                        </>
+                        <View key={index}>
+                            <VoteSession nav={navigation} data={session} />
+                            <View style={customStyle.line} />
+                        </View>
                     ))}
                 </ScrollView>
             </View>
@@ -52,7 +46,6 @@ const customStyle = StyleSheet.create({
     label: {
         color: globalColors.lightgray,
         fontSize: 25,
-        marginTop: 20
     },
     line: {
         borderBottomWidth: StyleSheet.hairlineWidth,

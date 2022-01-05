@@ -8,7 +8,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Login from './screens/Login'
 import Signup from './screens/Signup'
 import Home from './screens/Home'
-import Group from './screens/Group'
+import Groups from './screens/Groups'
 import Profile from './screens/Profile'
 import Vote from './screens/Vote'
 import VoteSession from "./screens/VoteSession";
@@ -16,6 +16,7 @@ import VoteSession from "./screens/VoteSession";
 import { AntDesign, Feather, MaterialIcons } from '@expo/vector-icons'
 import SWR from "./SWR";
 import { globalColors } from "./utils/styles";
+import Group from "./screens/Group";
 
 const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -51,8 +52,8 @@ const HomeScreen = () => {
             return <Feather name="users" size={35} backgroundColor={color} color={color} />
           },
         }}
-        name="Group"
-        component={Group} />
+        name="Groups"
+        component={Groups} />
       <Tab.Screen
         options={{
           tabBarIcon: ({ focused }) => {
@@ -82,6 +83,7 @@ const App = () => {
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen options={{ gestureEnabled: false }} name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name='VoteSession' component={VoteSession} />
+        <Stack.Screen name='Group' component={Group} />
       </Stack.Navigator>
     </NavigationContainer>
   );

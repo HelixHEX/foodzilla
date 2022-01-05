@@ -1,17 +1,26 @@
-import React, { Profiler } from 'react'
-
+import React from "react";
 import {
-    View,
-    Text
+    Text,
+    View
 } from 'react-native'
-import { styles } from '../utils/styles'
+import { useGroup } from "../utils/api";
+import { styles } from "../utils/styles";
 
-const Group = () => {
+const Group = ({route}) => {
+    const { params } = route;
+
+    const { data, error, isLoading } = useGroup({ id: params.id })
+
+    if (error) return <Text>{error.info}</Text>
+    if (isLoading) return <Text>loading...</Text>
+    if (!data.group) return <Text>error</Text>
+
+    const group = data.group
     return (
         <>
-            <View>
-                <Text style={styles.title}>Groups</Text>
-            </View>
+        <View style={styles.container}>
+            <Text style={styles.title}>{group.name}</Text>
+        </View>
         </>
     )
 }
