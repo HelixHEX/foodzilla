@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
 } from 'react-native'
 import { globalColors } from "../utils/styles";
+import ProfileImg from "./ProfileImg";
 
 const GroupCard = ({ data, nav }) => {
     return (
@@ -13,7 +14,7 @@ const GroupCard = ({ data, nav }) => {
             <TouchableOpacity onPress={() => nav.navigate('Group', {id: data.id})} style={customStyle.container}>
                 <View style={{ flexDirection: 'row', marginLeft: 15 }}>
                     {data.users.map((_, index) => (
-                        <View key={index} style={customStyle.circle} />
+                        <ProfileImg key={index} style={{marginLeft: -15, width: 50, height: 50}} />
                     ))}
                 </View>
                 <View>
@@ -36,23 +37,7 @@ const customStyle = StyleSheet.create({
         justifyContent: 'space-between',
         paddingBottom: 20
     },
-    circle: {
-        width: 50,
-        height: 50,
-        backgroundColor: globalColors.pink,
-        borderRadius: 50,
-        borderColor: 'white',
-        borderWidth: 2,
-        marginLeft: -15,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 6,
-        },
-        shadowOpacity: 0.37,
-        shadowRadius: 7.49,
-        elevation: 12,
-    },
+    
     name: {
         color: 'white',
         fontSize: 30
