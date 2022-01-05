@@ -24,7 +24,6 @@ const Search = () => {
 const customStyle = StyleSheet.create({
     bar: {
         marginBottom: 10,
-        marginTop: 50,
         borderRadius: 30,
         width: '100%',
         height: 50,

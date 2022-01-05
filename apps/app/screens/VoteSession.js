@@ -47,6 +47,7 @@ const VoteSession = ({ route }) => {
             <View style={styles.container}>
                 <Text style={styles.title}>{session.name}</Text>
                 <Text style={customStyle.title}>Current Results</Text>
+                <Text style={[customStyle.status, {color: session.ended ? globalColors.red : globalColors.darkgreen}]}>{session.ended ? 'Closed' : 'Open'}</Text>
                 <ScrollView>
                     {session.restaurants.map((restaraunt, index) => {
                         let count = 0
@@ -55,10 +56,10 @@ const VoteSession = ({ route }) => {
                         const voted = session.votes.find(vote => vote.user.id === user.user.id)
                         return (
                             <TouchableOpacity onPress={() => placeVote(restaraunt)} key={index} style={customStyle.option}>
-                                <Text numberOfLines={1} style={customStyle.name}>{restaraunt}</Text>
+                                <Text numberOfLines={2} style={customStyle.name}>{restaraunt}</Text>
                                 <View style={customStyle.progressWrapper}>
-                                    <View style={[customStyle.progressInner, { backgroundColor: session.votes.find(vote => vote.user.id === user.user.id && restaraunt === vote.restaraunt_name) ? globalColors.turquoise : globalColors.pink, width: percent <= 10 ? 30 : (percent * 250) / 100 }]} >
-                                        <View style={[customStyle.selected, { display: session.votes.find(vote => vote.user.id === user.user.id && restaraunt === vote.restaraunt_name) ? 'flex' : 'none' }]}>
+                                    <View style={[customStyle.progressInner, { backgroundColor: session.votes.find(vote => vote.user.id === user.user.id && restaraunt === vote.restaraunt_name) ? '#48BB78' : globalColors.pink, width: percent <= 10 ? 30 : (percent * 250) / 100 }]} >
+                                        <View style={[customStyle.selected, { display: session.winner === restaraunt ? 'flex' : 'none' }]}>
                                             <Feather name="check" size={20} color={voted ? globalColors.turquoise : globalColors.pink} />
                                         </View>
                                     </View>
@@ -80,7 +81,11 @@ const customStyle = StyleSheet.create({
     title: {
         fontSize: 25,
         textAlign: 'center',
-        marginTop: 20
+    },
+    status: {
+        textAlign: 'center',
+        marginTop: 10,
+        fontSize: 20
     },
     option: {
         flexDirection: 'row',
@@ -115,7 +120,7 @@ const customStyle = StyleSheet.create({
     },
     btn: {
         alignSelf: 'flex-end',
-        backgroundColor: globalColors.blue,
+        backgroundColor: globalColors.hotpink,
         width: 150,
         height: 50,
         marginTop: 30,

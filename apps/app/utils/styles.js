@@ -7,6 +7,9 @@ export const globalColors = {
     'blue': '#324b6a',
     'turquoise': '#3dc3cc',
     'hotpink': '#FE105E',
+    'lightgreen': '#48BB78',
+    'darkgreen': '#38A169',
+    'red': '#C53030'
 }
 
 export const styles = StyleSheet.create({
@@ -21,6 +24,7 @@ export const styles = StyleSheet.create({
         color: globalColors.gray,
         fontSize: 40,
         fontWeight: '200',
+        marginBottom: 50,
     },
     center: {
         alignSelf: 'center'

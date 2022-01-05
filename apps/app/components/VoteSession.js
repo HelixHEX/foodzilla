@@ -18,7 +18,7 @@ const VoteSession = ({ data, nav }) => {
                     <Text style={styles.subtitle}>Group: {data.group.name}</Text>
                     <Text style={styles.subtitle}>Users: {data.users.length}</Text>
                 </View>
-                <Text style={styles.date}>{data.ends ? FormatDate(data.endsAt) : data.ended ? "Closed" : "Open"}</Text>
+                <Text style={[styles.date, {color: data.ended ? globalColors.red : globalColors.darkgreen}]}>{data.ends ? FormatDate(data.endsAt) : data.ended ? "Closed" : "Open"}</Text>
             </TouchableOpacity>
         </>
     )
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     },
     date: {
         alignSelf: 'center',
-        color: globalColors.pink
+        color: globalColors.hotpink
     }
 })
 

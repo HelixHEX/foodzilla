@@ -28,11 +28,11 @@ const Home = ({ navigation }) => {
                     <Text style={styles.title}>
                         Discover
                     </Text>
-                    <TouchableOpacity style={styles.center} onPress={handleLogout}>
+                    {/* <TouchableOpacity style={styles.center} onPress={handleLogout}>
                         <Text>
                             Logout
                         </Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
                 <Search />
                 <Restaraunts />
