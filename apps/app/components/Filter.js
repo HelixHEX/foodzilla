@@ -89,7 +89,7 @@ const Filter = ({ selected, setSelected }) => {
 
 const customStyle = StyleSheet.create({
     container: {
-        marginTop: 50,
+        marginTop: 20,
     },
     viewMore: {
         alignSelf: 'flex-end'
@@ -100,7 +100,7 @@ const customStyle = StyleSheet.create({
         color: globalColors.pink
     },
     options: {
-        marginTop: 10,
+        marginTop: 15,
         flexDirection: 'row',
         justifyContent: 'space-between'
 

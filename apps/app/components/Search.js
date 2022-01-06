@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
     StyleSheet,
     View,
@@ -8,15 +8,18 @@ import {
 import { globalColors, styles } from '../utils/styles'
 import { Feather } from '@expo/vector-icons';
 
-const Search = () => {
+const Search = ({ handleSearch, setSearch, search }) => {
+    // const handleSearch = () => {}
     return (
         <>
-            <View style={customStyle.bar}>
-                <TextInput style={[styles.center, {width: '90%'}]} placeholder='What are you looking?'/>
-                <TouchableOpacity style={styles.center}>
-                    <Feather name="search" size={24} color={globalColors.lightgray} />
-                </TouchableOpacity>
-            </View>
+            {/* <form onSubmit={handleSearch}> */}
+                <View style={customStyle.bar}>
+                    <TextInput value={search} onChangeText={e => setSearch(e)} style={[styles.center, { width: '90%' }]} placeholder='What are you looking?' />
+                    <TouchableOpacity onPress={() => handleSearch()} style={styles.center}>
+                        <Feather name="search" size={24} color={globalColors.lightgray} />
+                    </TouchableOpacity>
+                </View>
+            {/* </form> */}
         </>
     )
 }

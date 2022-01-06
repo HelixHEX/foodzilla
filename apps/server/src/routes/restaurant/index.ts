@@ -1,7 +1,26 @@
-import express from 'express'
+import express, { response } from 'express'
 import axios from "axios";
 
 const router = express.Router()
+
+router.post('/search/:query', async (req: express.Request, res: express.Response) => {
+    const { body } = req;
+    const { categorySet, query, lon, lat, radius } = body;
+    try {
+        if (categorySet) {
+            await axios.get(`${process.env.TOMTOMURL}/poiSearch/${query}.json?key=${process.env.TOMTOMAPIKEY}&categorySet=${categorySet}&lon=${lon}&lat=${lat}&radius=${radius}`).then((response:any) => {
+                if (response.data.summary) {
+                    res.json({success: true, results: response.data.results}).status(200)
+                } else {
+                    res.json({success: false, message: 'An error has occurred'}).status(400)
+                }
+            })
+        }
+    } catch (e) {
+        console.log(e)
+        res.json({ success: false, message: "An error has occurred" }).status(400)
+    }
+})
 
 router.post('/search/trending/:category', async (req: express.Request, res: express.Response) => {
     const { body } = req;
@@ -10,10 +29,10 @@ router.post('/search/trending/:category', async (req: express.Request, res: expr
         if (categorySet) {
             await axios.get(`${process.env.TOMTOMURL}/poiSearch/.json?key=${process.env.TOMTOMAPIKEY}&categorySet=${categorySet}&lon=${lon}&lat=${lat}&radius=${radius}`).then((response: any) => {
                 if (response.data.summary) {
-                    res.json({ success: true, results: response.data.results })
+                    res.json({ success: true, results: response.data.results }).status(200)
                 } else {
                     console.log(response.data.errorText)
-                    res.json({ success: false, message: 'An error has occurred' })
+                    res.json({ success: false, message: 'An error has occurred' }).status(400)
                 }
 
             })
