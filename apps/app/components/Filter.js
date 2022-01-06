@@ -7,7 +7,6 @@ import {
     Image,
     TouchableOpacity
 } from 'react-native'
-import BurgerIcon from '../assets/icons/Burger'
 import { globalColors, styles } from '../utils/styles'
 import BurgerW from '../assets/icons/Burger-white.png'
 import BurgerB from '../assets/icons/Burger-black.png'
@@ -21,12 +20,28 @@ import DessertB from '../assets/icons/Dessert-black.png'
 import DessertW from '../assets/icons/Dessert-white.png'
 import LatinoB from '../assets/icons/Latino-black.png'
 import LatinoW from '../assets/icons/Latino-white.png'
+import { categories } from '../constants/categories'
 
-const Filter = ({selected, setSelected}) => {
+const Filter = ({ selected, setSelected }) => {
     return (
         <>
             <View style={customStyle.container}>
-                <View>
+                <TouchableOpacity style={customStyle.viewMore}>
+                    <Text style={customStyle.viewMoreText}>View More</Text>
+                </TouchableOpacity>
+                <View style={customStyle.options}>
+                    {categories.slice(0, 5).map((category, index) => (
+                        <View key={index}>
+                            <TouchableOpacity onPress={() => setSelected(category.name)} style={selected === category.name ? customStyle.circleWrapperSelected : customStyle.circleWrapperDefault}>
+                                <View style={customStyle.icon}>
+                                    <Image style={[customStyle.icon, { marginTop: category.marginTop, width: category.iconWidth, height: category.iconHeight }]} source={selected === category.name ? category.whiteImg : category.blackImg} />
+                                </View>
+                            </TouchableOpacity>
+                            <Text style={[styles.center, customStyle.label]}>{category.name}</Text>
+                        </View>
+                    ))}
+                </View>
+                {/* <View>
                     <TouchableOpacity onPress={() => setSelected('American')} style={selected === 'American' ? customStyle.circleWrapperSelected : customStyle.circleWrapperDefault}>
                         <View style={customStyle.icon}>
                             <Image style={[customStyle.icon, { marginTop: -2 }]} source={selected === 'American' ? BurgerW : BurgerB} />
@@ -65,7 +80,7 @@ const Filter = ({selected, setSelected}) => {
                         </View>
                     </TouchableOpacity>
                     <Text style={[styles.center, customStyle.label]}>Cafe</Text>
-                </View>
+                </View> */}
             </View>
 
         </>
@@ -75,8 +90,20 @@ const Filter = ({selected, setSelected}) => {
 const customStyle = StyleSheet.create({
     container: {
         marginTop: 50,
+    },
+    viewMore: {
+        alignSelf: 'flex-end'
+    },
+    viewMoreText: {
+        fontSize: 15,
+        textDecorationLine: 'underline',
+        color: globalColors.pink
+    },
+    options: {
+        marginTop: 10,
         flexDirection: 'row',
         justifyContent: 'space-between'
+
     },
     circleWrapperSelected: {
         backgroundColor: globalColors.hotpink,
@@ -94,8 +121,6 @@ const customStyle = StyleSheet.create({
         justifyContent: 'center'
     },
     icon: {
-        width: 45,
-        height: 45,
         alignSelf: 'center',
         // marginTop: -2,
     },

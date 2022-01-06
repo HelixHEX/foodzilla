@@ -45,3 +45,13 @@ export const useGroup = params => {
         isError: error
     }
 }
+
+export const useTrending = params => {
+    const { data, error } = useSWR(baseURL + `/restaraunt/search/trending/${params.categorySet}`, fetcher(params))
+    console.log(data)
+    return {
+        data,
+        isLoading: !error && !data,
+        isError: error
+    }
+}
