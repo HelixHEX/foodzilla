@@ -58,3 +58,10 @@ model Vote {
   VoteSession       Vote_Session    @relation("vote_session", fields: [VoteSessionId], references: [id])
   VoteSessionId     String
 }
+
+model Restaraunt {
+  id                String          @id @default(cuid())
+  createdAt         DateTime        @default(now())
+  name              String 
+  description       String?
+}

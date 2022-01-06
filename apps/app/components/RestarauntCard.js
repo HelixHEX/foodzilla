@@ -13,15 +13,15 @@ const RestarauntCard = ({ data }) => {
     return (
         <>
             <View style={customStyle.container}>
-                <Image source={{ uri: data.image }} style={{ position: 'absolute', width: '100%', height: '100%', borderRadius: 20 }} />
-                <TouchableOpacity style={customStyle.likedWrapper}>
-                    <AntDesign style={customStyle.likedHeart} name={data.liked ? "heart" : "hearto"} size={24} color="black" />
-                </TouchableOpacity>
-                <View style={customStyle.footer}>
-                    <View style={[styles.center, {width: '70%'}]}>
-                        <Text numberOfLines={1} style={customStyle.footerName}>{data.name}</Text>
-                        <Text style={customStyle.footerType}>{data.type}</Text>
-                    </View>
+                {/* <Image source={{ uri: data.image }} style={{ position: 'absolute', width: '100%', height: '100%', borderRadius: 20 }} /> */}
+                <View style={[styles.center, { width: '65%' }]}>
+                    <Text numberOfLines={2} style={customStyle.footerName}>{data.name}</Text>
+                    <Text style={customStyle.footerType}>{data.type}</Text>
+                </View>
+                <View style={customStyle.rightFooter}>
+                    <TouchableOpacity style={customStyle.likedWrapper}>
+                        <AntDesign style={customStyle.likedHeart} name={data.liked ? "heart" : "hearto"} size={24} color="black" />
+                    </TouchableOpacity>
                     <TouchableOpacity style={[customStyle.footerMenu, styles.center]}>
                         <View style={customStyle.footerMenuDot}></View>
                         <View style={customStyle.footerMenuDot}></View>
@@ -36,23 +36,19 @@ const RestarauntCard = ({ data }) => {
 const customStyle = StyleSheet.create({
     container: {
         width: '100%',
-        height: 250,
-        borderRadius: 20,
+        height: 100,
+        borderRadius: 10,
         marginBottom: 30,
         flex: 1,
-        backgroundColor: globalColors.turquoise,
-        justifyContent: 'flex-end'
-    },
-    footer: {
-        width: '100%',
-        height: 100,
+        backgroundColor: globalColors.pink,
         justifyContent: 'space-between',
         flexDirection: 'row',
         backgroundColor: globalColors.pink,
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
         paddingLeft: 20,
-        paddingRight: 20
+        paddingRight: 20,
+    },
+    rightFooter: {
+        flexDirection: 'row'
     },
     footerName: {
         color: 'white',
@@ -92,11 +88,10 @@ const customStyle = StyleSheet.create({
         backgroundColor: 'white',
         height: 50,
         width: 50,
-        position: 'absolute',
-        top: 10,
-        left: 10,
         borderRadius: 10,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        alignSelf: 'center',
+        marginRight: 10
     },
     likedHeart: {
         color: globalColors.hotpink,

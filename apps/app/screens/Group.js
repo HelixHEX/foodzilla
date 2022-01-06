@@ -33,7 +33,7 @@ const Group = ({ route }) => {
                 <View style={{marginTop: 30, height: 150}}>
                     <FlatList
                         horizontal
-                        data={[...Array(500)]}
+                        data={[...Array(25)]}
                         renderItem={renderItem}
                         showsHorizontalScrollIndicator={false}
                         keyExtractor={(item, index) => 'key' + index}
