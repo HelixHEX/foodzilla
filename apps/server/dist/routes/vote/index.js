@@ -155,6 +155,7 @@ router.post('/new-vote', (req, res) => __awaiter(void 0, void 0, void 0, functio
                         }
                     }
                     else {
+                        console.log('hi');
                         res.json({ success: false, message: 'Already voted' }).status(400);
                     }
                 }
@@ -205,14 +206,15 @@ router.post('/all-votes', (req, res) => __awaiter(void 0, void 0, void 0, functi
 router.post('/delete', () => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma.vote.deleteMany();
 }));
-router.post('/session', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/session/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
     const { id } = body;
     try {
-        const session = yield prisma.vote_Session.findUnique({ where: { id }, include: { users: { select: { id: true, name: true } } } });
+        const session = yield prisma.vote_Session.findUnique({ where: { id }, include: { users: { select: { id: true, name: true } }, votes: { include: { user: { select: { id: true, name: true } } } } } });
         if (session) {
             if (session.users.find(user => user.id === req.user.userId)) {
                 res.json({ success: true, session }).status(200);
+                console.log(session);
             }
             else
                 res.json({ success: false, message: 'Invalid access' }).status(403);

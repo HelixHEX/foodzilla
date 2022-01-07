@@ -1,26 +1,56 @@
-import React, { useEffect } from 'react'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
 import {
     View,
     Text,
     TouchableOpacity,
+    FlatList,
+    StyleSheet
 } from 'react-native'
+import RestarauntCard from '../components/RestarauntCard'
 import Restaraunts from '../components/Restaraunts'
 import Search from '../components/Search'
-import { useUser } from '../utils/api'
-import { logout } from '../utils/globalVar'
-import { styles } from '../utils/styles'
+import { useSearch, useUser } from '../utils/api'
+import { baseURL, getValue, logout } from '../utils/globalVar'
+import { globalColors, styles } from '../utils/styles'
 
 const Home = ({ navigation }) => {
+    const [search, setSearch] = useState('')
+    const [isSearching, setIsSearching] = useState(false)
+    const [results, setResults] = useState([])
     const { data: user, error, isLoading } = useUser()
 
     if (error) return <Text>{error.info}</Text>
     if (isLoading) return <Text>loading...</Text>
-    if (!user.user) return <Text>error</Text>
+    if (!user) return <Text>error</Text>
+
+    const handleSearch = async () => {
+        if (search.length > 0) {
+            setIsSearching(true)
+            await axios.post(baseURL + `/restaraunt/search/${search}`, { query: search, categorySet: 7315, lat: 40.486165191337804, lon: -74.47346067573329, radius: 16093.4 }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
+                if (res.data.success) {
+                    setResults(res.data.results)
+                    // console.log(res.data.results)
+                }
+                if (res.data.message) {
+                    console.log(res.data.message)
+                }
+            })
+        }
+    }
+
+    // if (searchError) return <Text>{searchError.info}</Text>
+    // if (searchIsLoading) return <Text>loading...</Text>
+    // if (!searchData) return <Text>search error</Text>
 
     const handleLogout = () => {
         logout()
         navigation.navigate('Login')
     }
+
+    const renderItem = ({ item }) => (
+        <RestarauntCard type={'Restaraunt'} data={item} />
+    );
     return (
         <>
             <View style={styles.container}>
@@ -34,11 +64,30 @@ const Home = ({ navigation }) => {
                         </Text>
                     </TouchableOpacity> */}
                 </View>
-                <Search />
-                <Restaraunts />
+                <Search handleSearch={handleSearch} search={search} setSearch={setSearch} />
+                {isSearching? <TouchableOpacity onPress={() => { setIsSearching(false); setSearch('') }}>
+                    <Text style={customStyle.viewMoreText}>Clear</Text>
+                </TouchableOpacity>
+                    : null}
+                {!isSearching ? <Restaraunts /> : null}
+                {isSearching ? <FlatList
+                    style={{ marginTop: 20 }}
+                    data={results}
+                    renderItem={renderItem}
+                    showsVerticalScrollIndicator={false}
+                    keyExtractor={(item, index) => 'key' + index}
+                /> : null}
             </View>
         </>
     )
 }
+
+const customStyle = StyleSheet.create({
+    viewMoreText: {
+        fontSize: 15,
+        textDecorationLine: 'underline',
+        color: globalColors.pink
+    },
+})
 
 export default Home

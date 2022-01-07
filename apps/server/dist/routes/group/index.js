@@ -142,5 +142,22 @@ router.post('/delete-group', (req, res) => __awaiter(void 0, void 0, void 0, fun
         res.json({ success: false, message: "An error has occurred" }).status(400);
     }
 }));
+router.post('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { body } = req;
+    const { id: groupId } = body;
+    try {
+        const group = yield prisma.group.findUnique({ where: { id: groupId }, include: { users: { select: { id: true, name: true } }, voteSessions: true } });
+        if (group) {
+            res.json({ success: true, group }).status(200);
+        }
+        else {
+            res.json({ success: false, message: 'Group not found' }).status(404);
+        }
+    }
+    catch (e) {
+        console.log(e);
+        res.json({ success: false, message: "An error has occurred" }).status(400);
+    }
+}));
 module.exports = router;
 //# sourceMappingURL=index.js.map
