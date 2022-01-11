@@ -132,7 +132,7 @@ router.post('/', async (req: express.Request, res: express.Response) => {
     const { body, query } = req;
     let { id: groupId } = body
     try {
-        const group = await prisma.group.findUnique({ where: { id: groupId }, include: { users: { select: { id: true, name: true } }, voteSessions: { include: { users: { select: { id: true, name: true } } } } } })
+        const group = await prisma.group.findUnique({ where: { id: groupId }, include: { restaraunts: true, users: { select: { id: true, name: true } }, voteSessions: { include: { users: { select: { id: true, name: true } } } } } })
         if (group) {
             res.json({ success: true, group }).status(200)
         } else {
