@@ -16,7 +16,7 @@ const RestarauntCard = ({ data, type }) => {
                 {/* <Image source={{ uri: data.image }} style={{ position: 'absolute', width: '100%', height: '100%', borderRadius: 20 }} /> */}
                 <View style={[styles.center, { width: '65%' }]}>
                     <Text numberOfLines={2} style={customStyle.footerName}>{data.poi.name}</Text>
-                    <Text style={customStyle.footerType}>{type}</Text>
+                    <Text style={customStyle.footerType}>{type} ({(data.dist / 1609.32).toFixed(2)}mi)</Text>
                 </View>
                 <View style={customStyle.rightFooter}>
                     {/* <TouchableOpacity style={customStyle.likedWrapper}>
@@ -52,12 +52,12 @@ const customStyle = StyleSheet.create({
     },
     footerName: {
         color: 'white',
-        fontSize: 25,
+        fontSize: 23,
         width: '100%'
     },
     footerType: {
         color: 'white',
-        fontSize: 20
+        fontSize: 18
     },
     footerMenu: {
         width: 50,
@@ -96,7 +96,8 @@ const customStyle = StyleSheet.create({
     likedHeart: {
         color: globalColors.hotpink,
         alignSelf: 'center'
-    }
+    },
+    
 })
 
 export default RestarauntCard

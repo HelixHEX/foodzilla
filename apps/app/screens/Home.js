@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import {
     View,
     Text,
@@ -17,17 +17,24 @@ import { globalColors, styles } from '../utils/styles'
 const Home = ({ navigation }) => {
     const [search, setSearch] = useState('')
     const [isSearching, setIsSearching] = useState(false)
+
+    //trending
     const [results, setResults] = useState([])
+    const [offset, setOffset] = useState(1)
+    const [shouldFetch, setShouldFetch] = useState(true)
+    const fetchMore = useCallback(() => setShouldFetch(true), [])
+
     const { data: user, error, isLoading } = useUser()
 
     if (error) return <Text>{error.info}</Text>
     if (isLoading) return <Text>loading...</Text>
     if (!user) return <Text>error</Text>
 
+
     const handleSearch = async () => {
         if (search.length > 0) {
             setIsSearching(true)
-            await axios.post(baseURL + `/restaraunt/search/${search}`, { query: search, categorySet: 7315, lat: 40.486165191337804, lon: -74.47346067573329, radius: 16093.4 }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
+            await axios.post(baseURL + `/restaraunt/search/${search}`, { query: search, categorySet: 7315, lat: 40.486165191337804, lon: -74.47346067573329, radius: 16093.4, limit: 10, offset: 0 }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
                 if (res.data.success) {
                     setResults(res.data.results)
                     // console.log(res.data.results)

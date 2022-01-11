@@ -9,17 +9,14 @@ import { globalColors, styles } from '../utils/styles'
 import { Feather } from '@expo/vector-icons';
 
 const Search = ({ handleSearch, setSearch, search }) => {
-    // const handleSearch = () => {}
     return (
         <>
-            {/* <form onSubmit={handleSearch}> */}
-                <View style={customStyle.bar}>
-                    <TextInput value={search} onChangeText={e => setSearch(e)} style={[styles.center, { width: '90%' }]} placeholder='What are you looking?' />
-                    <TouchableOpacity onPress={() => handleSearch()} style={styles.center}>
-                        <Feather name="search" size={24} color={globalColors.lightgray} />
-                    </TouchableOpacity>
-                </View>
-            {/* </form> */}
+            <View style={customStyle.bar}>
+                <TextInput value={search} onChangeText={e => setSearch(e)} style={[styles.center, { width: '90%' }]} placeholder='What are you looking?' />
+                <TouchableOpacity onPress={() => handleSearch()} style={styles.center}>
+                    <Feather name="search" size={24} color={search.length > 0 ? globalColors.pink : globalColors.lightgray} />
+                </TouchableOpacity>
+            </View>
         </>
     )
 }
