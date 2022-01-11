@@ -131,7 +131,7 @@ router.post('/delete-group', (req, res) => __awaiter(void 0, void 0, void 0, fun
                 res.json({ success: true }).status(200);
             }
             else {
-                res.json({ success: false, message: 'Invalid access' }).status(403);
+                res.json({ success: false, message: 'Only the creator can delete a group' }).status(403);
             }
         }
         else
@@ -142,13 +142,35 @@ router.post('/delete-group', (req, res) => __awaiter(void 0, void 0, void 0, fun
         res.json({ success: false, message: "An error has occurred" }).status(400);
     }
 }));
-router.post('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
-    const { id: groupId } = body;
+    let { id: groupId } = body;
     try {
-        const group = yield prisma.group.findUnique({ where: { id: groupId }, include: { users: { select: { id: true, name: true } }, voteSessions: true } });
+        const group = yield prisma.group.findUnique({ where: { id: groupId }, include: { restaraunts: true, users: { select: { id: true, name: true } }, voteSessions: { include: { users: { select: { id: true, name: true } } } } } });
         if (group) {
             res.json({ success: true, group }).status(200);
+        }
+        else {
+            res.json({ success: false, message: 'Group not found' }).status(404);
+        }
+    }
+    catch (e) {
+        console.log(e);
+        res.json({ success: false, message: "An error has occurred" }).status(400);
+    }
+}));
+router.post('/saved-restaraunts', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { body } = req;
+    const { groupId } = body;
+    try {
+        const group = yield prisma.group.findUnique({ where: { id: groupId }, include: { users: true, restaraunts: true } });
+        if (group) {
+            if (group.users.find(user => user.id === req.user.userId)) {
+                res.json({ success: true, restaraunts: group.restaraunts }).status(200);
+            }
+            else {
+                res.json({ success: false, message: "Not a member of group" }).status(403);
+            }
         }
         else {
             res.json({ success: false, message: 'Group not found' }).status(404);
