@@ -72,6 +72,7 @@ router.post('/end-voting-session', async (req: express.Request, res: express.Res
                         }
                     })
                     votes = votes.sort((a: any, b: any) => b.votes - a.votes)
+                    console
                     // await prisma.vote_Session.update({ where: { id: sessionId }, data: { ended: true } })
                     res.json({ success: true, votes }).status(200)
                 } else {
