@@ -119,7 +119,7 @@ router.post('/delete-group', async (req: express.Request, res: express.Response)
                 await prisma.group.delete({ where: { id: groupId } })
                 res.json({ success: true }).status(200)
             } else {
-                res.json({ success: false, message: 'Invalid access' }).status(403)
+                res.json({ success: false, message: 'Only the creator can delete a group' }).status(403)
             }
         } else res.json({ success: false, message: "Group not found" }).status(404)
     } catch (e) {
@@ -128,13 +128,33 @@ router.post('/delete-group', async (req: express.Request, res: express.Response)
     }
 })
 
-router.post('/:id', async (req: express.Request, res: express.Response) => {
-    const { body } = req;
-    const { id: groupId } = body
+router.post('/', async (req: express.Request, res: express.Response) => {
+    const { body, query } = req;
+    let { id: groupId } = body
     try {
         const group = await prisma.group.findUnique({ where: { id: groupId }, include: { users: { select: { id: true, name: true } }, voteSessions: { include: { users: { select: { id: true, name: true } } } } } })
         if (group) {
             res.json({ success: true, group }).status(200)
+        } else {
+            res.json({ success: false, message: 'Group not found' }).status(404)
+        }
+    } catch (e) {
+        console.log(e)
+        res.json({ success: false, message: "An error has occurred" }).status(400)
+    }
+})
+
+router.post('/saved-restaraunts', async(req:express.Request, res: express.Response) => {
+    const {body} = req;
+    const {groupId} = body 
+    try {
+        const group = await prisma.group.findUnique({where: {id: groupId}, include: {users: true, restaraunts: true}})
+        if (group) {
+            if (group.users.find(user => user.id === req.user.userId)) {
+                res.json({success: true, restaraunts: group.restaraunts}).status(200)
+            } else {
+                res.json({ success: false, message: "Not a member of group" }).status(403)
+            }
         } else {
             res.json({ success: false, message: 'Group not found' }).status(404)
         }
