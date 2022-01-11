@@ -1,30 +1,111 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import {
     View,
     Text,
     Image,
     StyleSheet,
-    TouchableOpacity
+    TouchableOpacity,
+    Modal,
+    Pressable,
 } from 'react-native'
 import { globalColors, styles } from "../utils/styles"
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Feather, Ionicons } from '@expo/vector-icons';
+import { useActiveGroups } from "../utils/api";
+import { FlatList } from "react-native-gesture-handler";
 
-const RestarauntCard = ({ data, type, savedRestaraunt }) => {
+const RestarauntCard = ({ screen, data, type, savedRestaraunt }) => {
+    const [modalVisible, setModalVisible] = useState(false)
     return (
         <>
+            <ModalCard screen={screen} data={data} modalVisible={modalVisible} setModalVisible={setModalVisible} />
             <View style={customStyle.container}>
                 <View style={[styles.center, { width: '65%' }]}>
                     <Text numberOfLines={2} style={customStyle.footerName}>{savedRestaraunt ? data.name : data.poi.name}</Text>
                     {savedRestaraunt ? null : <Text style={customStyle.footerType}>{type} ({(data.dist / 1609.32).toFixed(2)}mi)</Text>}
                 </View>
                 <View style={customStyle.rightFooter}>
-                    <TouchableOpacity style={[customStyle.footerMenu, styles.center]}>
+                    <TouchableOpacity onPress={() => setModalVisible(true)} style={[customStyle.footerMenu, styles.center]}>
                         <View style={customStyle.footerMenuDot}></View>
                         <View style={customStyle.footerMenuDot}></View>
                         <View style={customStyle.footerMenuDot}></View>
                     </TouchableOpacity>
                 </View>
             </View>
+        </>
+    )
+}
+
+const ModalCard = ({ screen, modalVisible, setModalVisible, data }) => {
+    const [modalHeight, setModalHeight] = useState(200)
+    const [displayGroups, setDisplayGroups] = useState(false)
+    const { data: groupsData, error, isLoading } = useActiveGroups()
+
+    if (error) return <Text>{error.info}</Text>
+    if (isLoading) return <Text>loading...</Text>
+    if (!groupsData.groups) return <Text>error</Text>
+
+    const renderItem = ({ item }) => (
+        <View style={customStyle.group}>
+            <Text numberOfLines={1} style={customStyle.groupText}>Random group name</Text>
+        </View>
+    )
+    return (
+        <>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(!modalVisible);
+                }}
+            >
+                <View style={customStyle.modalCenteredView}>
+                    <View style={[customStyle.modalView, { height: modalHeight }]}>
+                        {/* <Text style={customStyle.modalText}>Hello World!</Text> */}
+                        <View style={{ flexDirection: 'row', marginTop: 10, justifyContent: 'space-between' }}>
+                            <View style={{ flexDirection: 'row' }}>
+                                {displayGroups ? <TouchableOpacity onPress={() => { setModalHeight(200); setDisplayGroups(false) }}><Ionicons name="chevron-back" size={35} color="black" /></TouchableOpacity> : null}
+                                <Text numberOfLines={1} style={customStyle.modalTitle}>{screen === "home" ? displayGroups ? "Select group" : data.poi.name : data.name}</Text>
+                            </View>
+                            <Pressable
+                                style={[customStyle.modalBtn, customStyle.modalBtnClose]}
+                                onPress={() => setModalVisible(!modalVisible)}
+                            >
+                                <Feather name="x" size={35} color="black" />
+                            </Pressable>
+                        </View>
+                        {screen === 'home' && !displayGroups ?
+                            <View>
+                                <Pressable onPress={() => { setDisplayGroups(true); setModalHeight('90%') }} style={customStyle.option}>
+                                    <Feather name="users" size={35} color={globalColors.lightgreen} />
+                                    <Text style={customStyle.optionText}>Add to group</Text>
+                                </Pressable>
+                                <View style={customStyle.option}>
+                                    <Feather name="bookmark" size={35} color={globalColors.turquoise} />
+                                    <Text style={customStyle.optionText}>Save to account</Text>
+                                </View>
+                            </View>
+                            : null}
+                        {screen === 'group' && !displayGroups ?
+                            <View>
+
+                            </View>
+                            : null
+                        }
+                        {screen === 'home' && displayGroups ?
+                            <View style={{marginTop: 10}}>
+                                <FlatList
+                                    // data={groupsData.groups}
+                                    data={[...Array(200)]}
+                                    renderItem={renderItem}
+                                    showsVerticalScrollIndicator={false}
+                                    keyExtractor={(item, index) => 'key' + index}
+                                />
+                            </View>
+                            : null}
+                    </View>
+                </View>
+            </Modal>
         </>
     )
 }
@@ -93,7 +174,58 @@ const customStyle = StyleSheet.create({
         color: globalColors.hotpink,
         alignSelf: 'center'
     },
+    modalCenteredView: {
+        flex: 1,
+        justifyContent: "flex-end",
+        alignItems: "center",
+        // marginTop: 22,
 
+    },
+    modalView: {
+        borderTopRightRadius: 20,
+        borderTopLeftRadius: 20,
+        backgroundColor: 'white',
+        width: '100%',
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 6,
+        },
+        shadowOpacity: 0.37,
+        shadowRadius: 7.49,
+        elevation: 12,
+        paddingLeft: 20,
+        paddingRight: 20
+    },
+    modalTitle: {
+        fontSize: 25,
+        alignSelf: 'center'
+    },
+
+    modalBtn: {
+
+    },
+    modalBtnClose: {
+        alignSelf: 'flex-end',
+    },
+    option: {
+        flexDirection: 'row',
+        marginTop: 30
+    },
+    optionText: {
+        alignSelf: 'center',
+        color: 'black',
+        marginLeft: 10,
+        fontSize: 20
+    },
+    group: {
+        height: 50,
+        marginTop: 20
+    },
+    groupText: {
+        fontSize: 20,
+        color: 'black'
+    }
 })
 
 export default RestarauntCard

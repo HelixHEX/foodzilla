@@ -64,7 +64,7 @@ const Restaraunts = () => {
     // }
 
     const renderItem = ({ item }) => (
-        <RestarauntCard type={filter} data={item} />
+        <RestarauntCard screen="home" type={filter} data={item} />
     );
 
     return (

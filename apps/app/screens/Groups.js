@@ -9,6 +9,9 @@ import GroupsList from '../components/GroupsList'
 import { styles } from '../utils/styles'
 
 const Groups = ({ navigation }) => {
+    // const handleNewGroup = async () => {
+        
+    // }
     return (
         <>
             <View style={styles.container}>

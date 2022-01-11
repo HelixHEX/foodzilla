@@ -19,6 +19,7 @@ model User {
   groups            Group[]
   votes             Vote[]          @relation("user")
   voteSessions      Vote_Session[]
+  saved_restaraunts Restaraunt[]
 }
 
 model Group {
@@ -73,4 +74,5 @@ model Restaraunt {
   url               String?
   phone             String?
   groups            Group[]
+  users             User[]
 }

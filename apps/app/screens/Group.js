@@ -46,7 +46,7 @@ const Group = ({ route, navigation }) => {
     )
 
     const renderRestarauntItem = ({ item }) => (
-        <RestarauntCard savedRestaraunt={true} type={item.type} data={item} />
+        <RestarauntCard screen="group" savedRestaraunt={true} type={item.type} data={item} />
     )
 
 
