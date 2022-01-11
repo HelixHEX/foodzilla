@@ -9,19 +9,15 @@ import {
 import { globalColors, styles } from "../utils/styles"
 import { AntDesign } from '@expo/vector-icons';
 
-const RestarauntCard = ({ data, type }) => {
+const RestarauntCard = ({ data, type, savedRestaraunt }) => {
     return (
         <>
             <View style={customStyle.container}>
-                {/* <Image source={{ uri: data.image }} style={{ position: 'absolute', width: '100%', height: '100%', borderRadius: 20 }} /> */}
                 <View style={[styles.center, { width: '65%' }]}>
-                    <Text numberOfLines={2} style={customStyle.footerName}>{data.poi.name}</Text>
-                    <Text style={customStyle.footerType}>{type} ({(data.dist / 1609.32).toFixed(2)}mi)</Text>
+                    <Text numberOfLines={2} style={customStyle.footerName}>{savedRestaraunt ? data.name : data.poi.name}</Text>
+                    {savedRestaraunt ? null : <Text style={customStyle.footerType}>{type} ({(data.dist / 1609.32).toFixed(2)}mi)</Text>}
                 </View>
                 <View style={customStyle.rightFooter}>
-                    {/* <TouchableOpacity style={customStyle.likedWrapper}>
-                        <AntDesign style={customStyle.likedHeart} name={data.liked ? "heart" : "hearto"} size={24} color="black" />
-                    </TouchableOpacity> */}
                     <TouchableOpacity style={[customStyle.footerMenu, styles.center]}>
                         <View style={customStyle.footerMenuDot}></View>
                         <View style={customStyle.footerMenuDot}></View>
@@ -97,7 +93,7 @@ const customStyle = StyleSheet.create({
         color: globalColors.hotpink,
         alignSelf: 'center'
     },
-    
+
 })
 
 export default RestarauntCard

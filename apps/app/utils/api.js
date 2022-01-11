@@ -39,7 +39,7 @@ export const useVoteSession = params => {
 }
 
 export const useGroup = params => {
-    const { data, error } = useSWR(baseURL + `/group/${params.id}`, fetcher(params))
+    const { data, error } = useSWR(baseURL + `/group?id=${params.id}`, fetcher(params))
     return {
         data,
         isLoading: !error && !data,
@@ -106,5 +106,14 @@ export const useSearch = params => {
             error: false,
             isLoading: false
         }
+    }
+}
+
+export const useSavedRestaraunts = params => {
+    const { data, error } = useSWR(baseURL + `/group/saved-restaraunts?id=${params.groupId}`, fetcher(params))
+    return {
+        data,
+        isLoading: !error && !data,
+        isError: error
     }
 }

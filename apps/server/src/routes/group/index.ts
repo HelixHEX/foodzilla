@@ -129,7 +129,7 @@ router.post('/delete-group', async (req: express.Request, res: express.Response)
 })
 
 router.post('/', async (req: express.Request, res: express.Response) => {
-    const { body, query } = req;
+    const { body } = req;
     let { id: groupId } = body
     try {
         const group = await prisma.group.findUnique({ where: { id: groupId }, include: { restaraunts: true, users: { select: { id: true, name: true } }, voteSessions: { include: { users: { select: { id: true, name: true } } } } } })

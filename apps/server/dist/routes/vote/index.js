@@ -84,6 +84,7 @@ router.post('/end-voting-session', (req, res) => __awaiter(void 0, void 0, void 
                         }
                     });
                     votes = votes.sort((a, b) => b.votes - a.votes);
+                    console;
                     res.json({ success: true, votes }).status(200);
                 }
                 else {

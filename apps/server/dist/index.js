@@ -35,7 +35,6 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         const publicRoutes = ['/api/v1/auth/login', '/api/v1/auth/signup', '/'];
         if (!publicRoutes.includes(`${req.originalUrl}`)) {
             const authHeader = req.get("Authorization");
-            console.log(authHeader);
             if (!authHeader) {
                 res.status(401).json({ message: 'not authenticated' });
             }
