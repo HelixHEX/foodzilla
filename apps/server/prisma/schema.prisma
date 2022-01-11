@@ -28,7 +28,8 @@ model Group {
   creatorId         String 
   users             User[]
   active            Boolean         @default(true)
-  voteSessions     Vote_Session[]   @relation("group")
+  voteSessions      Vote_Session[]  @relation("group")
+  restaraunts       Restaraunt[]
 }
 
 model Vote_Session {
@@ -62,6 +63,14 @@ model Vote {
 model Restaraunt {
   id                String          @id @default(cuid())
   createdAt         DateTime        @default(now())
+  tomtom_id         String
   name              String 
-  description       String?
+  type              String
+  lon               Float
+  lat               Float 
+  address           String 
+  categorySet       Int
+  url               String?
+  phone             String?
+  groups            Group[]
 }
