@@ -130,15 +130,15 @@ router.post('/delete-group', async (req: express.Request, res: express.Response)
 
 router.post('/:id', async (req: express.Request, res: express.Response) => {
     const { body } = req;
-    const { id:groupId } = body
+    const { id: groupId } = body
     try {
-        const group = await prisma.group.findUnique({ where: { id: groupId }, include: {users: {select: {id: true, name: true}}, voteSessions: true} })
+        const group = await prisma.group.findUnique({ where: { id: groupId }, include: { users: { select: { id: true, name: true } }, voteSessions: { include: { users: { select: { id: true, name: true } } } } } })
         if (group) {
             res.json({ success: true, group }).status(200)
         } else {
             res.json({ success: false, message: 'Group not found' }).status(404)
         }
-    } catch (e) { 
+    } catch (e) {
         console.log(e)
         res.json({ success: false, message: "An error has occurred" }).status(400)
     }

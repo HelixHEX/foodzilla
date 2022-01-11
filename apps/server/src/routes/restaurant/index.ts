@@ -1,18 +1,24 @@
 import express, { response } from 'express'
 import axios from "axios";
 
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
+
 const router = express.Router()
 
 router.post('/search/:query', async (req: express.Request, res: express.Response) => {
     const { body } = req;
-    const { categorySet, query, lon, lat, radius } = body;
+    const { categorySet, query, lon, lat, radius, offset, limit } = body;
     try {
         if (categorySet) {
-            await axios.get(`${process.env.TOMTOMURL}/poiSearch/${query}.json?key=${process.env.TOMTOMAPIKEY}&categorySet=${categorySet}&lon=${lon}&lat=${lat}&radius=${radius}`).then((response:any) => {
+            await axios.get(`${process.env.TOMTOMURL}/poiSearch/${query}.json?key=${process.env.TOMTOMAPIKEY}&categorySet=${categorySet}&lon=${lon}&lat=${lat}&radius=${radius}&ofs=${offset}&limit=${limit}`).then((response: any) => {
                 if (response.data.summary) {
-                    res.json({success: true, results: response.data.results}).status(200)
+                    console.log(response.data.summary)
+                    const remaining = response.data.summary.totalResults <= 1900 ? response.data.summary.totalResults - (offset + 20) < 0 ? 0 : response.data.summary.totalResults - (offset + 20) : offset < 1900 ? 1900 - (offset + 20) : 0
+
+                    res.json({ success: true, results: response.data.results, remaining }).status(200)
                 } else {
-                    res.json({success: false, message: 'An error has occurred'}).status(400)
+                    res.json({ success: false, message: 'An error has occurred' }).status(400)
                 }
             })
         }
@@ -24,17 +30,19 @@ router.post('/search/:query', async (req: express.Request, res: express.Response
 
 router.post('/search/trending/:category', async (req: express.Request, res: express.Response) => {
     const { body } = req;
-    const { categorySet, lon, lat, radius } = body
+    const { categorySet, lon, lat, radius, limit, offset } = body
     try {
         if (categorySet) {
-            await axios.get(`${process.env.TOMTOMURL}/poiSearch/.json?key=${process.env.TOMTOMAPIKEY}&categorySet=${categorySet}&lon=${lon}&lat=${lat}&radius=${radius}`).then((response: any) => {
+            await axios.get(`${process.env.TOMTOMURL}/poiSearch/.json?key=${process.env.TOMTOMAPIKEY}&categorySet=${categorySet}&lon=${lon}&lat=${lat}&radius=${radius}&limit=${limit}&ofs=${offset}`).then((response: any) => {
                 if (response.data.summary) {
-                    res.json({ success: true, results: response.data.results }).status(200)
+                    console.log(response.data.summary)
+                    const remaining = response.data.summary.totalResults <= 1900 ? response.data.summary.totalResults - (offset + 20) : offset < 1900 ? 1900 - (offset + 20) : 0
+                    
+                    res.json({ success: true, results: response.data.results, remaining }).status(200)
                 } else {
                     console.log(response.data.errorText)
                     res.json({ success: false, message: 'An error has occurred' }).status(400)
                 }
-
             })
         }
     } catch (e) {
@@ -42,6 +50,18 @@ router.post('/search/trending/:category', async (req: express.Request, res: expr
         res.json({ success: false, message: "An error has occurred" }).status(400)
     }
 })
+
+router.post('/save-restaraunt', async (req: express.Request, res: express.Response) => {
+    const { body } = req;
+    const { groupId, restarauntId } = body
+    try {
+        // const group = await 
+    } catch (e) {
+        console.log(e)
+        res.json({ success: false, message: "An error has occurred" }).status(400)
+    }
+})
+
 
 module.exports = router
 

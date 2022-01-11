@@ -8,14 +8,14 @@ import {
 } from 'react-native'
 import { globalColors } from '../utils/styles'
 
-const VoteSession = ({ data, nav }) => {
+const VoteSession = ({ data, nav, group }) => {
     return (
         <>
             <TouchableOpacity onPress={() => nav.navigate('VoteSession', {id: data.id})} style={styles.container}>
                 {/* <Text>{data.}</Text> */}
                 <View>
                     <Text style={styles.title}>{data.name}</Text>
-                    <Text style={styles.subtitle}>Group: {data.group.name}</Text>
+                    {/* <Text style={styles.subtitle}>Group: {data.group.name}</Text> */}
                     <Text style={styles.subtitle}>Users: {data.users.length}</Text>
                 </View>
                 <Text style={[styles.date, {color: data.ended ? globalColors.red : globalColors.darkgreen}]}>{data.ends ? FormatDate(data.endsAt) : data.ended ? "Closed" : "Open"}</Text>
