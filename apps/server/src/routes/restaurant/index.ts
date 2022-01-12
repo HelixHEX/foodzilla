@@ -58,15 +58,15 @@ router.post('/save-to-group', async (req: express.Request, res: express.Response
     console.log(restarauntInfo)
     try {
         // const group = await 
-        const group = await prisma.group.findUnique({ where: { id: groupId }, include: { restaraunts: true, users: true } })
+        const group = await prisma.group.findUnique({ where: { id: groupId }, include: { restaurants: true, users: true } })
         if (group) {
             if (group.users.find(user => user.id === req.user.userId)) {
-                if (!group.restaraunts.find(restaraunt => restaraunt.tomtom_id == restarauntInfo.id)) {
-                    const restaraunt = await prisma.restaraunt.findFirst({ where: { tomtom_id: restarauntInfo.id } })
-                    if (restaraunt) {
-                        await prisma.group.update({ where: { id: groupId }, data: { restaraunts: { connect: { id: restaraunt.id } } } })
+                if (!group.restaurants.find(restaurant => restaurant.tomtom_id == restarauntInfo.id)) {
+                    const restaurant = await prisma.restaurant.findFirst({ where: { tomtom_id: restarauntInfo.id } })
+                    if (restaurant) {
+                        await prisma.group.update({ where: { id: groupId }, data: { restaurants: { connect: { id: restaurant.id } } } })
                     } else {
-                        await prisma.restaraunt.create({
+                        await prisma.restaurant.create({
                             data: {
                                 tomtom_id: restarauntInfo.id,
                                 name: restarauntInfo.name,
@@ -101,14 +101,14 @@ router.post('/unsave-from-group', async (req: express.Request, res: express.Resp
     const { body } = req;
     const { groupId, restarauntId } = body;
     try {
-        const group = await prisma.group.findUnique({ where: { id: groupId }, include: { users: true, restaraunts: true } })
+        const group = await prisma.group.findUnique({ where: { id: groupId }, include: { users: true, restaurants: true } })
         if (group) {
             if (group.users.find(user => user.id === req.user.userId)) {
-                const restaraunt = await prisma.restaraunt.findUnique({ where: { id: restarauntId } })
-                if (restaraunt) {
-                    console.log(group.restaraunts)
-                    if (group.restaraunts.find(oldRestaraunt => oldRestaraunt.id == restaraunt.id)) {
-                        await prisma.group.update({ where: { id: groupId }, data: { restaraunts: { disconnect: { id: restaraunt.id } } } })
+                const restaurant = await prisma.restaurant.findUnique({ where: { id: restarauntId } })
+                if (restaurant) {
+                    console.log(group.restaurants)
+                    if (group.restaurants.find(oldRestaurant => oldRestaurant.id == restaurant.id)) {
+                        await prisma.group.update({ where: { id: groupId }, data: { restaurants: { disconnect: { id: restaurant.id } } } })
                         res.json({ success: true }).status(200)
                     } else {
                         res.json({ success: false, message: 'Restaraunt already removed' }).status(404)
@@ -136,12 +136,12 @@ router.post('/save-to-account', async (req: express.Request, res: express.Respon
     try {
         const user = await prisma.user.findUnique({ where: { id: req.user.userId }, include: { saved_restaraunts: true } })
         if (user) {
-            if (!user.saved_restaraunts.find(restaraunt => restaraunt.tomtom_id == restarauntInfo.id)) {
-                const restaraunt = await prisma.restaraunt.findFirst({ where: { tomtom_id: restarauntInfo.id } })
-                if (restaraunt) {
-                    await prisma.user.update({ where: { id: req.user.userId }, data: { saved_restaraunts: { connect: { id: restaraunt.id } } } })
+            if (!user.saved_restaraunts.find(restaurant => restaurant.tomtom_id == restarauntInfo.id)) {
+                const restaurant = await prisma.restaurant.findFirst({ where: { tomtom_id: restarauntInfo.id } })
+                if (restaurant) {
+                    await prisma.user.update({ where: { id: req.user.userId }, data: { saved_restaraunts: { connect: { id: restaurant.id } } } })
                 } else {
-                    await prisma.restaraunt.create({
+                    await prisma.restaurant.create({
                         data: {
                             tomtom_id: restarauntInfo.id,
                             name: restarauntInfo.name,

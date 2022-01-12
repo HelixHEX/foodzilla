@@ -76,7 +76,7 @@ const main = async () => {
     app.use('/api/v1/user', user)
     app.use('/api/v1/auth', auth)
     app.use('/api/v1/group', group)
-    app.use('/api/v1/restaraunt', restaurant)
+    app.use('/api/v1/restaurant', restaurant)
     app.use('/api/v1/vote', vote)
 
     app.use((_, res: express.Response) => {

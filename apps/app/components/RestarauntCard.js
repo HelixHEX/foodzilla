@@ -67,7 +67,7 @@ const ModalCard = ({ navigation, groupId, displayToast, screen, modalVisible, se
             "url": data.poi.url,
             "phone": data.poi.phone
         }
-        await axios.post(`${baseURL}/restaraunt/save-to-group`, { groupid, restarauntInfo }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
+        await axios.post(`${baseURL}/restaurant/save-to-group`, { groupId: groupid, restarauntInfo }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
             if (res.data.success) {
                 toast = {
                     title: 'Success',
@@ -110,7 +110,7 @@ const ModalCard = ({ navigation, groupId, displayToast, screen, modalVisible, se
             "url": data.poi.url,
             "phone": data.poi.phone
         }
-        await axios.post(`${baseURL}/restaraunt/save-to-account`, { restarauntInfo }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
+        await axios.post(`${baseURL}/restaurant/save-to-account`, { restarauntInfo }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
             if (res.data.success) {
                 toast = {
                     title: 'Success',
@@ -142,7 +142,7 @@ const ModalCard = ({ navigation, groupId, displayToast, screen, modalVisible, se
             type: '',
             message: ''
         }
-        await axios.post(`${baseURL}/restaraunt/unsave-from-group`, { groupId, restarauntId: data.id.toString() }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
+        await axios.post(`${baseURL}/restaurant/unsave-from-group`, { groupId, restarauntId: data.id.toString() }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
             if (res.data.success) {
                 toast = {
                     title: 'Success',
@@ -169,7 +169,7 @@ const ModalCard = ({ navigation, groupId, displayToast, screen, modalVisible, se
         displayToast({ toast })
     }
     const renderItem = ({ item }) => (
-        <TouchableOpacity onPress={() => addToGroup({ groupId: item.id, restaraunt: data })} style={customStyle.group}>
+        <TouchableOpacity onPress={() => addToGroup({ groupId: item.id, restaurant: data })} style={customStyle.group}>
             <Text numberOfLines={1} style={customStyle.groupText}>{item.name}</Text>
         </TouchableOpacity>
     )

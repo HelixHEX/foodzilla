@@ -5,7 +5,7 @@ import {
     Text
 } from 'react-native'
 import Header from "./Header"
-import { restaraunts as data } from "../constants/restaraunts"
+import { restaurants as data } from "../constants/restaurants"
 import RestarauntCard from "./RestarauntCard"
 import { useTrending } from "../utils/api"
 import { categories } from "../constants/categories"
@@ -15,13 +15,13 @@ import { baseURL } from "../utils/globalVar"
 
 const Restaraunts = ({displayToast, navigation}) => {
     const [filter, setFilter] = useState('American')
-    const [restaraunts, setRestaraunts] = useState([])
+    const [restaurants, setRestaraunts] = useState([])
     const [resultsError, setResultsError] = useState(null)
     const [offset, setOffset] = useState(0)
 
     // const getKey = (pageIndex, previousPageData) => {
     //     if (previousPageData && !previousPageData.length) return null
-    //     return `${baseURL}/restaraunt/search/trending/${categories.find(category => category.name === filter).categorySet}  /users?page=${pageIndex}&limit=10`                    // SWR key
+    //     return `${baseURL}/restaurant/search/trending/${categories.find(category => category.name === filter).categorySet}  /users?page=${pageIndex}&limit=10`                    // SWR key
     // }
     const { data: data2, error, isLoading, fetchMore } = useTrending({ categorySet: categories.find(category => category.name === filter).categorySet, lat: 40.486165191337804, lon: -74.47346067573329, radius: 16093.4, limit: 100, offset: 0 })
 
@@ -47,7 +47,7 @@ const Restaraunts = ({displayToast, navigation}) => {
     // }, [page, shouldFetch])
 
     // const fetchResults = async (params) => {
-    //     const results = await axios.post(`${baseURL}/restaraunt/search/trending/${params.categorySet}`, params, { 'Authorization': `token ${await getValue('token')}` }).then(res => {
+    //     const results = await axios.post(`${baseURL}/restaurant/search/trending/${params.categorySet}`, params, { 'Authorization': `token ${await getValue('token')}` }).then(res => {
     //         if (res.data.message) {
     //             error = res.data.message
     //             return null

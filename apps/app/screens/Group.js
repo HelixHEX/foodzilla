@@ -92,7 +92,7 @@ const Group = ({ route, navigation }) => {
             <View style={styles.container}>
                 <View style={{ display: filter === 'saved' ? 'flex' : 'none' }}>
                     <FlatList
-                        data={group.restaraunts}
+                        data={group.restaurants}
                         ListHeaderComponent={<Header />}
                         ListHeaderComponentStyle={{ marginBottom: 50 }}
                         keyExtractor={(_, index) => 'key' + index}

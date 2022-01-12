@@ -8,7 +8,7 @@ import {
     TouchableOpacity
 } from 'react-native'
 import { mutate } from 'swr';
-import { restaraunts } from '../constants/restaraunts';
+import { restaurants } from '../constants/restaurants';
 import { useUser, useVoteSession } from '../utils/api';
 import { baseURL, getValue } from '../utils/globalVar';
 import { globalColors, styles } from '../utils/styles';
@@ -54,17 +54,17 @@ const VoteSession = ({ route, navigation }) => {
                 <Text style={customStyle.title}>Current Results</Text>
                 <Text style={[customStyle.status, { color: session.ended ? globalColors.red : globalColors.darkgreen }]}>{session.ended ? 'Closed' : 'Open'}</Text>
                 <ScrollView>
-                    {session.restaurants.map((restaraunt, index) => {
+                    {session.restaurants.map((restaurant, index) => {
                         let count = 0
-                        session.votes.length > 0 ? session.votes.forEach(vote => vote.restaraunt_name === restaraunt ? count += 1 : null) : 0
+                        session.votes.length > 0 ? session.votes.forEach(vote => vote.restaraunt_name === restaurant ? count += 1 : null) : 0
                         const percent = session.votes.length > 0 ? (count / session.votes.length) * 100 : 0
                         const voted = session.votes.find(vote => vote.user.id === user.user.id)
                         return (
-                            <TouchableOpacity onPress={() => placeVote(restaraunt)} key={index} style={customStyle.option}>
-                                <Text numberOfLines={2} style={customStyle.name}>{restaraunt}</Text>
+                            <TouchableOpacity onPress={() => placeVote(restaurant)} key={index} style={customStyle.option}>
+                                <Text numberOfLines={2} style={customStyle.name}>{restaurant}</Text>
                                 <View style={customStyle.progressWrapper}>
-                                    <View style={[customStyle.progressInner, { backgroundColor: session.votes.find(vote => vote.user.id === user.user.id && restaraunt === vote.restaraunt_name) ? '#48BB78' : globalColors.pink, width: percent <= 10 ? 30 : (percent * 250) / 100 }]} >
-                                        <View style={[customStyle.selected, { display: session.winner === restaraunt ? 'flex' : 'none' }]}>
+                                    <View style={[customStyle.progressInner, { backgroundColor: session.votes.find(vote => vote.user.id === user.user.id && restaurant === vote.restaraunt_name) ? '#48BB78' : globalColors.pink, width: percent <= 10 ? 30 : (percent * 250) / 100 }]} >
+                                        <View style={[customStyle.selected, { display: session.winner === restaurant ? 'flex' : 'none' }]}>
                                             <Feather name="check" size={20} color={voted ? globalColors.turquoise : globalColors.pink} />
                                         </View>
                                     </View>

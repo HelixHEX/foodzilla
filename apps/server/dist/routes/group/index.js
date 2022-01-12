@@ -146,7 +146,7 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
     let { id: groupId } = body;
     try {
-        const group = yield prisma.group.findUnique({ where: { id: groupId }, include: { restaraunts: true, users: { select: { id: true, name: true } }, voteSessions: { include: { users: { select: { id: true, name: true } } } } } });
+        const group = yield prisma.group.findUnique({ where: { id: groupId }, include: { restaurants: true, users: { select: { id: true, name: true } }, voteSessions: { include: { users: { select: { id: true, name: true } } } } } });
         if (group) {
             res.json({ success: true, group }).status(200);
         }
@@ -159,14 +159,14 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.json({ success: false, message: "An error has occurred" }).status(400);
     }
 }));
-router.post('/saved-restaraunts', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/saved-restaurants', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
     const { groupId } = body;
     try {
-        const group = yield prisma.group.findUnique({ where: { id: groupId }, include: { users: true, restaraunts: true } });
+        const group = yield prisma.group.findUnique({ where: { id: groupId }, include: { users: true, restaurants: true } });
         if (group) {
             if (group.users.find(user => user.id === req.user.userId)) {
-                res.json({ success: true, restaraunts: group.restaraunts }).status(200);
+                res.json({ success: true, restaurants: group.restaurants }).status(200);
             }
             else {
                 res.json({ success: false, message: "Not a member of group" }).status(403);
