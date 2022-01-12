@@ -3,19 +3,23 @@ import {
     StyleSheet,
     TouchableOpacity,
     View,
+    Text
 } from 'react-native'
 import { globalColors } from "../utils/styles";
 
-const ProfileImg = ({marginLeft, width, height, style}) => {
+const ProfileImg = ({ marginLeft, width, height, style, user, userStyle }) => {
     return (
         <>
-            <TouchableOpacity style={[customStyle.circle, style]} />
+            <View style={[customStyle.circle, style]}>
+                <Text style={[customStyle.text, userStyle]}>{user.name.substring(0, 1)}</Text>
+            </View>
         </>
     )
 }
 
 const customStyle = StyleSheet.create({
     circle: {
+        justifyContent: 'center',
         backgroundColor: globalColors.turquoise,
         borderRadius: 50,
         borderColor: 'white',
@@ -29,5 +33,10 @@ const customStyle = StyleSheet.create({
         shadowRadius: 7.49,
         elevation: 12,
     },
+    text: {
+        fontSize: 20,
+        color: 'white',
+        alignSelf: 'center'
+    }
 })
 export default ProfileImg

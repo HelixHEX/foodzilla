@@ -13,8 +13,8 @@ const GroupCard = ({ data, nav }) => {
         <>
             <TouchableOpacity onPress={() => nav.navigate('Group', {id: data.id})} style={customStyle.container}>
                 <View style={{ flexDirection: 'row', marginLeft: 15 }}>
-                    {data.users.map((_, index) => (
-                        <ProfileImg key={index} style={{marginLeft: -15, width: 50, height: 50}} />
+                    {data.users.map((user, index) => (
+                        <ProfileImg user={user} key={index} style={{marginLeft: -15, width: 50, height: 50}} />
                     ))}
                 </View>
                 <View>

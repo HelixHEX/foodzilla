@@ -38,7 +38,7 @@ const Group = ({ route, navigation }) => {
         }
     ]
     const renderMemberItem = ({ item }) => (
-        <ProfileImg style={{ marginRight: 30, width: 100, height: 100 }} />
+        <ProfileImg userStyle={{fontSize: 35}} user={item} style={{ marginRight: 30, width: 100, height: 100 }} />
     );
 
     const renderSessionItem = ({ item }) => (
@@ -66,7 +66,7 @@ const Group = ({ route, navigation }) => {
                 <View style={{ marginTop: 30, height: 150 }}>
                     <FlatList
                         horizontal
-                        data={[...Array(25)]}
+                        data={group.users}
                         renderItem={renderMemberItem}
                         showsHorizontalScrollIndicator={false}
                         keyExtractor={(item, index) => 'key' + index}
