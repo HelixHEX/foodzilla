@@ -12,9 +12,9 @@ import { restaraunts } from '../constants/restaraunts';
 import { useUser, useVoteSession } from '../utils/api';
 import { baseURL, getValue } from '../utils/globalVar';
 import { globalColors, styles } from '../utils/styles';
-import { Feather } from '@expo/vector-icons';
+import { Feather, Ionicons } from '@expo/vector-icons';
 
-const VoteSession = ({ route }) => {
+const VoteSession = ({ route, navigation }) => {
     const { params } = route;
     const { data: voteSession, error: voteError, isLoading: voteLoading } = useVoteSession({ id: params.id })
     const { data: user, error: userError, isLoading: userLoading } = useUser()
@@ -45,9 +45,14 @@ const VoteSession = ({ route }) => {
     return (
         <>
             <View style={styles.container}>
-                <Text style={styles.title}>{session.name}</Text>
+                <View style={{flexDirection: 'row'}}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 5 }}>
+                        <Ionicons name="chevron-back" size={45} color="black" />
+                    </TouchableOpacity>
+                    <Text numberOfLines={1} style={styles.title}>{session.name}</Text>
+                </View>
                 <Text style={customStyle.title}>Current Results</Text>
-                <Text style={[customStyle.status, {color: session.ended ? globalColors.red : globalColors.darkgreen}]}>{session.ended ? 'Closed' : 'Open'}</Text>
+                <Text style={[customStyle.status, { color: session.ended ? globalColors.red : globalColors.darkgreen }]}>{session.ended ? 'Closed' : 'Open'}</Text>
                 <ScrollView>
                     {session.restaurants.map((restaraunt, index) => {
                         let count = 0

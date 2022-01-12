@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
     FlatList,
@@ -53,7 +54,12 @@ const Group = ({ route, navigation }) => {
     const Header = () => {
         return (
             <>
-                <Text style={styles.title}>{group.name}</Text>
+                <View style={{ flexDirection: 'row' }}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={{marginTop: 5}}>
+                        <Ionicons name="chevron-back" size={45} color="black" />
+                    </TouchableOpacity>
+                    <Text numberOfLines={1} style={[styles.title, styles.center]}>{group.name}</Text>
+                </View>
                 <Text style={customStyle.subtitle}>Members</Text>
                 <View style={{ marginTop: 30, height: 150 }}>
                     <FlatList
@@ -83,7 +89,7 @@ const Group = ({ route, navigation }) => {
                     <FlatList
                         data={group.restaraunts}
                         ListHeaderComponent={<Header />}
-                        ListHeaderComponentStyle={{marginBottom: 50}}
+                        ListHeaderComponentStyle={{ marginBottom: 50 }}
                         keyExtractor={(_, index) => 'key' + index}
                         renderItem={renderRestarauntItem}
                         showsVerticalScrollIndicator={false}
