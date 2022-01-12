@@ -11,8 +11,9 @@ import RestarauntCard from '../components/RestarauntCard'
 import Restaraunts from '../components/Restaraunts'
 import Search from '../components/Search'
 import { useSearch, useUser } from '../utils/api'
-import { baseURL, getValue, logout } from '../utils/globalVar'
-import { globalColors, styles } from '../utils/styles'
+import { baseURL, displayToast, getValue, logout } from '../utils/globalVar'
+import { globalColors, styles, toastConfig } from '../utils/styles'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
 
 const Home = ({ navigation }) => {
     const [search, setSearch] = useState('')
@@ -34,7 +35,7 @@ const Home = ({ navigation }) => {
     const handleSearch = async () => {
         if (search.length > 0) {
             setIsSearching(true)
-            await axios.post(baseURL + `/restaraunt/search/${search}`, { query: search, categorySet: 7315, lat: 40.486165191337804, lon: -74.47346067573329, radius: 16093.4, limit: 10, offset: 0 }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
+            await axios.post(baseURL + `/restaurant/search/${search}`, { query: search, categorySet: 7315, lat: 40.486165191337804, lon: -74.47346067573329, radius: 16093.4, limit: 10, offset: 0 }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
                 if (res.data.success) {
                     setResults(res.data.results)
                     // console.log(res.data.results)
@@ -56,10 +57,13 @@ const Home = ({ navigation }) => {
     }
 
     const renderItem = ({ item }) => (
-        <RestarauntCard type={'Restaraunt'} data={item} />
+        <RestarauntCard navigation={navigation} screen="home" displayToast={displayToast} type={'Restaraunt'} data={item} />
     );
     return (
         <>
+            <View style={{ zIndex: 1 }}>
+                <Toast position='top' config={toastConfig} />
+            </View>
             <View style={styles.container}>
                 <View style={{ flexDirection: 'row' }}>
                     <Text style={styles.title}>
@@ -72,11 +76,11 @@ const Home = ({ navigation }) => {
                     </TouchableOpacity> */}
                 </View>
                 <Search handleSearch={handleSearch} search={search} setSearch={setSearch} />
-                {isSearching? <TouchableOpacity onPress={() => { setIsSearching(false); setSearch('') }}>
+                {isSearching ? <TouchableOpacity onPress={() => { setIsSearching(false); setSearch('') }}>
                     <Text style={customStyle.viewMoreText}>Clear</Text>
                 </TouchableOpacity>
                     : null}
-                {!isSearching ? <Restaraunts /> : null}
+                {!isSearching ? <Restaraunts navigation={navigation} displayToast={displayToast} /> : null}
                 {isSearching ? <FlatList
                     style={{ marginTop: 20 }}
                     data={results}

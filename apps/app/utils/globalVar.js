@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 export const baseURL = process.env.NODE_ENV === 'development' ? 'http://192.168.1.39:5000/api/v1' : 'http://192.168.1.39:5000/api/v1'
 
@@ -37,4 +38,12 @@ export const fetcher = params => async url => {
 export const logout = async () => {
     await deleteValue('token')
     return true
+}
+
+export const displayToast = ({ toast }) => {
+    Toast.show({
+        type: toast.type,
+        text1: toast.title,
+        text2: toast.message
+    });
 }

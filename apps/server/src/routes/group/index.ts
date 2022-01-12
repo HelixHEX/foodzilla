@@ -132,7 +132,7 @@ router.post('/', async (req: express.Request, res: express.Response) => {
     const { body } = req;
     let { id: groupId } = body
     try {
-        const group = await prisma.group.findUnique({ where: { id: groupId }, include: { restaraunts: true, users: { select: { id: true, name: true } }, voteSessions: { include: { users: { select: { id: true, name: true } } } } } })
+        const group = await prisma.group.findUnique({ where: { id: groupId }, include: { restaurants: true, users: { select: { id: true, name: true } }, voteSessions: { include: { users: { select: { id: true, name: true } } } } } })
         if (group) {
             res.json({ success: true, group }).status(200)
         } else {
@@ -144,14 +144,14 @@ router.post('/', async (req: express.Request, res: express.Response) => {
     }
 })
 
-router.post('/saved-restaraunts', async(req:express.Request, res: express.Response) => {
+router.post('/saved-restaurants', async(req:express.Request, res: express.Response) => {
     const {body} = req;
     const {groupId} = body 
     try {
-        const group = await prisma.group.findUnique({where: {id: groupId}, include: {users: true, restaraunts: true}})
+        const group = await prisma.group.findUnique({where: {id: groupId}, include: {users: true, restaurants: true}})
         if (group) {
             if (group.users.find(user => user.id === req.user.userId)) {
-                res.json({success: true, restaraunts: group.restaraunts}).status(200)
+                res.json({success: true, restaurants: group.restaurants}).status(200)
             } else {
                 res.json({ success: false, message: "Not a member of group" }).status(403)
             }

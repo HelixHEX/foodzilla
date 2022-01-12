@@ -29,7 +29,7 @@ const prisma = new client_1.PrismaClient();
 const router = express_1.default.Router();
 router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield prisma.user.findUnique({ where: { id: req.user.userId } });
+        const user = yield prisma.user.findUnique({ where: { id: req.user.userId }, include: { saved_restaraunts: true } });
         if (user) {
             const { password } = user, other = __rest(user, ["password"]);
             res.json({ success: true, user: other }).status(200);

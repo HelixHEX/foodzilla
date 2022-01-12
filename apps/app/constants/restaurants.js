@@ -1,4 +1,4 @@
-export const restaraunts = [
+export const restaurants = [
     {
         name: 'Olive Garden',
         type: 'Italian',

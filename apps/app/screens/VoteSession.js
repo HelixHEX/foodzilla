@@ -8,13 +8,13 @@ import {
     TouchableOpacity
 } from 'react-native'
 import { mutate } from 'swr';
-import { restaraunts } from '../constants/restaraunts';
+import { restaurants } from '../constants/restaurants';
 import { useUser, useVoteSession } from '../utils/api';
 import { baseURL, getValue } from '../utils/globalVar';
 import { globalColors, styles } from '../utils/styles';
-import { Feather } from '@expo/vector-icons';
+import { Feather, Ionicons } from '@expo/vector-icons';
 
-const VoteSession = ({ route }) => {
+const VoteSession = ({ route, navigation }) => {
     const { params } = route;
     const { data: voteSession, error: voteError, isLoading: voteLoading } = useVoteSession({ id: params.id })
     const { data: user, error: userError, isLoading: userLoading } = useUser()
@@ -45,21 +45,26 @@ const VoteSession = ({ route }) => {
     return (
         <>
             <View style={styles.container}>
-                <Text style={styles.title}>{session.name}</Text>
+                <View style={{flexDirection: 'row'}}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 5 }}>
+                        <Ionicons name="chevron-back" size={45} color="black" />
+                    </TouchableOpacity>
+                    <Text numberOfLines={1} style={styles.title}>{session.name}</Text>
+                </View>
                 <Text style={customStyle.title}>Current Results</Text>
-                <Text style={[customStyle.status, {color: session.ended ? globalColors.red : globalColors.darkgreen}]}>{session.ended ? 'Closed' : 'Open'}</Text>
+                <Text style={[customStyle.status, { color: session.ended ? globalColors.red : globalColors.darkgreen }]}>{session.ended ? 'Closed' : 'Open'}</Text>
                 <ScrollView>
-                    {session.restaurants.map((restaraunt, index) => {
+                    {session.restaurants.map((restaurant, index) => {
                         let count = 0
-                        session.votes.length > 0 ? session.votes.forEach(vote => vote.restaraunt_name === restaraunt ? count += 1 : null) : 0
+                        session.votes.length > 0 ? session.votes.forEach(vote => vote.restaraunt_name === restaurant ? count += 1 : null) : 0
                         const percent = session.votes.length > 0 ? (count / session.votes.length) * 100 : 0
                         const voted = session.votes.find(vote => vote.user.id === user.user.id)
                         return (
-                            <TouchableOpacity onPress={() => placeVote(restaraunt)} key={index} style={customStyle.option}>
-                                <Text numberOfLines={2} style={customStyle.name}>{restaraunt}</Text>
+                            <TouchableOpacity onPress={() => placeVote(restaurant)} key={index} style={customStyle.option}>
+                                <Text numberOfLines={2} style={customStyle.name}>{restaurant}</Text>
                                 <View style={customStyle.progressWrapper}>
-                                    <View style={[customStyle.progressInner, { backgroundColor: session.votes.find(vote => vote.user.id === user.user.id && restaraunt === vote.restaraunt_name) ? '#48BB78' : globalColors.pink, width: percent <= 10 ? 30 : (percent * 250) / 100 }]} >
-                                        <View style={[customStyle.selected, { display: session.winner === restaraunt ? 'flex' : 'none' }]}>
+                                    <View style={[customStyle.progressInner, { backgroundColor: session.votes.find(vote => vote.user.id === user.user.id && restaurant === vote.restaraunt_name) ? '#48BB78' : globalColors.pink, width: percent <= 10 ? 30 : (percent * 250) / 100 }]} >
+                                        <View style={[customStyle.selected, { display: session.winner === restaurant ? 'flex' : 'none' }]}>
                                             <Feather name="check" size={20} color={voted ? globalColors.turquoise : globalColors.pink} />
                                         </View>
                                     </View>

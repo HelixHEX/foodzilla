@@ -19,6 +19,7 @@ model User {
   groups            Group[]
   votes             Vote[]          @relation("user")
   voteSessions      Vote_Session[]
+  saved_restaraunts Restaurant[]
 }
 
 model Group {
@@ -29,7 +30,7 @@ model Group {
   users             User[]
   active            Boolean         @default(true)
   voteSessions      Vote_Session[]  @relation("group")
-  restaraunts       Restaraunt[]
+  restaurants       Restaurant[]
 }
 
 model Vote_Session {
@@ -60,7 +61,7 @@ model Vote {
   VoteSessionId     String
 }
 
-model Restaraunt {
+model Restaurant {
   id                String          @id @default(cuid())
   createdAt         DateTime        @default(now())
   tomtom_id         String
@@ -73,4 +74,5 @@ model Restaraunt {
   url               String?
   phone             String?
   groups            Group[]
+  users             User[]
 }

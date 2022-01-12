@@ -52,7 +52,7 @@ export const useGroup = params => {
 
 //     const fetch = async () => {
 //         try {
-//             await axios.post(`${baseURL}/restaraunt/search/trending/${params.categorySet}`, params, { 'Authorization': `token ${await getValue('token')}` }).then(res => {
+//             await axios.post(`${baseURL}/restaurant/search/trending/${params.categorySet}`, params, { 'Authorization': `token ${await getValue('token')}` }).then(res => {
 //                 if (res.data.message) {
 //                     error = res.data.message
 //                     return []
@@ -81,9 +81,9 @@ export const useTrending = params => {
     //     if (pageIndex === 0) return `/users?limit=10`
 
     //     // add the cursor to the API endpoint
-    //     return `/restaraunt/search/trending?cursor=${previousPageData.nextCursor}`
+    //     return `/restaurant/search/trending?cursor=${previousPageData.nextCursor}`
     //   }
-    const { data, error } = useSWR(baseURL + `/restaraunt/search/trending/${params.categorySet}`, fetcher(params))
+    const { data, error } = useSWR(baseURL + `/restaurant/search/trending/${params.categorySet}`, fetcher(params))
     // const { data, size, setSize, error } = useSWRInfinite(getKey, fetcher(params))
     return {
         data,
@@ -94,7 +94,7 @@ export const useTrending = params => {
 
 export const useSearch = params => {
     if (params.query.length > 0) {
-        const { data, error } = useSWR(baseURL + `/restaraunt/search/${params.query}`, fetcher(params))
+        const { data, error } = useSWR(baseURL + `/restaurant/search/${params.query}`, fetcher(params))
         return {
             data,
             isLoading: !error && !data,
@@ -110,7 +110,7 @@ export const useSearch = params => {
 }
 
 export const useSavedRestaraunts = params => {
-    const { data, error } = useSWR(baseURL + `/group/saved-restaraunts?id=${params.groupId}`, fetcher(params))
+    const { data, error } = useSWR(baseURL + `/group/saved-restaurants?id=${params.groupId}`, fetcher(params))
     return {
         data,
         isLoading: !error && !data,

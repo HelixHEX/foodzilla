@@ -63,20 +63,21 @@ router.post('/search/trending/:category', (req, res) => __awaiter(void 0, void 0
         res.json({ success: false, message: "An error has occurred" }).status(400);
     }
 }));
-router.post('/save', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/save-to-group', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
     const { groupId, restarauntInfo } = body;
+    console.log(restarauntInfo);
     try {
-        const group = yield prisma.group.findUnique({ where: { id: groupId }, include: { restaraunts: true, users: true } });
+        const group = yield prisma.group.findUnique({ where: { id: groupId }, include: { restaurants: true, users: true } });
         if (group) {
             if (group.users.find(user => user.id === req.user.userId)) {
-                if (!group.restaraunts.find(restaraunt => restaraunt.tomtom_id == restarauntInfo.id)) {
-                    const restaraunt = yield prisma.restaraunt.findFirst({ where: { tomtom_id: restarauntInfo.id } });
-                    if (restaraunt) {
-                        yield prisma.group.update({ where: { id: groupId }, data: { restaraunts: { connect: { id: restaraunt.id } } } });
+                if (!group.restaurants.find(restaurant => restaurant.tomtom_id == restarauntInfo.id)) {
+                    const restaurant = yield prisma.restaurant.findFirst({ where: { tomtom_id: restarauntInfo.id } });
+                    if (restaurant) {
+                        yield prisma.group.update({ where: { id: groupId }, data: { restaurants: { connect: { id: restaurant.id } } } });
                     }
                     else {
-                        yield prisma.restaraunt.create({
+                        yield prisma.restaurant.create({
                             data: {
                                 tomtom_id: restarauntInfo.id,
                                 name: restarauntInfo.name,
@@ -110,25 +111,26 @@ router.post('/save', (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.json({ success: false, message: "An error has occurred" }).status(400);
     }
 }));
-router.post('/unsave', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/unsave-from-group', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
     const { groupId, restarauntId } = body;
     try {
-        const group = yield prisma.group.findUnique({ where: { id: groupId }, include: { users: true, restaraunts: true } });
+        const group = yield prisma.group.findUnique({ where: { id: groupId }, include: { users: true, restaurants: true } });
         if (group) {
             if (group.users.find(user => user.id === req.user.userId)) {
-                const restaraunt = yield prisma.restaraunt.findUnique({ where: { id: restarauntId } });
-                if (restaraunt) {
-                    if (group.restaraunts.find(oldRestaraunt => oldRestaraunt.id === restaraunt.id)) {
-                        yield prisma.group.update({ where: { id: groupId }, data: { restaraunts: { disconnect: { id: restaraunt.id } } } });
+                const restaurant = yield prisma.restaurant.findUnique({ where: { id: restarauntId } });
+                if (restaurant) {
+                    console.log(group.restaurants);
+                    if (group.restaurants.find(oldRestaraunt => oldRestaraunt.id == restaurant.id)) {
+                        yield prisma.group.update({ where: { id: groupId }, data: { restaurants: { disconnect: { id: restaurant.id } } } });
                         res.json({ success: true }).status(200);
                     }
                     else {
-                        res.json({ success: false, message: 'Restaraunt not found' }).status(404);
+                        res.json({ success: false, message: 'Restaraunt already removed' }).status(404);
                     }
                 }
                 else {
-                    res.json({ success: false, message: 'Group not found' }).status(404);
+                    res.json({ success: false, message: 'Restaraunt not found' }).status(404);
                 }
             }
             else {
@@ -139,6 +141,44 @@ router.post('/unsave', (req, res) => __awaiter(void 0, void 0, void 0, function*
         }
         else {
             res.json({ success: false, message: 'Group not found' }).status(404);
+        }
+    }
+    catch (e) {
+        console.log(e);
+        res.json({ success: false, message: "An error has occurred" }).status(400);
+    }
+}));
+router.post('/save-to-account', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { body } = req;
+    const { restarauntInfo } = body;
+    try {
+        const user = yield prisma.user.findUnique({ where: { id: req.user.userId }, include: { saved_restaraunts: true } });
+        if (user) {
+            if (!user.saved_restaraunts.find(restaurant => restaurant.tomtom_id == restarauntInfo.id)) {
+                const restaurant = yield prisma.restaurant.findFirst({ where: { tomtom_id: restarauntInfo.id } });
+                if (restaurant) {
+                    yield prisma.user.update({ where: { id: req.user.userId }, data: { saved_restaraunts: { connect: { id: restaurant.id } } } });
+                }
+                else {
+                    yield prisma.restaurant.create({
+                        data: {
+                            tomtom_id: restarauntInfo.id,
+                            name: restarauntInfo.name,
+                            type: categorySets_1.categorySets.find((category) => category.categorySet === restarauntInfo.categorySet).name,
+                            lon: restarauntInfo.lon,
+                            lat: restarauntInfo.lat,
+                            address: restarauntInfo.address,
+                            categorySet: restarauntInfo.categorySet,
+                            url: restarauntInfo.url,
+                            phone: restarauntInfo.phone,
+                            users: { connect: { id: req.user.userId } }
+                        }
+                    });
+                }
+                res.json({ success: true }).status(200);
+            }
+            else
+                res.json({ success: false, message: "Restaraunt already saved" }).status(400);
         }
     }
     catch (e) {

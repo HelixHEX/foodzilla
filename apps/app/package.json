@@ -40,6 +40,7 @@
     "react-native-safe-area-view": "^1.1.1",
     "react-native-screens": "~3.10.1",
     "react-native-svg": "12.1.1",
+    "react-native-toast-message": "^2.1.1",
     "react-native-web": "0.17.1",
     "swr": "^1.1.2-beta.0"
   },

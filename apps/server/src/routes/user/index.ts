@@ -8,7 +8,7 @@ const router = express.Router()
 
 router.post('/', async (req: express.Request, res) => {
     try {
-        const user = await prisma.user.findUnique({ where: { id: req.user.userId } })
+        const user = await prisma.user.findUnique({ where: { id: req.user.userId }, include: {saved_restaraunts: true} })
         if (user) {
             const {password, ...other} = user
             res.json({ success: true, user:other }).status(200)
