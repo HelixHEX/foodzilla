@@ -35,7 +35,8 @@ const customStyle = StyleSheet.create({
         paddingTop: 20,
         paddingLeft: 15,
         justifyContent: 'space-between',
-        paddingBottom: 20
+        paddingBottom: 20,
+        marginBottom: 50,
     },
     
     name: {
