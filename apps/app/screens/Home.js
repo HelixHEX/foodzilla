@@ -13,7 +13,7 @@ import Search from '../components/Search'
 import { useSearch, useUser } from '../utils/api'
 import { baseURL, getValue, logout } from '../utils/globalVar'
 import { globalColors, styles } from '../utils/styles'
-
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
 const Home = ({ navigation }) => {
     const [search, setSearch] = useState('')
     const [isSearching, setIsSearching] = useState(false)
@@ -54,12 +54,22 @@ const Home = ({ navigation }) => {
         logout()
         navigation.navigate('Login')
     }
+    const displayToast = ({ toast }) => {
+        Toast.show({
+            type: toast.type,
+            text1: toast.title,
+            text2: toast.message
+        });
+    }
 
     const renderItem = ({ item }) => (
-        <RestarauntCard type={'Restaraunt'} data={item} />
+        <RestarauntCard displayToast={displayToast} type={'Restaraunt'} data={item} />
     );
     return (
         <>
+            <View style={{ zIndex: 1 }}>
+                <Toast />
+            </View>
             <View style={styles.container}>
                 <View style={{ flexDirection: 'row' }}>
                     <Text style={styles.title}>
@@ -72,11 +82,11 @@ const Home = ({ navigation }) => {
                     </TouchableOpacity> */}
                 </View>
                 <Search handleSearch={handleSearch} search={search} setSearch={setSearch} />
-                {isSearching? <TouchableOpacity onPress={() => { setIsSearching(false); setSearch('') }}>
+                {isSearching ? <TouchableOpacity onPress={() => { setIsSearching(false); setSearch('') }}>
                     <Text style={customStyle.viewMoreText}>Clear</Text>
                 </TouchableOpacity>
                     : null}
-                {!isSearching ? <Restaraunts /> : null}
+                {!isSearching ? <Restaraunts displayToast={displayToast} /> : null}
                 {isSearching ? <FlatList
                     style={{ marginTop: 20 }}
                     data={results}

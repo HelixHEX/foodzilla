@@ -13,7 +13,7 @@ import { baseURL } from "../utils/globalVar"
 
 
 
-const Restaraunts = () => {
+const Restaraunts = ({displayToast}) => {
     const [filter, setFilter] = useState('American')
     const [restaraunts, setRestaraunts] = useState([])
     const [resultsError, setResultsError] = useState(null)
@@ -64,7 +64,7 @@ const Restaraunts = () => {
     // }
 
     const renderItem = ({ item }) => (
-        <RestarauntCard screen="home" type={filter} data={item} />
+        <RestarauntCard displayToast={displayToast} screen="home" type={filter} data={item} />
     );
 
     return (

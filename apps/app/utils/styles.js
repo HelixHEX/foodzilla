@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native"
-
+import {ErrorToast, SuccessToast} from 'react-native-toast-message'
 export const globalColors = {
     'gray': '#1f1f1f',
     'pink': '#f75483',
@@ -31,3 +31,35 @@ export const styles = StyleSheet.create({
     }
 })
 
+export const toastConfig = {
+    /*
+      Overwrite 'success' type,
+      by modifying the existing `BaseToast` component
+    */
+    success: (props) => (
+        <SuccessToast
+            {...props}
+            text1Style={{
+                fontSize: 50,
+            }}
+            text2Style={{
+                fontSize: 20
+            }}
+        />
+    ),
+    /*
+      Overwrite 'error' type,
+      by modifying the existing `ErrorToast` component
+    */
+    error: (props) => (
+        <ErrorToast
+            {...props}
+            text1Style={{
+                fontSize: 50,
+            }}
+            text2Style={{
+                fontSize: 20
+            }}
+        />
+    )
+};

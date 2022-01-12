@@ -12,12 +12,20 @@ import { globalColors, styles } from "../utils/styles"
 import { AntDesign, Feather, Ionicons } from '@expo/vector-icons';
 import { useActiveGroups } from "../utils/api";
 import { FlatList } from "react-native-gesture-handler";
+import axios from "axios";
+import { baseURL, getValue } from "../utils/globalVar";
+import Toast from 'react-native-toast-message';
 
-const RestarauntCard = ({ screen, data, type, savedRestaraunt }) => {
+const RestarauntCard = ({ displayToast, screen, data, type, savedRestaraunt }) => {
     const [modalVisible, setModalVisible] = useState(false)
+
+    // useEffect(() =>{
+    //     console.log('ih')
+    //     displayToast({toast: {type: 'success', title: 'Sample Title', message: 'Sample message'}})
+    // }, [])
     return (
         <>
-            <ModalCard screen={screen} data={data} modalVisible={modalVisible} setModalVisible={setModalVisible} />
+            <ModalCard displayToast={displayToast} screen={screen} data={data} modalVisible={modalVisible} setModalVisible={setModalVisible} />
             <View style={customStyle.container}>
                 <View style={[styles.center, { width: '65%' }]}>
                     <Text numberOfLines={2} style={customStyle.footerName}>{savedRestaraunt ? data.name : data.poi.name}</Text>
@@ -35,8 +43,8 @@ const RestarauntCard = ({ screen, data, type, savedRestaraunt }) => {
     )
 }
 
-const ModalCard = ({ screen, modalVisible, setModalVisible, data }) => {
-    const [modalHeight, setModalHeight] = useState(200)
+const ModalCard = ({ displayToast, screen, modalVisible, setModalVisible, data }) => {
+    const [modalHeight, setModalHeight] = useState(260)
     const [displayGroups, setDisplayGroups] = useState(false)
     const { data: groupsData, error, isLoading } = useActiveGroups()
 
@@ -44,10 +52,53 @@ const ModalCard = ({ screen, modalVisible, setModalVisible, data }) => {
     if (isLoading) return <Text>loading...</Text>
     if (!groupsData.groups) return <Text>error</Text>
 
+    const addToGroup = async ({ groupId, restaraunt }) => {
+        let toast = {
+            title: '',
+            type: '',
+            message: ''
+        }
+        const data = {
+            "name": restaraunt.poi.name,
+            "id": restaraunt.id.toString(),
+            "lon": restaraunt.position.lon,
+            "lat": restaraunt.position.lat,
+            "address": restaraunt.address.freeformAddress,
+            "categorySet": restaraunt.poi.categorySet[0].id,
+            "url": restaraunt.poi.url,
+            "phone": restaraunt.poi.phone
+        }
+        await axios.post(`${baseURL}/restaraunt/save`, { groupId, restarauntInfo: data }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
+
+            if (res.data.success) {
+                toast = {
+                    title: 'Success',
+                    type: 'success',
+                    message: 'Restaraunt added to group!'
+                }
+            } else if (res.data.message) {
+                toast = {
+                    title: 'Error',
+                    type: 'error',
+                    message: res.data.message
+                }
+            } else {
+                toast = {
+                    title: 'Error',
+                    type: 'error',
+                    message: 'An error has occurred'
+                }
+            }
+        })
+        setModalHeight(260)
+        setDisplayGroups(false)
+        setModalVisible(false)
+        displayToast({ toast })
+    }
     const renderItem = ({ item }) => (
-        <View style={customStyle.group}>
-            <Text numberOfLines={1} style={customStyle.groupText}>Random group name</Text>
-        </View>
+        <TouchableOpacity onPress={() => addToGroup({ groupId: item.id, restaraunt: data })} style={customStyle.group}>
+            <Text numberOfLines={1} style={customStyle.groupText}>{item.name}</Text>
+        </TouchableOpacity>
     )
     return (
         <>
@@ -64,7 +115,7 @@ const ModalCard = ({ screen, modalVisible, setModalVisible, data }) => {
                         {/* <Text style={customStyle.modalText}>Hello World!</Text> */}
                         <View style={{ flexDirection: 'row', marginTop: 10, justifyContent: 'space-between' }}>
                             <View style={{ flexDirection: 'row' }}>
-                                {displayGroups ? <TouchableOpacity onPress={() => { setModalHeight(200); setDisplayGroups(false) }}><Ionicons name="chevron-back" size={35} color="black" /></TouchableOpacity> : null}
+                                {displayGroups ? <TouchableOpacity onPress={() => { setModalHeight(260); setDisplayGroups(false) }}><Ionicons name="chevron-back" size={35} color="black" /></TouchableOpacity> : null}
                                 <Text numberOfLines={1} style={customStyle.modalTitle}>{screen === "home" ? displayGroups ? "Select group" : data.poi.name : data.name}</Text>
                             </View>
                             <Pressable
@@ -76,13 +127,17 @@ const ModalCard = ({ screen, modalVisible, setModalVisible, data }) => {
                         </View>
                         {screen === 'home' && !displayGroups ?
                             <View>
-                                <Pressable onPress={() => { setDisplayGroups(true); setModalHeight('90%') }} style={customStyle.option}>
+                                <TouchableOpacity onPress={() => { setDisplayGroups(true); setModalHeight('70%') }} style={customStyle.option}>
                                     <Feather name="users" size={35} color={globalColors.lightgreen} />
                                     <Text style={customStyle.optionText}>Add to group</Text>
-                                </Pressable>
+                                </TouchableOpacity>
                                 <View style={customStyle.option}>
                                     <Feather name="bookmark" size={35} color={globalColors.turquoise} />
                                     <Text style={customStyle.optionText}>Save to account</Text>
+                                </View>
+                                <View style={customStyle.option}>
+                                    <Feather name="list" size={35} color={globalColors.hotpink} />
+                                    <Text style={customStyle.optionText}>View more details</Text>
                                 </View>
                             </View>
                             : null}
@@ -93,10 +148,10 @@ const ModalCard = ({ screen, modalVisible, setModalVisible, data }) => {
                             : null
                         }
                         {screen === 'home' && displayGroups ?
-                            <View style={{marginTop: 10}}>
+                            <View style={{ marginTop: 10 }}>
                                 <FlatList
-                                    // data={groupsData.groups}
-                                    data={[...Array(200)]}
+                                    data={groupsData.groups}
+                                    // data={[...Array(200)]}
                                     renderItem={renderItem}
                                     showsVerticalScrollIndicator={false}
                                     keyExtractor={(item, index) => 'key' + index}

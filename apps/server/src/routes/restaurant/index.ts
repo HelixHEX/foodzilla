@@ -55,6 +55,7 @@ router.post('/search/trending/:category', async (req: express.Request, res: expr
 router.post('/save', async (req: express.Request, res: express.Response) => {
     const { body } = req;
     const { groupId, restarauntInfo } = body
+    console.log(restarauntInfo)
     try {
         // const group = await 
         const group = await prisma.group.findUnique({ where: { id: groupId }, include: { restaraunts: true, users: true } })

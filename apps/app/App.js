@@ -17,6 +17,7 @@ import { AntDesign, Feather, MaterialIcons } from '@expo/vector-icons'
 import SWR from "./SWR";
 import { globalColors } from "./utils/styles";
 import Group from "./screens/Group";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
 
 const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
