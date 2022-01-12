@@ -106,14 +106,15 @@ router.post('/unsave-from-group', async (req: express.Request, res: express.Resp
             if (group.users.find(user => user.id === req.user.userId)) {
                 const restaraunt = await prisma.restaraunt.findUnique({ where: { id: restarauntId } })
                 if (restaraunt) {
+                    console.log(group.restaraunts)
                     if (group.restaraunts.find(oldRestaraunt => oldRestaraunt.id == restaraunt.id)) {
                         await prisma.group.update({ where: { id: groupId }, data: { restaraunts: { disconnect: { id: restaraunt.id } } } })
                         res.json({ success: true }).status(200)
                     } else {
-                        res.json({ success: false, message: 'Restaraunt not found' }).status(404)
+                        res.json({ success: false, message: 'Restaraunt already removed' }).status(404)
                     }
                 } else {
-                    res.json({ success: false, message: 'Group not found' }).status(404)
+                    res.json({ success: false, message: 'Restaraunt not found' }).status(404)
                 }
             } else {
                 console.log(group.users)

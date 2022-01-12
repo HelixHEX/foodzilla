@@ -12,10 +12,12 @@ import ProfileImg from "../components/ProfileImg";
 import RestarauntCard from "../components/RestarauntCard";
 import VoteSession from "../components/VoteSession";
 import { useGroup } from "../utils/api";
-import { globalColors, styles } from "../utils/styles";
+import { globalColors, styles, toastConfig } from "../utils/styles";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
+import { displayToast } from "../utils/globalVar";
 
 const Group = ({ route, navigation }) => {
-    const [filter, setFilter] = useState('sessions')
+    const [filter, setFilter] = useState('saved')
     const { params } = route;
 
     const { data, error, isLoading } = useGroup({ id: params.id })
@@ -47,7 +49,7 @@ const Group = ({ route, navigation }) => {
     )
 
     const renderRestarauntItem = ({ item }) => (
-        <RestarauntCard screen="group" savedRestaraunt={true} type={item.type} data={item} />
+        <RestarauntCard groupId={group.id} displayToast={displayToast} screen="group" savedRestaraunt={true} type={item.type} data={item} />
     )
 
 
@@ -55,7 +57,7 @@ const Group = ({ route, navigation }) => {
         return (
             <>
                 <View style={{ flexDirection: 'row' }}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={{marginTop: 5}}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 5 }}>
                         <Ionicons name="chevron-back" size={45} color="black" />
                     </TouchableOpacity>
                     <Text numberOfLines={1} style={[styles.title, styles.center]}>{group.name}</Text>
@@ -84,6 +86,9 @@ const Group = ({ route, navigation }) => {
 
     return (
         <>
+            <View style={{ zIndex: 1 }}>
+                <Toast position='top' config={toastConfig} />
+            </View>
             <View style={styles.container}>
                 <View style={{ display: filter === 'saved' ? 'flex' : 'none' }}>
                     <FlatList

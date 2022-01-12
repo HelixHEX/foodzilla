@@ -11,7 +11,7 @@ import RestarauntCard from '../components/RestarauntCard'
 import Restaraunts from '../components/Restaraunts'
 import Search from '../components/Search'
 import { useSearch, useUser } from '../utils/api'
-import { baseURL, getValue, logout } from '../utils/globalVar'
+import { baseURL, displayToast, getValue, logout } from '../utils/globalVar'
 import { globalColors, styles, toastConfig } from '../utils/styles'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
 
@@ -54,13 +54,6 @@ const Home = ({ navigation }) => {
     const handleLogout = () => {
         logout()
         navigation.navigate('Login')
-    }
-    const displayToast = ({ toast }) => {
-        Toast.show({
-            type: toast.type,
-            text1: toast.title,
-            text2: toast.message
-        });
     }
 
     const renderItem = ({ item }) => (
