@@ -15,7 +15,7 @@ import { FlatList } from "react-native-gesture-handler";
 import axios from "axios";
 import { baseURL, getValue } from "../utils/globalVar";
 
-const RestarauntCard = ({ groupId, displayToast, screen, data, type, savedRestaraunt }) => {
+const RestarauntCard = ({ navigation, groupId, displayToast, screen, data, type, savedRestaraunt }) => {
     const [modalVisible, setModalVisible] = useState(false)
 
     // useEffect(() =>{
@@ -24,7 +24,7 @@ const RestarauntCard = ({ groupId, displayToast, screen, data, type, savedRestar
     // }, [])
     return (
         <>
-            <ModalCard groupId={groupId} displayToast={displayToast} screen={screen} data={data} modalVisible={modalVisible} setModalVisible={setModalVisible} />
+            <ModalCard navigation={navigation} groupId={groupId} displayToast={displayToast} screen={screen} data={data} modalVisible={modalVisible} setModalVisible={setModalVisible} />
             <View style={customStyle.container}>
                 <View style={[styles.center, { width: '65%' }]}>
                     <Text numberOfLines={2} style={customStyle.footerName}>{savedRestaraunt ? data.name : data.poi.name}</Text>
@@ -42,7 +42,7 @@ const RestarauntCard = ({ groupId, displayToast, screen, data, type, savedRestar
     )
 }
 
-const ModalCard = ({ groupId, displayToast, screen, modalVisible, setModalVisible, data }) => {
+const ModalCard = ({ navigation, groupId, displayToast, screen, modalVisible, setModalVisible, data }) => {
     const [modalHeight, setModalHeight] = useState(screen === 'home' ? 260 : 200)
     const [displayGroups, setDisplayGroups] = useState(false)
     const { data: groupsData, error, isLoading } = useActiveGroups()
@@ -207,10 +207,10 @@ const ModalCard = ({ groupId, displayToast, screen, modalVisible, setModalVisibl
                                     <Feather name="bookmark" size={35} color={globalColors.turquoise} />
                                     <Text style={customStyle.optionText}>Save to account</Text>
                                 </TouchableOpacity>
-                                <View style={customStyle.option}>
+                                <TouchableOpacity onPress={() => {navigation.navigate('RestarauntDetailed'); setModalVisible(false)}} style={customStyle.option}>
                                     <Feather name="list" size={35} color={globalColors.lightgreen} />
                                     <Text style={customStyle.optionText}>View more details</Text>
-                                </View>
+                                </TouchableOpacity>
                             </View>
                             : null}
                         {screen === 'group' && !displayGroups ?
@@ -219,7 +219,7 @@ const ModalCard = ({ groupId, displayToast, screen, modalVisible, setModalVisibl
                                     <Feather name="x" size={35} color={globalColors.red} />
                                     <Text style={customStyle.optionText}>Remove from group</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={customStyle.option}>
+                                <TouchableOpacity onPress={() => {navigation.navigate('RestarauntDetailed'); setModalVisible(false)}} style={customStyle.option}>
                                     <Feather name="list" size={35} color={globalColors.lightgreen} />
                                     <Text style={customStyle.optionText}>View more details</Text>
                                 </TouchableOpacity>

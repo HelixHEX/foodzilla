@@ -12,6 +12,7 @@ import Groups from './screens/Groups'
 import Profile from './screens/Profile'
 import Vote from './screens/Vote'
 import VoteSession from "./screens/VoteSession";
+import RestarauntDetailed from './screens/RestarauntDetailed'
 
 import { AntDesign, Feather, MaterialIcons } from '@expo/vector-icons'
 import SWR from "./SWR";
@@ -85,6 +86,7 @@ const App = () => {
         <Stack.Screen options={{ gestureEnabled: false }} name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name='VoteSession' component={VoteSession} />
         <Stack.Screen name='Group' component={Group} />
+        <Stack.Screen name='RestarauntDetailed' component={RestarauntDetailed} />
       </Stack.Navigator>
     </NavigationContainer>
   );

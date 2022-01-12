@@ -49,7 +49,7 @@ const Group = ({ route, navigation }) => {
     )
 
     const renderRestarauntItem = ({ item }) => (
-        <RestarauntCard groupId={group.id} displayToast={displayToast} screen="group" savedRestaraunt={true} type={item.type} data={item} />
+        <RestarauntCard navigation={navigation} groupId={group.id} displayToast={displayToast} screen="group" savedRestaraunt={true} type={item.type} data={item} />
     )
 
 

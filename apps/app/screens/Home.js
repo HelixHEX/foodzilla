@@ -57,7 +57,7 @@ const Home = ({ navigation }) => {
     }
 
     const renderItem = ({ item }) => (
-        <RestarauntCard screen="home" displayToast={displayToast} type={'Restaraunt'} data={item} />
+        <RestarauntCard navigation={navigation} screen="home" displayToast={displayToast} type={'Restaraunt'} data={item} />
     );
     return (
         <>
@@ -80,7 +80,7 @@ const Home = ({ navigation }) => {
                     <Text style={customStyle.viewMoreText}>Clear</Text>
                 </TouchableOpacity>
                     : null}
-                {!isSearching ? <Restaraunts displayToast={displayToast} /> : null}
+                {!isSearching ? <Restaraunts navigation={navigation} displayToast={displayToast} /> : null}
                 {isSearching ? <FlatList
                     style={{ marginTop: 20 }}
                     data={results}
