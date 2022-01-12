@@ -52,7 +52,7 @@ router.post('/search/trending/:category', async (req: express.Request, res: expr
     }
 })
 
-router.post('/save', async (req: express.Request, res: express.Response) => {
+router.post('/save-to-group', async (req: express.Request, res: express.Response) => {
     const { body } = req;
     const { groupId, restarauntInfo } = body
     console.log(restarauntInfo)
@@ -64,7 +64,7 @@ router.post('/save', async (req: express.Request, res: express.Response) => {
                 if (!group.restaraunts.find(restaraunt => restaraunt.tomtom_id == restarauntInfo.id)) {
                     const restaraunt = await prisma.restaraunt.findFirst({ where: { tomtom_id: restarauntInfo.id } })
                     if (restaraunt) {
-                        await prisma.group.update({ where: { id: groupId }, data: { restaraunts: { connect: {id: restaraunt.id} } } })
+                        await prisma.group.update({ where: { id: groupId }, data: { restaraunts: { connect: { id: restaraunt.id } } } })
                     } else {
                         await prisma.restaraunt.create({
                             data: {
@@ -97,7 +97,7 @@ router.post('/save', async (req: express.Request, res: express.Response) => {
     }
 })
 
-router.post('/unsave', async (req: express.Request, res: express.Response) => {
+router.post('/unsave-from-group', async (req: express.Request, res: express.Response) => {
     const { body } = req;
     const { groupId, restarauntId } = body;
     try {
@@ -106,7 +106,7 @@ router.post('/unsave', async (req: express.Request, res: express.Response) => {
             if (group.users.find(user => user.id === req.user.userId)) {
                 const restaraunt = await prisma.restaraunt.findUnique({ where: { id: restarauntId } })
                 if (restaraunt) {
-                    if (group.restaraunts.find(oldRestaraunt => oldRestaraunt.id === restaraunt.id)) {
+                    if (group.restaraunts.find(oldRestaraunt => oldRestaraunt.id == restaraunt.id)) {
                         await prisma.group.update({ where: { id: groupId }, data: { restaraunts: { disconnect: { id: restaraunt.id } } } })
                         res.json({ success: true }).status(200)
                     } else {
@@ -122,6 +122,41 @@ router.post('/unsave', async (req: express.Request, res: express.Response) => {
             }
         } else {
             res.json({ success: false, message: 'Group not found' }).status(404)
+        }
+    } catch (e) {
+        console.log(e)
+        res.json({ success: false, message: "An error has occurred" }).status(400)
+    }
+})
+
+router.post('/save-to-account', async (req: express.Request, res: express.Response) => {
+    const { body } = req;
+    const { restarauntInfo } = body
+    try {
+        const user = await prisma.user.findUnique({ where: { id: req.user.userId }, include: { saved_restaraunts: true } })
+        if (user) {
+            if (!user.saved_restaraunts.find(restaraunt => restaraunt.tomtom_id == restarauntInfo.id)) {
+                const restaraunt = await prisma.restaraunt.findFirst({ where: { tomtom_id: restarauntInfo.id } })
+                if (restaraunt) {
+                    await prisma.user.update({ where: { id: req.user.userId }, data: { saved_restaraunts: { connect: { id: restaraunt.id } } } })
+                } else {
+                    await prisma.restaraunt.create({
+                        data: {
+                            tomtom_id: restarauntInfo.id,
+                            name: restarauntInfo.name,
+                            type: categorySets.find((category: any) => category.categorySet === restarauntInfo.categorySet)!.name,
+                            lon: restarauntInfo.lon,
+                            lat: restarauntInfo.lat,
+                            address: restarauntInfo.address,
+                            categorySet: restarauntInfo.categorySet,
+                            url: restarauntInfo.url,
+                            phone: restarauntInfo.phone,
+                            users: { connect: { id: req.user.userId } }
+                        }
+                    })
+                }
+                res.json({ success: true }).status(200)
+            } else res.json({ success: false, message: "Restaraunt already saved" }).status(400)
         }
     } catch (e) {
         console.log(e)

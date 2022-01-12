@@ -12,8 +12,9 @@ import Restaraunts from '../components/Restaraunts'
 import Search from '../components/Search'
 import { useSearch, useUser } from '../utils/api'
 import { baseURL, getValue, logout } from '../utils/globalVar'
-import { globalColors, styles } from '../utils/styles'
+import { globalColors, styles, toastConfig } from '../utils/styles'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
+
 const Home = ({ navigation }) => {
     const [search, setSearch] = useState('')
     const [isSearching, setIsSearching] = useState(false)
@@ -63,12 +64,12 @@ const Home = ({ navigation }) => {
     }
 
     const renderItem = ({ item }) => (
-        <RestarauntCard displayToast={displayToast} type={'Restaraunt'} data={item} />
+        <RestarauntCard screen="home" displayToast={displayToast} type={'Restaraunt'} data={item} />
     );
     return (
         <>
             <View style={{ zIndex: 1 }}>
-                <Toast />
+                <Toast position='top' config={toastConfig} />
             </View>
             <View style={styles.container}>
                 <View style={{ flexDirection: 'row' }}>

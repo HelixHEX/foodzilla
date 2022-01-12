@@ -58,23 +58,65 @@ const ModalCard = ({ displayToast, screen, modalVisible, setModalVisible, data }
             type: '',
             message: ''
         }
-        const data = {
-            "name": restaraunt.poi.name,
-            "id": restaraunt.id.toString(),
-            "lon": restaraunt.position.lon,
-            "lat": restaraunt.position.lat,
-            "address": restaraunt.address.freeformAddress,
-            "categorySet": restaraunt.poi.categorySet[0].id,
-            "url": restaraunt.poi.url,
-            "phone": restaraunt.poi.phone
+        const restarauntInfo = {
+            "name": data.poi.name,
+            "id": data.id.toString(),
+            "lon": data.position.lon,
+            "lat": data.position.lat,
+            "address": data.address.freeformAddress,
+            "categorySet": data.poi.categorySet[0].id,
+            "url": data.poi.url,
+            "phone": data.poi.phone
         }
-        await axios.post(`${baseURL}/restaraunt/save`, { groupId, restarauntInfo: data }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
-
+        await axios.post(`${baseURL}/restaraunt/save-to-group`, { groupId, restarauntInfo }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
             if (res.data.success) {
                 toast = {
                     title: 'Success',
                     type: 'success',
                     message: 'Restaraunt added to group!'
+                }
+            } else if (res.data.message) {
+                toast = {
+                    title: 'Error',
+                    type: 'error',
+                    message: res.data.message
+                }
+            } else {
+                toast = {
+                    title: 'Error',
+                    type: 'error',
+                    message: 'An error has occurred'
+                }
+            }
+        })
+        setModalHeight(260)
+        setDisplayGroups(false)
+        setModalVisible(false)
+        displayToast({ toast })
+    }
+
+    const addToAccount = async () => {
+        let toast = {
+            title: '',
+            type: '',
+            message: ''
+        }
+        const restarauntInfo = {
+            "name": data.poi.name,
+            "id": data.id.toString(),
+            "lon": data.position.lon,
+            "lat": data.position.lat,
+            "address": data.address.freeformAddress,
+            "categorySet": data.poi.categorySet[0].id,
+            "url": data.poi.url,
+            "phone": data.poi.phone
+        }
+        await axios.post(`${baseURL}/restaraunt/save-to-account`, { restarauntInfo }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
+            if (res.data.success) {
+                toast = {
+                    title: 'Success',
+                    type: 'success',
+                    message: 'Restaraunt added to account!'
                 }
             } else if (res.data.message) {
                 toast = {
@@ -131,10 +173,10 @@ const ModalCard = ({ displayToast, screen, modalVisible, setModalVisible, data }
                                     <Feather name="users" size={35} color={globalColors.lightgreen} />
                                     <Text style={customStyle.optionText}>Add to group</Text>
                                 </TouchableOpacity>
-                                <View style={customStyle.option}>
+                                <TouchableOpacity onPress={() => addToAccount()} style={customStyle.option}>
                                     <Feather name="bookmark" size={35} color={globalColors.turquoise} />
                                     <Text style={customStyle.optionText}>Save to account</Text>
-                                </View>
+                                </TouchableOpacity>
                                 <View style={customStyle.option}>
                                     <Feather name="list" size={35} color={globalColors.hotpink} />
                                     <Text style={customStyle.optionText}>View more details</Text>

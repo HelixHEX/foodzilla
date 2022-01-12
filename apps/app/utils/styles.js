@@ -39,8 +39,9 @@ export const toastConfig = {
     success: (props) => (
         <SuccessToast
             {...props}
+            style={{height: 75, borderLeftColor: globalColors.lightgreen}}
             text1Style={{
-                fontSize: 50,
+                fontSize: 23,
             }}
             text2Style={{
                 fontSize: 20
@@ -54,8 +55,9 @@ export const toastConfig = {
     error: (props) => (
         <ErrorToast
             {...props}
+            style={{height: 75, borderLeftColor: 'red'}}
             text1Style={{
-                fontSize: 50,
+                fontSize: 23,
             }}
             text2Style={{
                 fontSize: 20
