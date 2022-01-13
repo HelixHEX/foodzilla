@@ -7,7 +7,6 @@ import {
     ScrollView,
     TouchableOpacity
 } from 'react-native'
-import { mutate } from 'swr';
 import { restaurants } from '../constants/restaurants';
 import { useUser, useVoteSession } from '../utils/api';
 import { baseURL, getValue } from '../utils/globalVar';
@@ -16,12 +15,12 @@ import { Feather, Ionicons } from '@expo/vector-icons';
 
 const VoteSession = ({ route, navigation }) => {
     const { params } = route;
-    const { data: voteSession, error: voteError, isLoading: voteLoading } = useVoteSession({ id: params.id })
+    const { data: voteSession, error: voteError, isLoading: voteLoading, mutate } = useVoteSession({ id: params.id })
     const { data: user, error: userError, isLoading: userLoading } = useUser()
 
     if (voteError) return <Text>{voteError.info}</Text>
     if (voteLoading) return <Text>loading...</Text>
-    if (!voteSession.session) return <Text>error</Text>
+    if (!voteSession.session) return <Text>error session</Text>
 
 
     if (userError) return <Text>{userError.info}</Text>
@@ -31,8 +30,8 @@ const VoteSession = ({ route, navigation }) => {
     const session = voteSession.session
 
     const placeVote = async vote => {
-        if (session.votes.findIndex(vote => vote.user.id === user.user.id) < 0) {
-            await axios.post(baseURL + '/vote/new-vote', { sessionId: session.id, vote }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
+        if (session.votes.find(oldVote => oldVote.user.id === user.user.id && oldVote.restaraunt_name !== vote)) {
+            await axios.post(baseURL + '/vote/place-vote', { sessionId: session.id, vote }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
                 if (res.data.success) {
                     mutate(`${baseURL}/vote/session/${session.id}`)
                 }
@@ -45,7 +44,7 @@ const VoteSession = ({ route, navigation }) => {
     return (
         <>
             <View style={styles.container}>
-                <View style={{flexDirection: 'row'}}>
+                <View style={{ flexDirection: 'row' }}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 5 }}>
                         <Ionicons name="chevron-back" size={45} color="black" />
                     </TouchableOpacity>
@@ -60,17 +59,32 @@ const VoteSession = ({ route, navigation }) => {
                         const percent = session.votes.length > 0 ? (count / session.votes.length) * 100 : 0
                         const voted = session.votes.find(vote => vote.user.id === user.user.id)
                         return (
-                            <TouchableOpacity onPress={() => placeVote(restaurant)} key={index} style={customStyle.option}>
-                                <Text numberOfLines={2} style={customStyle.name}>{restaurant}</Text>
-                                <View style={customStyle.progressWrapper}>
-                                    <View style={[customStyle.progressInner, { backgroundColor: session.votes.find(vote => vote.user.id === user.user.id && restaurant === vote.restaraunt_name) ? '#48BB78' : globalColors.pink, width: percent <= 10 ? 30 : (percent * 250) / 100 }]} >
-                                        <View style={[customStyle.selected, { display: session.winner === restaurant ? 'flex' : 'none' }]}>
-                                            <Feather name="check" size={20} color={voted ? globalColors.turquoise : globalColors.pink} />
+                            <View key={index}>
+                                {session.ended
+                                    ? <View style={customStyle.option}>
+                                        <Text numberOfLines={2} style={customStyle.name}>{restaurant}</Text>
+                                        <View style={customStyle.progressWrapper}>
+                                            <View style={[customStyle.progressInner, { backgroundColor: session.votes.find(vote => vote.user.id === user.user.id && restaurant === vote.restaraunt_name) ? '#48BB78' : globalColors.pink, width: percent <= 10 ? 30 : (percent * 250) / 100 }]} >
+                                                <View style={[customStyle.selected, { display: session.winner === restaurant ? 'flex' : 'none' }]}>
+                                                    <Feather name="check" size={20} color={voted ? globalColors.turquoise : globalColors.pink} />
+                                                </View>
+                                            </View>
                                         </View>
+                                        <Text style={customStyle.percent}>{percent}%</Text>
                                     </View>
-                                </View>
-                                <Text style={customStyle.percent}>{percent}%</Text>
-                            </TouchableOpacity>
+                                    : <TouchableOpacity onPress={() => placeVote(restaurant)} style={customStyle.option}>
+                                        <Text numberOfLines={2} style={customStyle.name}>{restaurant}</Text>
+                                        <View style={customStyle.progressWrapper}>
+                                            <View style={[customStyle.progressInner, { backgroundColor: session.votes.find(vote => vote.user.id === user.user.id && restaurant === vote.restaraunt_name) ? '#48BB78' : globalColors.pink, width: percent <= 10 ? 30 : (percent * 250) / 100 }]} >
+                                                <View style={[customStyle.selected, { display: session.winner === restaurant ? 'flex' : 'none' }]}>
+                                                    <Feather name="check" size={20} color={voted ? globalColors.turquoise : globalColors.pink} />
+                                                </View>
+                                            </View>
+                                        </View>
+                                        <Text style={customStyle.percent}>{percent}%</Text>
+                                    </TouchableOpacity>
+                                }
+                            </View>
                         )
                     })}
                     <TouchableOpacity style={[customStyle.btn, { display: session.add_options && !session.ended ? 'flex' : 'none' }]} >

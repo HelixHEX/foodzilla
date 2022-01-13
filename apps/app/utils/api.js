@@ -1,47 +1,58 @@
 import axios from "axios"
 import useSWR, { useSWRInfinite } from "swr"
 import { baseURL, fetcher, getValue } from "./globalVar"
+import useSWRNative, { useSWRNativeRevalidate } from '@nandorojo/swr-react-native'
 
 export const useUser = params => {
-    const { data, error } = useSWR(baseURL + `/user`, fetcher(params))
+    const { data, error, mutate } = useSWRNative([baseURL + `/user`, params], fetcher)
+
     return {
         data,
+        mutate,
         isLoading: !error && !data,
         isError: error
     }
 }
 
 export const useVoteSessions = params => {
-    const { data, error } = useSWR(baseURL + `/vote/all-voting-sessions`, fetcher(params))
+    const { data, error, mutate } = useSWRNative([baseURL + `/vote/all-voting-sessions`, params], fetcher)
+
     return {
         data,
+        mutate,
         isLoading: !error && !data,
         isError: error
     }
 }
 
 export const useActiveGroups = params => {
-    const { data, error } = useSWR(baseURL + `/group/active-groups`, fetcher(params))
+    const { data, error, mutate } = useSWRNative([baseURL + `/group/active-groups`, params], fetcher)
+
     return {
         data,
+        mutate,
         isLoading: !error && !data,
         isError: error
     }
 }
 
 export const useVoteSession = params => {
-    const { data, error } = useSWR(baseURL + `/vote/session/${params.id}`, fetcher(params))
+    const { data, error, mutate } = useSWRNative([baseURL + `/vote/session/${params.id}`, params], fetcher)
+
     return {
         data,
+        mutate,
         isLoading: !error && !data,
         isError: error
     }
 }
 
 export const useGroup = params => {
-    const { data, error } = useSWR(baseURL + `/group?id=${params.id}`, fetcher(params))
+    const { data, error, mutate } = useSWRNative([baseURL + `/group?id=${params.id}`, params], fetcher)
+
     return {
         data,
+        mutate,
         isLoading: !error && !data,
         isError: error
     }
@@ -83,10 +94,12 @@ export const useTrending = params => {
     //     // add the cursor to the API endpoint
     //     return `/restaurant/search/trending?cursor=${previousPageData.nextCursor}`
     //   }
-    const { data, error } = useSWR(baseURL + `/restaurant/search/trending/${params.categorySet}`, fetcher(params))
+    const { data, error, mutate } = useSWRNative([baseURL + `/restaurant/search/trending/${params.categorySet}`, params], fetcher)
     // const { data, size, setSize, error } = useSWRInfinite(getKey, fetcher(params))
+
     return {
         data,
+        mutate,
         isLoading: !error && !data,
         isError: error
     }
@@ -94,9 +107,11 @@ export const useTrending = params => {
 
 export const useSearch = params => {
     if (params.query.length > 0) {
-        const { data, error } = useSWR(baseURL + `/restaurant/search/${params.query}`, fetcher(params))
+        const { data, error, mutate } = useSWRNative([baseURL + `/restaurant/search/${params.query}`, params], fetcher)
+
         return {
             data,
+            mutate,
             isLoading: !error && !data,
             isError: error
         }
@@ -110,9 +125,11 @@ export const useSearch = params => {
 }
 
 export const useSavedRestaraunts = params => {
-    const { data, error } = useSWR(baseURL + `/group/saved-restaurants?id=${params.groupId}`, fetcher(params))
+    const { data, error, mutate } = useSWRNative([baseURL + `/group/saved-restaurants?id=${params.groupId}`, params], fetcher)
+
     return {
         data,
+        mutate,
         isLoading: !error && !data,
         isError: error
     }

@@ -1,5 +1,5 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     FlatList,
     StyleSheet,
@@ -7,7 +7,8 @@ import {
     TouchableOpacity,
     View,
     SectionList,
-    Modal
+    Modal,
+    Platform
 } from 'react-native'
 import ProfileImg from "../components/ProfileImg";
 import RestarauntCard from "../components/RestarauntCard";
@@ -15,7 +16,9 @@ import VoteSession from "../components/VoteSession";
 import { useGroup, useUser } from "../utils/api";
 import { globalColors, styles, toastConfig } from "../utils/styles";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
-import { displayToast } from "../utils/globalVar";
+import { baseURL, displayToast, fetcher } from "../utils/globalVar";
+import axios from "axios";
+import { mutate } from "swr";
 
 const Group = ({ route, navigation }) => {
     const [filter, setFilter] = useState('saved')
@@ -26,6 +29,9 @@ const Group = ({ route, navigation }) => {
 
     if (groupError) return <Text>{error.info}</Text>
     if (groupLoading) return <Text>loading...</Text>
+    // useEffect(() => {
+    //     if (groupData.message === "Not a member of group") navigation.navigate('Groups')
+    // }, [])
     if (!groupData.group) return <Text>error</Text>
 
     if (userError) return <Text>{error.info}</Text>
@@ -73,8 +79,57 @@ const Group = ({ route, navigation }) => {
         )
     }
 
+
+
     const MenuModal = ({ modalVisible, setModalVisible }) => {
-        const [modalHeight, setModalHeight] = useState(group.creatorId === user.id ? 200 : 150)
+        let creator = group.creatorId === user.id;
+        const [modalHeight, setModalHeight] = useState(creator ? 200 : 150)
+
+        const leaveGroup = async () => {
+            let toast = {
+                title: '',
+                type: '',
+                message: ''
+            }
+            try {
+                let res = await fetcher(`${baseURL}/group/leave-group`, { groupId: group.id })
+                console.log(res)
+                if (res.success) {
+                    toast = {
+                        title: 'Success',
+                        type: 'success',
+                        message: 'You have left the group'
+                    }
+                } else if (res.message) {
+                    toast = {
+                        title: 'Error',
+                        type: 'error',
+                        message: res.message
+                    }
+                } else {
+                    toast = {
+                        title: 'Error',
+                        type: 'error',
+                        message: 'An error has occurred'
+                    }
+                }
+            } catch (e) {
+                toast = {
+                    title: 'Error',
+                    type: 'error',
+                    message: 'An error has occurred'
+                }
+            }
+            setModalHeight(creator ? 200 : 150)
+            setModalVisible(false)
+            displayToast({ toast })
+            if (toast.type === 'success') {
+                mutate(`${baseURL}/group/active-groups`)
+                navigation.goBack('Groups')
+            }
+        }
+
+
         return (
             <>
                 <Modal
@@ -99,7 +154,7 @@ const Group = ({ route, navigation }) => {
                                 </TouchableOpacity>
 
                             </View>
-                            {group.creatorId === user.id
+                            {creator
                                 ? <View>
                                     <TouchableOpacity onPress={() => removeFromGroup()} style={customStyle.modalOption}>
                                         <Feather name="plus" size={35} color={globalColors.lightgreen} />
@@ -111,7 +166,7 @@ const Group = ({ route, navigation }) => {
                                     </TouchableOpacity>
                                 </View>
                                 : <View>
-                                    <TouchableOpacity onPress={() => removeFromGroup()} style={customStyle.modalOption}>
+                                    <TouchableOpacity onPress={() => leaveGroup()} style={customStyle.modalOption}>
                                         <Feather name="x" size={35} color={globalColors.red} />
                                         <Text style={customStyle.modalOptionText}>Leave group</Text>
                                     </TouchableOpacity>
@@ -166,7 +221,7 @@ const Group = ({ route, navigation }) => {
             <View style={styles.container}>
                 <View style={{ display: filter === 'saved' ? 'flex' : 'none' }}>
                     <FlatList
-                        data={group.restaurants}
+                        data={group.restaurants.reverse()}
                         ListHeaderComponent={<Header />}
                         ListHeaderComponentStyle={{ marginBottom: 50 }}
                         keyExtractor={(_, index) => 'key' + index}
@@ -205,7 +260,7 @@ const customStyle = StyleSheet.create({
     },
 
     optionText: {
-        fontSize: 20
+        fontSize: Platform.OS === 'android' ? 20 : 15
     },
     label: {
         color: globalColors.lightgray,
