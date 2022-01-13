@@ -234,4 +234,24 @@ router.post('/session/:id', async (req: express.Request, res: express.Response) 
     }
 })
 
+router.post('/leave-session', async (req: express.Request, res: express.Response) => {
+    const { body } = req;
+    const { sessionId } = body
+    try {
+        const session = await prisma.vote_Session.findUnique({ where: { id: sessionId }, include: { users: true } })
+        if (session) {
+            if (session.users.find(user => user.id === req.user.userId)) {
+                await prisma.vote_Session.update({ where: { id: sessionId }, data: { users: { disconnect: { id: req.user.userId } } } })
+                res.json({ success: true }).status(200)
+            } else {
+                res.json({ success: false, message: 'Have not joined session' }).status(400)
+            }
+        } else {
+            res.json({ success: false, message: 'Vote session not found' }).status(404)
+        }
+    } catch (e) {
+        console.log(e)
+        res.json({ success: false, message: "An error has occurred" }).status(400)
+    }
+})
 module.exports = router
