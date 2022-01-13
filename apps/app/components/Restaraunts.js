@@ -7,7 +7,7 @@ import {
 import Header from "./Header"
 import { restaurants as data } from "../constants/restaurants"
 import RestarauntCard from "./RestarauntCard"
-import { useTrending } from "../utils/api"
+import { useActiveGroups, useTrending } from "../utils/api"
 import { categories } from "../constants/categories"
 import { baseURL } from "../utils/globalVar"
 
@@ -24,10 +24,15 @@ const Restaraunts = ({displayToast, navigation}) => {
     //     return `${baseURL}/restaurant/search/trending/${categories.find(category => category.name === filter).categorySet}  /users?page=${pageIndex}&limit=10`                    // SWR key
     // }
     const { data: data2, isError, isLoading, fetchMore } = useTrending({ categorySet: categories.find(category => category.name === filter).categorySet, lat: 40.486165191337804, lon: -74.47346067573329, radius: 16093.4, limit: 100, offset: 0 })
+    const { data: groupsData, isError: groupsError, isLoading: groupsLoading } = useActiveGroups()
 
     if (isError) return <Text>{error.message}</Text>
     if (isLoading) return <Header selected={filter} setSelected={setFilter} />
     if (!data2) return <Text>error</Text>
+
+    if (groupsError) return <Text>{error.info}</Text>
+    if (groupsLoading) return <Text>loading...</Text>
+    if (!groupsData.groups) return <Text>error</Text>
 
     // useEffect(() => {
     //     if (!shouldFetch) {
@@ -64,7 +69,7 @@ const Restaraunts = ({displayToast, navigation}) => {
     // }
 
     const renderItem = ({ item }) => (
-        <RestarauntCard navigation={navigation} displayToast={displayToast} screen="home" type={filter} data={item} />
+        <RestarauntCard groupsData={groupsData} navigation={navigation} displayToast={displayToast} screen="home" type={filter} data={item} />
     );
 
     return (

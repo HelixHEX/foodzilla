@@ -15,7 +15,7 @@ import { FlatList } from "react-native-gesture-handler";
 import axios from "axios";
 import { baseURL, getValue } from "../utils/globalVar";
 
-const RestarauntCard = ({ navigation, groupId, displayToast, screen, data, type, savedRestaraunt }) => {
+const RestarauntCard = ({mutate, navigation, groupId, displayToast, screen, data, type, savedRestaraunt }) => {
     const [modalVisible, setModalVisible] = useState(false)
 
     // useEffect(() =>{
@@ -24,7 +24,7 @@ const RestarauntCard = ({ navigation, groupId, displayToast, screen, data, type,
     // }, [])
     return (
         <>
-            <ModalCard navigation={navigation} groupId={groupId} displayToast={displayToast} screen={screen} data={data} modalVisible={modalVisible} setModalVisible={setModalVisible} />
+            <ModalCard mutate={mutate} navigation={navigation} groupId={groupId} displayToast={displayToast} screen={screen} data={data} modalVisible={modalVisible} setModalVisible={setModalVisible} />
             <View style={customStyle.container}>
                 <View style={[styles.center, { width: '65%' }]}>
                     <Text numberOfLines={2} style={customStyle.footerName}>{savedRestaraunt ? data.name : data.poi.name}</Text>
@@ -42,7 +42,7 @@ const RestarauntCard = ({ navigation, groupId, displayToast, screen, data, type,
     )
 }
 
-const ModalCard = ({ navigation, groupId, displayToast, screen, modalVisible, setModalVisible, data }) => {
+const ModalCard = ({mutate, navigation, groupId, displayToast, screen, modalVisible, setModalVisible, data }) => {
     const [modalHeight, setModalHeight] = useState(screen === 'home' ? 260 : 200)
     const [displayGroups, setDisplayGroups] = useState(false)
     const { data: groupsData, isError, isLoading } = useActiveGroups()
@@ -147,7 +147,7 @@ const ModalCard = ({ navigation, groupId, displayToast, screen, modalVisible, se
                 toast = {
                     title: 'Success',
                     type: 'success',
-                    message: 'Restaraunt added to account!'
+                    message: 'Restaraunt removed from group!'
                 }
             } else if (res.data.message) {
                 toast = {
@@ -167,6 +167,7 @@ const ModalCard = ({ navigation, groupId, displayToast, screen, modalVisible, se
         setDisplayGroups(false)
         setModalVisible(false)
         displayToast({ toast })
+        mutate()
     }
     const renderItem = ({ item }) => (
         <TouchableOpacity onPress={() => addToGroup({ groupId: item.id, restaurant: data })} style={customStyle.group}>

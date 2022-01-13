@@ -9,8 +9,8 @@ import {
     Modal,
     Switch
 } from 'react-native'
-import { useUser, useVoteSession } from '../utils/api';
-import { baseURL, getValue } from '../utils/globalVar';
+import { leaveGroup, useUser, useVoteSession } from '../utils/api';
+import { baseURL, getValue, displayToast } from '../utils/globalVar';
 import { globalColors, styles, toastConfig } from '../utils/styles';
 import { Feather, FontAwesome5, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import AddNewOption from '../components/AddNewOption';
@@ -33,8 +33,14 @@ const VoteSession = ({ route, navigation }) => {
     const session = voteSession.session
     const creator = voteSession.session.createdBy === user.user.id
 
-    const placeVote = async vote => {
-        if (session.votes.find(oldVote => oldVote.user.id === user.user.id && oldVote.restaraunt_name !== vote)) {
+    const vote = async vote => {
+        // if (session.votes.find(oldVote => oldVote.user.id === user.user.id && oldVote.restaraunt_name !== vote)) {
+        const placedVote = session.votes.find(oldVote => oldVote.user.id === user.user.id)
+        if (placedVote) {
+            if (placedVote.restaraunt_name !== vote) {
+                
+            }
+        } else {
             await axios.post(baseURL + '/vote/place-vote', { sessionId: session.id, vote }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
                 if (res.data.success) {
                     mutate(`${baseURL}/vote/session/${session.id}`)
@@ -107,7 +113,7 @@ const VoteSession = ({ route, navigation }) => {
                                     </TouchableOpacity>
                                 </View>
                                 : <View>
-                                    <TouchableOpacity style={customStyle.modalOption}>
+                                    <TouchableOpacity onPress={() => leaveGroup({ navigation, creator, setModalHeight, mutate, setModalVisible, session })} style={customStyle.modalOption}>
                                         <SimpleLineIcons name="logout" size={35} color="black" />
                                         <Text style={customStyle.modalOptionText}>Leave session</Text>
                                     </TouchableOpacity>
@@ -156,7 +162,7 @@ const VoteSession = ({ route, navigation }) => {
                                         </View>
                                         <Text style={customStyle.percent}>{percent}%</Text>
                                     </View>
-                                    : <TouchableOpacity onPress={() => placeVote(restaurant)} style={customStyle.option}>
+                                    : <TouchableOpacity onPress={() => vote(restaurant)} style={customStyle.option}>
                                         <Text numberOfLines={2} style={customStyle.name}>{restaurant}</Text>
                                         <View style={customStyle.progressWrapper}>
                                             <View style={[customStyle.progressInner, { backgroundColor: session.votes.find(vote => vote.user.id === user.user.id && restaurant === vote.restaraunt_name) ? '#48BB78' : globalColors.pink, width: percent <= 10 ? 30 : (percent * 250) / 100 }]} >
