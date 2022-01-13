@@ -6,20 +6,83 @@ import {
     StyleSheet,
     TouchableOpacity
 } from 'react-native'
+import { baseURL, displayToast, fetcher } from '../utils/globalVar'
 import { globalColors } from '../utils/styles'
 
-const VoteSession = ({ data, nav, group }) => {
+const VoteSession = ({ user, data, nav, group, mutate }) => {
+    const joinSession = async () => {
+        let toast = {
+            title: '',
+            type: '',
+            message: ''
+        }
+        try {
+            let res = await fetcher(`${baseURL}/vote/join-voting-session`, { sessionId: data.id })
+            if (res.success) {
+                toast = {
+                    title: 'Success',
+                    type: 'success',
+                    message: 'You have joined the session'
+                }
+            } else if (res.message) {
+                toast = {
+                    title: 'Error',
+                    type: 'error',
+                    message: res.message
+                }
+            } else {
+                toast = {
+                    title: 'Error',
+                    type: 'error',
+                    message: 'An error has occurred'
+                }
+            }
+        } catch (e) {
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: 'An error has occurred'
+            }
+        }
+        displayToast({ toast })
+        if (toast.type === 'success') {
+            mutate()
+        }
+    }
+
     return (
         <>
-            <TouchableOpacity onPress={() => nav.navigate('VoteSession', {id: data.id})} style={styles.container}>
-                {/* <Text>{data.}</Text> */}
-                <View>
-                    <Text style={styles.title}>{data.name}</Text>
-                    {/* <Text style={styles.subtitle}>Group: {data.group.name}</Text> */}
-                    <Text style={styles.subtitle}>Users: {data.users.length}</Text>
-                </View>
-                <Text style={[styles.date, {color: data.ended ? globalColors.red : globalColors.darkgreen}]}>{data.ends ? FormatDate(data.endsAt) : data.ended ? "Closed" : "Open"}</Text>
-            </TouchableOpacity>
+            {data.users.find(sessionUser => sessionUser.id === user.id)
+                ? <>
+                    <TouchableOpacity onPress={() => nav.navigate('VoteSession', { id: data.id })} style={styles.container}>
+                        {/* <Text>{data.}</Text> */}
+                        <View style={{ justifyContent: 'center' }}>
+                            <Text style={styles.title}>{data.name}</Text>
+                            {/* <Text style={styles.subtitle}>Group: {data.group.name}</Text> */}
+                            <Text style={styles.subtitle}>Users: {data.users.length}</Text>
+                        </View>
+                        <Text style={[styles.date, { color: data.ended ? globalColors.red : globalColors.darkgreen }]}>{data.ends ? FormatDate(data.endsAt) : "Joined"}</Text>
+                    </TouchableOpacity>
+                    <View style={styles.line} />
+                </>
+                : <>
+                    <View style={styles.container}>
+                        {/* <Text>{data.}</Text> */}
+                        <View style={{ justifyContent: 'center' }}>
+                            <Text style={styles.title}>{data.name}</Text>
+                            {/* <Text style={styles.subtitle}>Group: {data.group.name}</Text> */}
+                            <Text style={styles.subtitle}>Users: {data.users.length}</Text>
+                        </View>
+                        {!data.ended
+                            ? <TouchableOpacity onPress={() => joinSession()} style={styles.btn}>
+                                <Text style={{ color: 'white', alignSelf: 'center', fontSize: 20 }}>Join</Text>
+                            </TouchableOpacity>
+                            : <Text style={[styles.date, { color: data.ended ? globalColors.red : globalColors.darkgreen }]}>{data.ends ? FormatDate(data.endsAt) : "Closed"}</Text>
+                        }
+                    </View>
+                    <View style={styles.line} />
+                </>
+            }
         </>
     )
 }
@@ -33,14 +96,14 @@ const FormatDate = string => {
 const styles = StyleSheet.create({
     container: {
         width: '100%',
-        height: 90,
-        marginTop: 20,
-        // backgroundColor: 'red',
+        height: 100,
+        // marginTop: 20,
         flexDirection: 'row',
         display: 'flex',
         justifyContent: 'space-between',
-        alignSelf: 'center',
-       
+        // alignSelf: 'center',
+        // backgroundColor: 'red'
+
     },
     title: {
         fontSize: 20
@@ -51,7 +114,19 @@ const styles = StyleSheet.create({
     date: {
         alignSelf: 'center',
         color: globalColors.hotpink
-    }
+    },
+    btn: {
+        alignSelf: 'center',
+        backgroundColor: globalColors.hotpink,
+        width: 70,
+        height: 35,
+        borderRadius: 5,
+        justifyContent: 'center'
+    },
+    line: {
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderColor: globalColors.lightgray
+    },
 })
 
 export default VoteSession

@@ -13,7 +13,7 @@ import {
 import ProfileImg from "../components/ProfileImg";
 import RestarauntCard from "../components/RestarauntCard";
 import VoteSession from "../components/VoteSession";
-import { useGroup, useUser } from "../utils/api";
+import { leaveGroup, useGroup, useUser } from "../utils/api";
 import { globalColors, styles, toastConfig } from "../utils/styles";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import { baseURL, displayToast, fetcher } from "../utils/globalVar";
@@ -24,7 +24,7 @@ const Group = ({ route, navigation }) => {
     const [filter, setFilter] = useState('saved')
     const { params } = route;
 
-    const { data: groupData, isError: groupError, isLoading: groupLoading } = useGroup({ id: params.id })
+    const { data: groupData, isError: groupError, isLoading: groupLoading, mutate } = useGroup({ id: params.id })
     const { data: userData, isError: userError, isLoading: userLoading } = useUser()
 
     if (groupError) return <Text>{error.info}</Text>
@@ -57,13 +57,13 @@ const Group = ({ route, navigation }) => {
 
     const renderSessionItem = ({ item }) => (
         <>
-            <VoteSession group={group} nav={navigation} data={item} />
-            <View style={customStyle.line} />
+            <VoteSession mutate={mutate} user={user} group={group} nav={navigation} data={item} />
+            {/* <View style={customStyle.line} /> */}
         </>
     )
 
     const renderRestarauntItem = ({ item }) => (
-        <RestarauntCard navigation={navigation} groupId={group.id} displayToast={displayToast} screen="group" savedRestaraunt={true} type={item.type} data={item} />
+        <RestarauntCard mutate={mutate} navigation={navigation} groupId={group.id} displayToast={displayToast} screen="group" savedRestaraunt={true} type={item.type} data={item} />
     )
 
     const Menu = () => {
@@ -85,49 +85,49 @@ const Group = ({ route, navigation }) => {
         let creator = group.creatorId === user.id;
         const [modalHeight, setModalHeight] = useState(creator ? 200 : 150)
 
-        const leaveGroup = async () => {
-            let toast = {
-                title: '',
-                type: '',
-                message: ''
-            }
-            try {
-                let res = await fetcher(`${baseURL}/group/leave-group`, { groupId: group.id })
-                console.log(res)
-                if (res.success) {
-                    toast = {
-                        title: 'Success',
-                        type: 'success',
-                        message: 'You have left the group'
-                    }
-                } else if (res.message) {
-                    toast = {
-                        title: 'Error',
-                        type: 'error',
-                        message: res.message
-                    }
-                } else {
-                    toast = {
-                        title: 'Error',
-                        type: 'error',
-                        message: 'An error has occurred'
-                    }
-                }
-            } catch (e) {
-                toast = {
-                    title: 'Error',
-                    type: 'error',
-                    message: 'An error has occurred'
-                }
-            }
-            setModalHeight(creator ? 200 : 150)
-            setModalVisible(false)
-            displayToast({ toast })
-            if (toast.type === 'success') {
-                mutate(`${baseURL}/group/active-groups`)
-                navigation.goBack('Groups')
-            }
-        }
+        // const leaveGroup = async () => {
+        //     let toast = {
+        //         title: '',
+        //         type: '',
+        //         message: ''
+        //     }
+        //     try {
+        //         let res = await fetcher(`${baseURL}/group/leave-group`, { groupId: group.id })
+        //         console.log(res)
+        //         if (res.success) {
+        //             toast = {
+        //                 title: 'Success',
+        //                 type: 'success',
+        //                 message: 'You have left the group'
+        //             }
+        //         } else if (res.message) {
+        //             toast = {
+        //                 title: 'Error',
+        //                 type: 'error',
+        //                 message: res.message
+        //             }
+        //         } else {
+        //             toast = {
+        //                 title: 'Error',
+        //                 type: 'error',
+        //                 message: 'An error has occurred'
+        //             }
+        //         }
+        //     } catch (e) {
+        //         toast = {
+        //             title: 'Error',
+        //             type: 'error',
+        //             message: 'An error has occurred'
+        //         }
+        //     }
+        //     setModalHeight(creator ? 200 : 150)
+        //     setModalVisible(false)
+        //     displayToast({ toast })
+        //     if (toast.type === 'success') {
+        //         mutate()
+        //         navigation.goBack('Groups')
+        //     }
+        // }
 
 
         return (
@@ -166,7 +166,7 @@ const Group = ({ route, navigation }) => {
                                     </TouchableOpacity>
                                 </View>
                                 : <View>
-                                    <TouchableOpacity onPress={() => leaveGroup()} style={customStyle.modalOption}>
+                                    <TouchableOpacity onPress={() => leaveGroup({ group, mutate, setModalHeight, setModalVisible, navigation, creator })} style={customStyle.modalOption}>
                                         <Feather name="x" size={35} color={globalColors.red} />
                                         <Text style={customStyle.modalOptionText}>Leave group</Text>
                                     </TouchableOpacity>

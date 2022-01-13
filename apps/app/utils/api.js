@@ -2,7 +2,7 @@ import axios from "axios"
 import useSWR, { useSWRInfinite } from "swr"
 import { baseURL, fetcher, getValue } from "./globalVar"
 import useSWRNative, { useSWRNativeRevalidate } from '@nandorojo/swr-react-native'
-
+import { displayToast } from "./globalVar"
 export const useUser = params => {
     const { data, error, mutate } = useSWRNative([baseURL + `/user`, params], fetcher)
 
@@ -26,7 +26,7 @@ export const useVoteSessions = params => {
 }
 
 export const useActiveGroups = params => {
-    const { data, error, mutate } = useSWRNative([baseURL + `/group/active-groups`, params], fetcher)
+    const { data, error, mutate } = useSWRNative([baseURL + `/group/active-groups`, params], fetcher, {focusThrottleInterval: 1000})
 
     return {
         data,
@@ -132,4 +132,129 @@ export const useSavedRestaraunts = params => {
         isLoading: !error && !data,
         isError: error
     }
+}
+
+export const leaveGroup = async ({ group, mutate, setModalHeight, setModalVisible, navigation, creator }) => {
+    let toast = {
+        title: '',
+        type: '',
+        message: ''
+    }
+    try {
+        let res = await fetcher(`${baseURL}/group/leave-group`, { groupId: group.id })
+        console.log(res)
+        if (res.success) {
+            toast = {
+                title: 'Success',
+                type: 'success',
+                message: 'You have left the group'
+            }
+        } else if (res.message) {
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: res.message
+            }
+        } else {
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: 'An error has occurred'
+            }
+        }
+    } catch (e) {
+        toast = {
+            title: 'Error',
+            type: 'error',
+            message: 'An error has occurred'
+        }
+    }
+    setModalHeight(creator ? 200 : 150)
+    setModalVisible(false)
+    displayToast({ toast })
+    if (toast.type === 'success') {
+        mutate(`${baseURL}/group/active-groups`)
+        navigation.goBack('Groups')
+    }
+    // let toast = {
+    //     title: '',
+    //     type: '',
+    //     message: ''
+    // }
+    // try {
+    //     let res = await fetcher(`${baseURL}/vote/leave-group`, { group: group.id })
+    //     if (res.success) {
+    //         toast = {
+    //             title: 'Success',
+    //             type: 'success',
+    //             message: 'You have left the group'
+    //         }
+    //     } else if (res.message) {
+    //         toast = {
+    //             title: 'Error',
+    //             type: 'error',
+    //             message: res.message
+    //         }
+    //     } else {
+    //         toast = {
+    //             title: 'Error',
+    //             type: 'error',
+    //             message: 'An error has occurred'
+    //         }
+    //     }
+    // } catch (e) {
+    //     toast = {
+    //         title: 'Error',
+    //         type: 'error',
+    //         message: 'An error has occurred'
+    //     }
+    // }
+    // setModalHeight(creator ? 200 : 150)
+    // setModalVisible(false)
+    // displayToast({ toast })
+    // if (toast.type === 'success') {
+    //     mutate(`${baseURL}/group/active-groups`)
+    //     navigation.goBack('Groups')
+    // }
+}
+
+export const placeVote = async ({ session, vote, mutate }) => {
+    let toast = {
+        title: '',
+        type: '',
+        message: ''
+    }
+    try {
+        let res = await fetcher(`${baseURL}/vote/place-vote`, { sessionId: session.id })
+        if (res.success) {
+            mutate(`${baseURL}/vote/session/${session.id}`)
+        } else if (res.message) {
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: res.message
+            }
+        } else {
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: 'An error has occurred'
+            }
+        }
+    } catch (e) {
+        toast = {
+            title: 'Error',
+            type: 'error',
+            message: 'An error has occurred'
+        }
+    }
+    displayToast({ toast })
+    // await axios.post(baseURL + '', { sessionId: session.id, vote }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
+    //     if (res.data.success) {
+    //         mutate(`${baseURL}/vote/session/${session.id}`)
+    //     }
+    //     if (res.data.message) {
+    //         console.log(res.data.message)
+    //     }
+    // })
 }

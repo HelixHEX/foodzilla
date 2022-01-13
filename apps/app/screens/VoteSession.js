@@ -9,10 +9,10 @@ import {
     Modal,
     Switch
 } from 'react-native'
-import { useUser, useVoteSession } from '../utils/api';
-import { baseURL, getValue } from '../utils/globalVar';
+import { leaveGroup, useUser, useVoteSession } from '../utils/api';
+import { baseURL, getValue, displayToast } from '../utils/globalVar';
 import { globalColors, styles, toastConfig } from '../utils/styles';
-import { Feather, FontAwesome5, Ionicons } from '@expo/vector-icons';
+import { Feather, FontAwesome5, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import AddNewOption from '../components/AddNewOption';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
@@ -33,8 +33,14 @@ const VoteSession = ({ route, navigation }) => {
     const session = voteSession.session
     const creator = voteSession.session.createdBy === user.user.id
 
-    const placeVote = async vote => {
-        if (session.votes.find(oldVote => oldVote.user.id === user.user.id && oldVote.restaraunt_name !== vote)) {
+    const vote = async vote => {
+        // if (session.votes.find(oldVote => oldVote.user.id === user.user.id && oldVote.restaraunt_name !== vote)) {
+        const placedVote = session.votes.find(oldVote => oldVote.user.id === user.user.id)
+        if (placedVote) {
+            if (placedVote.restaraunt_name !== vote) {
+                
+            }
+        } else {
             await axios.post(baseURL + '/vote/place-vote', { sessionId: session.id, vote }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
                 if (res.data.success) {
                     mutate(`${baseURL}/vote/session/${session.id}`)
@@ -61,6 +67,7 @@ const VoteSession = ({ route, navigation }) => {
 
     const MenuModal = ({ modalVisible, setModalVisible }) => {
         const [isEnable, setIsEnable] = useState(session.add_options)
+        const [modalHeight, setModalHeight] = useState(creator ? 200 : 150)
         return (
             <>
                 <Modal
@@ -72,7 +79,7 @@ const VoteSession = ({ route, navigation }) => {
                     }}
                 >
                     <View style={customStyle.modalCenteredView}>
-                        <View style={[customStyle.modalView, { height: 200 }]}>
+                        <View style={[customStyle.modalView, { height: modalHeight }]}>
                             <View style={{ flexDirection: 'row', marginTop: 10, justifyContent: 'space-between' }}>
                                 <View style={{ flexDirection: 'row' }}>
                                     <Text numberOfLines={1} style={customStyle.modalTitle}>Options</Text>
@@ -85,25 +92,33 @@ const VoteSession = ({ route, navigation }) => {
                                 </TouchableOpacity>
 
                             </View>
-                            <View>
-                                <TouchableOpacity style={[customStyle.modalOption, {justifyContent: 'space-between'}]}>
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <FontAwesome5 name={isEnable ? 'unlock' : 'lock'} size={35} color={isEnable ? globalColors.lightgreen : globalColors.red} />
-                                        <Text style={customStyle.modalOptionText}>Allow new options</Text>
-                                    </View>
-                                    <Switch
-                                        trackColor={{ false: "#767577", true: globalColors.lightgreen }}
-                                        thumbColor={"white"}
-                                        ios_backgroundColor="#3e3e3e"
-                                        onValueChange={() => setIsEnable(!isEnable)}
-                                        value={isEnable}
-                                    />
-                                </TouchableOpacity>
-                                <TouchableOpacity style={customStyle.modalOption}>
-                                    <Feather name="trash-2" size={35} color={globalColors.red} />
-                                    <Text style={customStyle.modalOptionText}>Delete session</Text>
-                                </TouchableOpacity>
-                            </View>
+                            {creator
+                                ? <View>
+                                    <TouchableOpacity style={[customStyle.modalOption, { justifyContent: 'space-between' }]}>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <FontAwesome5 name={isEnable ? 'unlock' : 'lock'} size={35} color={isEnable ? globalColors.lightgreen : globalColors.red} />
+                                            <Text style={customStyle.modalOptionText}>Allow new options</Text>
+                                        </View>
+                                        <Switch
+                                            trackColor={{ false: "#767577", true: globalColors.lightgreen }}
+                                            thumbColor={"white"}
+                                            ios_backgroundColor="#3e3e3e"
+                                            onValueChange={() => setIsEnable(!isEnable)}
+                                            value={isEnable}
+                                        />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={customStyle.modalOption}>
+                                        <Feather name="trash-2" size={35} color={globalColors.red} />
+                                        <Text style={customStyle.modalOptionText}>Delete session</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                : <View>
+                                    <TouchableOpacity onPress={() => leaveGroup({ navigation, creator, setModalHeight, mutate, setModalVisible, session })} style={customStyle.modalOption}>
+                                        <SimpleLineIcons name="logout" size={35} color="black" />
+                                        <Text style={customStyle.modalOptionText}>Leave session</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            }
                         </View>
                     </View>
                 </Modal>
@@ -117,12 +132,12 @@ const VoteSession = ({ route, navigation }) => {
                 <Toast position='top' config={toastConfig} />
             </View>
             <View style={styles.container}>
-                <View style={{ flexDirection: 'row', justifyContent: creator ? 'space-between' : null, width: '100%' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 5 }}>
                         <Ionicons name="chevron-back" size={45} color="black" />
                     </TouchableOpacity>
                     <Text numberOfLines={1} style={[styles.title]}>{session.name}</Text>
-                    {creator && !session.ended ? <Menu /> : null}
+                    <Menu />
                 </View>
                 <Text style={customStyle.title}>Current Results</Text>
                 <Text style={[customStyle.status, { color: session.ended ? globalColors.red : globalColors.darkgreen }]}>{session.ended ? 'Closed' : 'Open'}</Text>
@@ -147,7 +162,7 @@ const VoteSession = ({ route, navigation }) => {
                                         </View>
                                         <Text style={customStyle.percent}>{percent}%</Text>
                                     </View>
-                                    : <TouchableOpacity onPress={() => placeVote(restaurant)} style={customStyle.option}>
+                                    : <TouchableOpacity onPress={() => vote(restaurant)} style={customStyle.option}>
                                         <Text numberOfLines={2} style={customStyle.name}>{restaurant}</Text>
                                         <View style={customStyle.progressWrapper}>
                                             <View style={[customStyle.progressInner, { backgroundColor: session.votes.find(vote => vote.user.id === user.user.id && restaurant === vote.restaraunt_name) ? '#48BB78' : globalColors.pink, width: percent <= 10 ? 30 : (percent * 250) / 100 }]} >

@@ -101,13 +101,22 @@ router.post('/leave-group', async (req: express.Request, res: express.Response) 
     const { body } = req;
     const { groupId } = body
     try {
-        const group = await prisma.group.findUnique({ where: { id: groupId }, include: { users: true, voteSessions: true } })
+        const group = await prisma.group.findUnique({ where: { id: groupId }, include: { users: true, voteSessions: { include: { votes: true } } } })
         if (group) {
             if (group.users.find(user => user.id === req.user.userId)) {
                 await prisma.group.update({ where: { id: groupId }, data: { users: { disconnect: { id: req.user.userId } } } })
                 // await prisma.vote_Session.updateMany({where: {id: 'fjdksl'}, data: {users: {disconnect: {id: req.user.userId}}}})
-                let ids = group.voteSessions.map(session => {return {id: session.id}})
-                await prisma.user.update({where: {id: req.user.userId}, data: {voteSessions: {disconnect: ids}}})
+                let sessionIds = group.voteSessions.map(session => { return { id: session.id } })
+                // let voteIds = group.voteSessions.map(session => session.votes.map(vote => { if (vote.userId === req.user.userId) { return { id: vote.id } } else return null }))
+                let voteIds = [] as any
+                group.voteSessions.forEach(session => {
+                    session.votes.forEach(vote => {
+                        if (vote.userId === req.user.userId) {
+                            voteIds.push({ id: vote.id })
+                        }
+                    })
+                })
+                console.log(await prisma.user.update({ where: { id: req.user.userId }, data: { voteSessions: { disconnect: sessionIds }, votes: { deleteMany: voteIds } } }))
                 res.json({ success: true }).status(200)
             } else {
                 console.log('hi')
@@ -190,8 +199,6 @@ router.post('/add-member', async (req: express.Request, res: express.Response) =
                     const user = await prisma.user.findFirst({ where: { email } })
                     if (user) {
                         await prisma.group.update({ where: { id: groupId }, data: { users: { connect: { id: user.id } } } })
-                        const ids = group.voteSessions.map(session => {return {id: session.id}})
-                        await prisma.user.update({where: {id: user.id}, data: {voteSessions: {connect: ids}}})
                         res.json({ success: true }).status(200)
                     } else {
                         res.json({ success: false, message: 'User not found' }).status(404)
