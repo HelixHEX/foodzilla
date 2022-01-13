@@ -64,7 +64,7 @@ const AddNewOption = ({ session, mutate }) => {
 
     return (
         <>
-            {!session.ended
+            {session.add_options && !session.ended
                 ? <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                     <TextInput value={optionText} onChangeText={text => setOptionText(text)} style={customStyle.input} placeholder='option' />
                     <TouchableOpacity onPress={() => addOption()} style={[customStyle.btn, { display: session.add_options && !session.ended ? 'flex' : 'none' }]} >

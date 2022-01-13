@@ -5,12 +5,14 @@ import {
     Text,
     StyleSheet,
     ScrollView,
-    TouchableOpacity
+    TouchableOpacity,
+    Modal,
+    Switch
 } from 'react-native'
 import { useUser, useVoteSession } from '../utils/api';
 import { baseURL, getValue } from '../utils/globalVar';
 import { globalColors, styles, toastConfig } from '../utils/styles';
-import { Feather, Ionicons } from '@expo/vector-icons';
+import { Feather, FontAwesome5, Ionicons } from '@expo/vector-icons';
 import AddNewOption from '../components/AddNewOption';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
@@ -29,6 +31,7 @@ const VoteSession = ({ route, navigation }) => {
     if (!user.user) return <Text>error</Text>
 
     const session = voteSession.session
+    const creator = voteSession.session.createdBy === user.user.id
 
     const placeVote = async vote => {
         if (session.votes.find(oldVote => oldVote.user.id === user.user.id && oldVote.restaraunt_name !== vote)) {
@@ -43,6 +46,70 @@ const VoteSession = ({ route, navigation }) => {
         }
     }
 
+    const Menu = () => {
+        const [modalVisible, setModalVisible] = useState(false)
+
+        return (
+            <>
+                <TouchableOpacity onPress={() => setModalVisible(true)} style={{ marginTop: 15 }}>
+                    <Ionicons name="ellipsis-horizontal-sharp" size={30} color="black" />
+                </TouchableOpacity>
+                <MenuModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
+            </>
+        )
+    }
+
+    const MenuModal = ({ modalVisible, setModalVisible }) => {
+        const [isEnable, setIsEnable] = useState(session.add_options)
+        return (
+            <>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        setModalVisible(!modalVisible);
+                    }}
+                >
+                    <View style={customStyle.modalCenteredView}>
+                        <View style={[customStyle.modalView, { height: 200 }]}>
+                            <View style={{ flexDirection: 'row', marginTop: 10, justifyContent: 'space-between' }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text numberOfLines={1} style={customStyle.modalTitle}>Options</Text>
+                                </View>
+                                <TouchableOpacity
+                                    style={[customStyle.modalBtn, customStyle.modalBtnClose]}
+                                    onPress={() => setModalVisible(!modalVisible)}
+                                >
+                                    <Feather name="x" size={35} color="black" />
+                                </TouchableOpacity>
+
+                            </View>
+                            <View>
+                                <TouchableOpacity style={[customStyle.modalOption, {justifyContent: 'space-between'}]}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <FontAwesome5 name={isEnable ? 'unlock' : 'lock'} size={35} color={isEnable ? globalColors.lightgreen : globalColors.red} />
+                                        <Text style={customStyle.modalOptionText}>Allow new options</Text>
+                                    </View>
+                                    <Switch
+                                        trackColor={{ false: "#767577", true: globalColors.lightgreen }}
+                                        thumbColor={"white"}
+                                        ios_backgroundColor="#3e3e3e"
+                                        onValueChange={() => setIsEnable(!isEnable)}
+                                        value={isEnable}
+                                    />
+                                </TouchableOpacity>
+                                <TouchableOpacity style={customStyle.modalOption}>
+                                    <Feather name="trash-2" size={35} color={globalColors.red} />
+                                    <Text style={customStyle.modalOptionText}>Delete session</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
+            </>
+        )
+    }
 
     return (
         <>
@@ -50,16 +117,17 @@ const VoteSession = ({ route, navigation }) => {
                 <Toast position='top' config={toastConfig} />
             </View>
             <View style={styles.container}>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{ flexDirection: 'row', justifyContent: creator ? 'space-between' : null, width: '100%' }}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 5 }}>
                         <Ionicons name="chevron-back" size={45} color="black" />
                     </TouchableOpacity>
-                    <Text numberOfLines={1} style={styles.title}>{session.name}</Text>
+                    <Text numberOfLines={1} style={[styles.title]}>{session.name}</Text>
+                    {creator && !session.ended ? <Menu /> : null}
                 </View>
                 <Text style={customStyle.title}>Current Results</Text>
                 <Text style={[customStyle.status, { color: session.ended ? globalColors.red : globalColors.darkgreen }]}>{session.ended ? 'Closed' : 'Open'}</Text>
                 <AddNewOption mutate={mutate} session={session} />
-                <ScrollView style={{marginTop: 50}}>
+                <ScrollView style={{ marginTop: 50 }}>
                     {session.restaurants.map((restaurant, index) => {
                         let count = 0
                         session.votes.length > 0 ? session.votes.forEach(vote => vote.restaraunt_name === restaurant ? count += 1 : null) : 0
@@ -163,7 +231,47 @@ const customStyle = StyleSheet.create({
         height: 20,
         borderRadius: 50,
         marginLeft: 5
-    }
+    },
+    modalCenteredView: {
+        flex: 1,
+        justifyContent: "flex-end",
+        alignItems: "center",
+        // marginTop: 22,
+
+    },
+    modalView: {
+        borderTopRightRadius: 20,
+        borderTopLeftRadius: 20,
+        backgroundColor: 'white',
+        width: '100%',
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 6,
+        },
+        shadowOpacity: 0.37,
+        shadowRadius: 7.49,
+        elevation: 12,
+        paddingLeft: 20,
+        paddingRight: 20
+    },
+    modalTitle: {
+        fontSize: 25,
+        alignSelf: 'center'
+    },
+    modalBtnClose: {
+        alignSelf: 'flex-end',
+    },
+    modalOption: {
+        flexDirection: 'row',
+        marginTop: 30
+    },
+    modalOptionText: {
+        alignSelf: 'center',
+        color: 'black',
+        marginLeft: 10,
+        fontSize: 20
+    },
 })
 
 export default VoteSession
