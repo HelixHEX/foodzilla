@@ -45,9 +45,9 @@ const RestarauntCard = ({ navigation, groupId, displayToast, screen, data, type,
 const ModalCard = ({ navigation, groupId, displayToast, screen, modalVisible, setModalVisible, data }) => {
     const [modalHeight, setModalHeight] = useState(screen === 'home' ? 260 : 200)
     const [displayGroups, setDisplayGroups] = useState(false)
-    const { data: groupsData, error, isLoading } = useActiveGroups()
+    const { data: groupsData, isError, isLoading } = useActiveGroups()
 
-    if (error) return <Text>{error.info}</Text>
+    if (isError) return <Text>{error.info}</Text>
     if (isLoading) return <Text>loading...</Text>
     if (!groupsData.groups) return <Text>error</Text>
 

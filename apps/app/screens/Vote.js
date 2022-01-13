@@ -11,9 +11,9 @@ import { useVoteSessions } from '../utils/api'
 import { globalColors, styles } from '../utils/styles'
 
 const Vote = ({ navigation }) => {
-    const { data: voteSessions, error, isLoading } = useVoteSessions({ groupId: 'ckxe7vzev0051m20gxivtbvhy' })
+    const { data: voteSessions, isError, isLoading } = useVoteSessions({ groupId: 'ckxe7vzev0051m20gxivtbvhy' })
 
-    if (error) return <Text>{error.info}</Text>
+    if (isError) return <Text>{error.info}</Text>
     if (isLoading) return <Text>loading...</Text>
     if (!voteSessions.sessions) return <Text>error</Text>
 

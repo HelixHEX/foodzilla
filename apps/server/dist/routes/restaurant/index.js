@@ -121,7 +121,7 @@ router.post('/unsave-from-group', (req, res) => __awaiter(void 0, void 0, void 0
                 const restaurant = yield prisma.restaurant.findUnique({ where: { id: restarauntId } });
                 if (restaurant) {
                     console.log(group.restaurants);
-                    if (group.restaurants.find(oldRestaraunt => oldRestaraunt.id == restaurant.id)) {
+                    if (group.restaurants.find(oldRestaurant => oldRestaurant.id == restaurant.id)) {
                         yield prisma.group.update({ where: { id: groupId }, data: { restaurants: { disconnect: { id: restaurant.id } } } });
                         res.json({ success: true }).status(200);
                     }

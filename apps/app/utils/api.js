@@ -38,7 +38,7 @@ export const useActiveGroups = params => {
 
 export const useVoteSession = params => {
     const { data, error, mutate } = useSWRNative([baseURL + `/vote/session/${params.id}`, params], fetcher)
-
+    console.log(`hi: ${data}`)
     return {
         data,
         mutate,
@@ -49,7 +49,6 @@ export const useVoteSession = params => {
 
 export const useGroup = params => {
     const { data, error, mutate } = useSWRNative([baseURL + `/group?id=${params.id}`, params], fetcher)
-
     return {
         data,
         mutate,
@@ -67,7 +66,7 @@ export const useGroup = params => {
 //                 if (res.data.message) {
 //                     error = res.data.message
 //                     return []
-//                 } else if (res.data.success) {
+//                 } else if (res.data) {
 //                     return res.data.results
 //                 }
 //             })

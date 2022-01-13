@@ -8,9 +8,9 @@ import { useActiveGroups } from "../utils/api";
 import GroupCard from "./GroupCard";
 
 const GroupsList = ({nav}) => {
-    const { data: groups, error, isLoading } = useActiveGroups()
+    const { data: groups, isError, isLoading } = useActiveGroups()
 
-    if (error) return <Text>{error.info}</Text>
+    if (isError) return <Text>{error.info}</Text>
     if (isLoading) return <Text>loading...</Text>
     if (!groups.groups) return <Text>error</Text>
 

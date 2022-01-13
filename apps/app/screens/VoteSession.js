@@ -7,7 +7,6 @@ import {
     ScrollView,
     TouchableOpacity
 } from 'react-native'
-import { restaurants } from '../constants/restaurants';
 import { useUser, useVoteSession } from '../utils/api';
 import { baseURL, getValue } from '../utils/globalVar';
 import { globalColors, styles } from '../utils/styles';
@@ -15,8 +14,8 @@ import { Feather, Ionicons } from '@expo/vector-icons';
 
 const VoteSession = ({ route, navigation }) => {
     const { params } = route;
-    const { data: voteSession, error: voteError, isLoading: voteLoading, mutate } = useVoteSession({ id: params.id })
-    const { data: user, error: userError, isLoading: userLoading } = useUser()
+    const { data: voteSession, isError: voteError, isLoading: voteLoading, mutate } = useVoteSession({ id: params.id })
+    const { data: user, isError: userError, isLoading: userLoading } = useUser()
 
     if (voteError) return <Text>{voteError.info}</Text>
     if (voteLoading) return <Text>loading...</Text>
