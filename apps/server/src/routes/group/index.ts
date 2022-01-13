@@ -101,8 +101,19 @@ router.post('/leave-group', async (req: express.Request, res: express.Response) 
     const { body } = req;
     const { groupId } = body
     try {
-        await prisma.group.update({ where: { id: groupId }, data: { users: { disconnect: { id: req.user.userId } } } })
-        res.json({ success: true }).status(200)
+        const group = await prisma.group.findUnique({ where: { id: groupId }, include: { users: true, voteSessions: true } })
+        if (group) {
+            if (group.users.find(user => user.id === req.user.userId)) {
+                await prisma.group.update({ where: { id: groupId }, data: { users: { disconnect: { id: req.user.userId } } } })
+                // await prisma.vote_Session.updateMany({where: {id: 'fjdksl'}, data: {users: {disconnect: {id: req.user.userId}}}})
+                let ids = group.voteSessions.map(session => {return {id: session.id}})
+                await prisma.user.update({where: {id: req.user.userId}, data: {voteSessions: {disconnect: ids}}})
+                res.json({ success: true }).status(200)
+            } else {
+                console.log('hi')
+                res.json({ success: false, message: 'Already left' }).status(400)
+            }
+        }
     } catch (e) {
         console.log(e)
         res.json({ success: false, message: "An error has occurred" }).status(400)
@@ -134,7 +145,11 @@ router.post('/', async (req: express.Request, res: express.Response) => {
     try {
         const group = await prisma.group.findUnique({ where: { id: groupId }, include: { restaurants: true, users: { select: { id: true, name: true } }, voteSessions: { include: { users: { select: { id: true, name: true } } } } } })
         if (group) {
-            res.json({ success: true, group }).status(200)
+            if (group.users.find(user => user.id === req.user.userId)) {
+                res.json({ success: true, group }).status(200)
+            } else {
+                res.json({ success: false, message: 'Not a member of group' }).status(403)
+            }
         } else {
             res.json({ success: false, message: 'Group not found' }).status(404)
         }
@@ -144,16 +159,48 @@ router.post('/', async (req: express.Request, res: express.Response) => {
     }
 })
 
-router.post('/saved-restaurants', async(req:express.Request, res: express.Response) => {
-    const {body} = req;
-    const {groupId} = body 
+router.post('/saved-restaurants', async (req: express.Request, res: express.Response) => {
+    const { body } = req;
+    const { groupId } = body
     try {
-        const group = await prisma.group.findUnique({where: {id: groupId}, include: {users: true, restaurants: true}})
+        const group = await prisma.group.findUnique({ where: { id: groupId }, include: { users: true, restaurants: true } })
         if (group) {
             if (group.users.find(user => user.id === req.user.userId)) {
-                res.json({success: true, restaurants: group.restaurants}).status(200)
+                res.json({ success: true, restaurants: group.restaurants }).status(200)
             } else {
                 res.json({ success: false, message: "Not a member of group" }).status(403)
+            }
+        } else {
+            res.json({ success: false, message: 'Group not found' }).status(404)
+        }
+    } catch (e) {
+        console.log(e)
+        res.json({ success: false, message: "An error has occurred" }).status(400)
+    }
+})
+
+router.post('/add-member', async (req: express.Request, res: express.Response) => {
+    const { body } = req;
+    const { groupId, email } = body;
+    try {
+        const group = await prisma.group.findUnique({ where: { id: groupId }, include: { users: true, voteSessions: true } })
+        if (group) {
+            if (group.creatorId === req.user.userId) {
+                if (!group.users.find(user => user.email === email)) {
+                    const user = await prisma.user.findFirst({ where: { email } })
+                    if (user) {
+                        await prisma.group.update({ where: { id: groupId }, data: { users: { connect: { id: user.id } } } })
+                        const ids = group.voteSessions.map(session => {return {id: session.id}})
+                        await prisma.user.update({where: {id: user.id}, data: {voteSessions: {connect: ids}}})
+                        res.json({ success: true }).status(200)
+                    } else {
+                        res.json({ success: false, message: 'User not found' }).status(404)
+                    }
+                } else {
+                    res.json({ success: false, message: 'User already a member' }).status(400)
+                }
+            } else {
+                res.json({ success: false, message: 'Only the creator can create a group' }).status(304)
             }
         } else {
             res.json({ success: false, message: 'Group not found' }).status(404)

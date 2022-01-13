@@ -117,15 +117,17 @@ router.post('/join-voting-session', async (req: express.Request, res: express.Re
     }
 })
 
-router.post('/new-vote', async (req: express.Request, res: express.Response) => {
+router.post('/place-vote', async (req: express.Request, res: express.Response) => {
     const { body } = req;
     const { sessionId, vote } = body;
     try {
-        const session = await prisma.vote_Session.findUnique({ where: { id: sessionId }, include: { users: { select: { id: true, name: true } }, votes: { select: { user: { select: { id: true, name: true } } } } } })
+        const session = await prisma.vote_Session.findUnique({ where: { id: sessionId }, include: { users: { select: { id: true, name: true } }, votes: { select: {id: true, user: { select: { id: true, name: true } } } } } })
         if (session) {
             if (!session.ended) {
                 if (session.users.find(user => user.id === req.user.userId)) {
-                    if (!session.votes.find(voter => voter.user.id === req.user.userId)) {
+                    let findVote = session.votes.find(voter => voter.user.id === req.user.userId)
+                    // console.log(findVote.u)
+                    if (!findVote) {
                         if (session.restaurants.find(option => option === vote)) {
                             await prisma.vote.create({
                                 data: {
@@ -139,8 +141,8 @@ router.post('/new-vote', async (req: express.Request, res: express.Response) => 
                             res.json({ success: false, message: 'Restaraunt not found' }).status(404)
                         }
                     } else {
-                        console.log('hi')
-                        res.json({ success: false, message: 'Already voted' }).status(400)
+                        await prisma.vote.update({where: {id: findVote.id}, data: {restaraunt_name: vote}})
+                        res.json({ success: true}).status(200)
                     }
                 } else {
                     res.json({ success: false, message: 'You have not joined the session' }).status(403)

@@ -26,9 +26,9 @@ const Filter = ({ selected, setSelected }) => {
     return (
         <>
             <View style={customStyle.container}>
-                <TouchableOpacity style={customStyle.viewMore}>
+                {/* <TouchableOpacity style={customStyle.viewMore}>
                     <Text style={customStyle.viewMoreText}>View More</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <View style={customStyle.options}>
                     {categories.slice(0, 5).map((category, index) => (
                         <View key={index}>

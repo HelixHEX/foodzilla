@@ -6,18 +6,22 @@ import {
     TouchableOpacity
 } from 'react-native'
 import GroupsList from '../components/GroupsList'
-import { styles } from '../utils/styles'
+import { styles, toastConfig } from '../utils/styles'
+import { Toast } from "react-native-toast-message/lib/src/Toast";
 
 const Groups = ({ navigation }) => {
     // const handleNewGroup = async () => {
-        
+
     // }
     return (
         <>
+            <View style={{ zIndex: 1 }}>
+                <Toast position='top' config={toastConfig} />
+            </View>
             <View style={styles.container}>
-                <View style={{flexDirection: 'row'}}>
+                <View style={{ flexDirection: 'row' }}>
                     <Text style={styles.title}>Groups</Text>
-                    <TouchableOpacity style={{marginTop: 13, marginLeft: 10}}>
+                    <TouchableOpacity style={{ marginTop: 13, marginLeft: 10 }}>
                         <Feather size={35} name='plus' />
                     </TouchableOpacity>
                 </View>

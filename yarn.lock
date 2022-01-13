@@ -1360,6 +1360,11 @@
     semver "^7.3.5"
     tar "^6.1.11"
 
+"@nandorojo/swr-react-native@^1.0.0-beta.8.1":
+  version "1.0.0-beta.8.1"
+  resolved "https://registry.yarnpkg.com/@nandorojo/swr-react-native/-/swr-react-native-1.0.0-beta.8.1.tgz#cf3c3940b665cfe3aa8aa61063d1ab2c4441de99"
+  integrity sha512-jPyh9OzgnvL9rTwWCTP6fX8uZB4P03xFOn3xKCZ05nFH+ZWKSC139nT59vtg+s45io2EYkUeZjz7o6P7RA0m8w==
+
 "@next/eslint-plugin-next@12.0.7":
   version "12.0.7"
   resolved "https://registry.yarnpkg.com/@next/eslint-plugin-next/-/eslint-plugin-next-12.0.7.tgz#2c71bb66b8f8ff1080086342113406aa3156976f"
@@ -1528,6 +1533,11 @@
     strip-ansi "^5.2.0"
     sudo-prompt "^9.0.0"
     wcwidth "^1.0.1"
+
+"@react-native-community/netinfo@7.1.3":
+  version "7.1.3"
+  resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-7.1.3.tgz#518d753a9ac08f1e59562c5d4168193584fd7329"
+  integrity sha512-E8q3yuges6NYhrXBDQdzwCnG0bBQXATRjs6fpTjRJ37nURmdpe4HLq1awvooG4ymGTpZhrx4elcs/aUM7PTgrA==
 
 "@react-native/assets@1.0.0":
   version "1.0.0"
@@ -7563,10 +7573,10 @@ supports-color@^7.0.0, supports-color@^7.1.0:
   dependencies:
     has-flag "^4.0.0"
 
-swr@^1.1.2-beta.0:
-  version "1.1.2-beta.0"
-  resolved "https://registry.yarnpkg.com/swr/-/swr-1.1.2-beta.0.tgz#4c25f3a8e1f825b15426dd8c62d10cec95429be6"
-  integrity sha512-e7ZcPCrEvGX+s4jDtBwV9c+HKqHzG1secuwU8bYjnnGkSJMneyn7OaabJKtRh922DH5a3k2vvBdhftoSL8bHJQ==
+swr@^1.2.0-beta.1:
+  version "1.2.0-beta.1"
+  resolved "https://registry.yarnpkg.com/swr/-/swr-1.2.0-beta.1.tgz#fb1c498edd4d3ea4d868c65d6c9d05fea211d6bf"
+  integrity sha512-DuHvHadiDOeeXy9YEqOjgiC9RlpWpHY/g5qiPr3NIl4dhm9PasPhrLjzDcjgW3zTp3EcKlbRpAobDOUWYEdgiA==
 
 table@^6.0.9:
   version "6.7.5"
