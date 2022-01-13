@@ -61,7 +61,7 @@ const VoteSession = ({ user, data, nav, group, mutate }) => {
                             {/* <Text style={styles.subtitle}>Group: {data.group.name}</Text> */}
                             <Text style={styles.subtitle}>Users: {data.users.length}</Text>
                         </View>
-                        <Text style={[styles.date, { color: data.ended ? globalColors.red : globalColors.darkgreen }]}>{data.ends ? FormatDate(data.endsAt) : data.ended ? "Closed" : "Joined"}</Text>
+                        <Text style={[styles.date, { color: data.ended ? globalColors.red : globalColors.darkgreen }]}>{data.ends ? FormatDate(data.endsAt) : "Joined"}</Text>
                     </TouchableOpacity>
                     <View style={styles.line} />
                 </>
@@ -73,10 +73,12 @@ const VoteSession = ({ user, data, nav, group, mutate }) => {
                             {/* <Text style={styles.subtitle}>Group: {data.group.name}</Text> */}
                             <Text style={styles.subtitle}>Users: {data.users.length}</Text>
                         </View>
-                        <TouchableOpacity onPress={() => joinSession()} style={styles.btn}>
-                            <Text style={{ color: 'white', alignSelf: 'center', fontSize: 20 }}>Join</Text>
-                        </TouchableOpacity>
-                        {/* <Text style={[styles.date, { color: data.ended ? globalColors.red : globalColors.darkgreen }]}>{data.ends ? FormatDate(data.endsAt) : data.ended ? "Closed" : "Open"}</Text> */}
+                        {!data.ended
+                            ? <TouchableOpacity onPress={() => joinSession()} style={styles.btn}>
+                                <Text style={{ color: 'white', alignSelf: 'center', fontSize: 20 }}>Join</Text>
+                            </TouchableOpacity>
+                            : <Text style={[styles.date, { color: data.ended ? globalColors.red : globalColors.darkgreen }]}>{data.ends ? FormatDate(data.endsAt) : "Closed"}</Text>
+                        }
                     </View>
                     <View style={styles.line} />
                 </>

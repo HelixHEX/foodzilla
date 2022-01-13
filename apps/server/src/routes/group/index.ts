@@ -116,8 +116,7 @@ router.post('/leave-group', async (req: express.Request, res: express.Response) 
                         }
                     })
                 })
-                console.log(sessionIds)
-                await prisma.user.update({ where: { id: req.user.userId }, data: { voteSessions: { disconnect: sessionIds }, votes: { deleteMany: voteIds } } })
+                console.log(await prisma.user.update({ where: { id: req.user.userId }, data: { voteSessions: { disconnect: sessionIds }, votes: { deleteMany: voteIds } } }))
                 res.json({ success: true }).status(200)
             } else {
                 console.log('hi')
@@ -200,8 +199,6 @@ router.post('/add-member', async (req: express.Request, res: express.Response) =
                     const user = await prisma.user.findFirst({ where: { email } })
                     if (user) {
                         await prisma.group.update({ where: { id: groupId }, data: { users: { connect: { id: user.id } } } })
-                        const ids = group.voteSessions.map(session => { return { id: session.id } })
-                        await prisma.user.update({ where: { id: user.id }, data: { voteSessions: { connect: ids } } })
                         res.json({ success: true }).status(200)
                     } else {
                         res.json({ success: false, message: 'User not found' }).status(404)
