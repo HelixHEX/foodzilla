@@ -19,6 +19,7 @@ import SWR from "./SWR";
 import { globalColors } from "./utils/styles";
 import Group from "./screens/Group";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
+import NewVoteSession from "./screens/NewVoteSession";
 
 const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -87,6 +88,7 @@ const App = () => {
         <Stack.Screen name='VoteSession' component={VoteSession} />
         <Stack.Screen name='Group' component={Group} />
         <Stack.Screen name='RestarauntDetailed' component={RestarauntDetailed} />
+        <Stack.Screen name='NewSession' component={NewVoteSession} />
       </Stack.Navigator>
     </NavigationContainer>
   );

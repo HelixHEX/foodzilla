@@ -12,7 +12,7 @@ const RestarauntDetailed = ({navigation}) => {
         <>
             <View style={styles.container}>
                 <View style={{ flexDirection: 'row' }}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 5 }}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} >
                         <Ionicons name="chevron-back" size={45} color="black" />
                     </TouchableOpacity>
                     <Text numberOfLines={1} style={styles.title}>Restaraunt Detailed</Text>

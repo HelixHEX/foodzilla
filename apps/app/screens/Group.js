@@ -184,7 +184,7 @@ const Group = ({ route, navigation }) => {
             <>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <View style={{ flexDirection: 'row' }}>
-                        <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 5 }}>
+                        <TouchableOpacity onPress={() => navigation.goBack()} >
                             <Ionicons name="chevron-back" size={45} color="black" />
                         </TouchableOpacity>
                         <Text numberOfLines={1} style={[styles.title, styles.center]}>{group.name}</Text>

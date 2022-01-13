@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
     },
     title: {
         color: globalColors.gray,
-        fontSize: 40,
+        fontSize: 35,
         fontWeight: '200',
         marginBottom: 50,
     },

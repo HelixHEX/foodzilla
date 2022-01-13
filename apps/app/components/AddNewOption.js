@@ -10,12 +10,21 @@ import {
     Button,
     Keyboard
 } from 'react-native'
+import { useUser } from '../utils/api'
 import { baseURL, displayToast, fetcher } from '../utils/globalVar'
 import { globalColors } from '../utils/styles'
 
 const AddNewOption = ({ session, mutate }) => {
     const [modalVisible, setModalVisible] = useState(false)
     const [optionText, setOptionText] = useState('')
+
+    const { data: userData, isError, isLoading } = useUser()
+
+    if (isError) return <Text>{error.info}</Text>
+    if (isLoading) return <Text>loading...</Text>
+    if (!userData) return <Text>error</Text>
+
+    const user = userData.user
 
     const addOption = async () => {
         if (optionText.length > 0) {
@@ -64,10 +73,10 @@ const AddNewOption = ({ session, mutate }) => {
 
     return (
         <>
-            {session.add_options && !session.ended
+            {(session.add_options || session.createdBy === user.id) && !session.ended
                 ? <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                     <TextInput value={optionText} onChangeText={text => setOptionText(text)} style={customStyle.input} placeholder='option' />
-                    <TouchableOpacity onPress={() => addOption()} style={[customStyle.btn, { display: session.add_options && !session.ended ? 'flex' : 'none' }]} >
+                    <TouchableOpacity onPress={() => addOption()} style={customStyle.btn} >
                         <Text style={customStyle.btnText}>Add Option</Text>
                     </TouchableOpacity>
                 </View>

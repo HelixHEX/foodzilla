@@ -9,7 +9,7 @@ import {
     Modal,
     Switch
 } from 'react-native'
-import { leaveGroup, useUser, useVoteSession } from '../utils/api';
+import { closeSession, leaveGroup, leaveSession, useUser, useVoteSession } from '../utils/api';
 import { baseURL, getValue, displayToast } from '../utils/globalVar';
 import { globalColors, styles, toastConfig } from '../utils/styles';
 import { Feather, FontAwesome5, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
@@ -38,7 +38,7 @@ const VoteSession = ({ route, navigation }) => {
         const placedVote = session.votes.find(oldVote => oldVote.user.id === user.user.id)
         if (placedVote) {
             if (placedVote.restaraunt_name !== vote) {
-                
+
             }
         } else {
             await axios.post(baseURL + '/vote/place-vote', { sessionId: session.id, vote }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
@@ -67,7 +67,7 @@ const VoteSession = ({ route, navigation }) => {
 
     const MenuModal = ({ modalVisible, setModalVisible }) => {
         const [isEnable, setIsEnable] = useState(session.add_options)
-        const [modalHeight, setModalHeight] = useState(creator ? 200 : 150)
+        const [modalHeight, setModalHeight] = useState(creator ? 280 : 150)
         return (
             <>
                 <Modal
@@ -103,17 +103,27 @@ const VoteSession = ({ route, navigation }) => {
                                             trackColor={{ false: "#767577", true: globalColors.lightgreen }}
                                             thumbColor={"white"}
                                             ios_backgroundColor="#3e3e3e"
-                                            onValueChange={() => setIsEnable(!isEnable)}
+                                            onValueChange={() => { setIsEnable(!isEnable) }}
                                             value={isEnable}
                                         />
                                     </TouchableOpacity>
+                                    {session.ended
+                                        ? <TouchableOpacity style={customStyle.modalOption}>
+                                            <Feather name="check-circle" size={35} color={globalColors.lightgreen} />
+                                            <Text style={customStyle.modalOptionText}>Open session</Text>
+                                        </TouchableOpacity>
+                                        : <TouchableOpacity onPress={() => closeSession({session, mutate, setModalHeight, setModalVisible, creator})} style={customStyle.modalOption}>
+                                            <Feather name="x" size={35} color={globalColors.red} />
+                                            <Text style={customStyle.modalOptionText}>Close session</Text>
+                                        </TouchableOpacity>
+                                    }
                                     <TouchableOpacity style={customStyle.modalOption}>
                                         <Feather name="trash-2" size={35} color={globalColors.red} />
                                         <Text style={customStyle.modalOptionText}>Delete session</Text>
                                     </TouchableOpacity>
                                 </View>
                                 : <View>
-                                    <TouchableOpacity onPress={() => leaveGroup({ navigation, creator, setModalHeight, mutate, setModalVisible, session })} style={customStyle.modalOption}>
+                                    <TouchableOpacity onPress={() => leaveSession({ navigation, creator, setModalHeight, mutate, setModalVisible, session })} style={customStyle.modalOption}>
                                         <SimpleLineIcons name="logout" size={35} color="black" />
                                         <Text style={customStyle.modalOptionText}>Leave session</Text>
                                     </TouchableOpacity>
@@ -132,12 +142,12 @@ const VoteSession = ({ route, navigation }) => {
                 <Toast position='top' config={toastConfig} />
             </View>
             <View style={styles.container}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 5 }}>
+                <View style={{ flexDirection: 'row', justifyContent: !session.ended ? 'space-between' : null, width: '100%' }}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} >
                         <Ionicons name="chevron-back" size={45} color="black" />
                     </TouchableOpacity>
                     <Text numberOfLines={1} style={[styles.title]}>{session.name}</Text>
-                    <Menu />
+                    {!session.ended ? <Menu /> : null}
                 </View>
                 <Text style={customStyle.title}>Current Results</Text>
                 <Text style={[customStyle.status, { color: session.ended ? globalColors.red : globalColors.darkgreen }]}>{session.ended ? 'Closed' : 'Open'}</Text>

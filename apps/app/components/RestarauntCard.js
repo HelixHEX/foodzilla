@@ -15,7 +15,7 @@ import { FlatList } from "react-native-gesture-handler";
 import axios from "axios";
 import { baseURL, getValue } from "../utils/globalVar";
 
-const RestarauntCard = ({mutate, navigation, groupId, displayToast, screen, data, type, savedRestaraunt }) => {
+const RestarauntCard = ({ groupsData, mutate, navigation, groupId, displayToast, screen, data, type, savedRestaraunt }) => {
     const [modalVisible, setModalVisible] = useState(false)
 
     // useEffect(() =>{
@@ -24,7 +24,7 @@ const RestarauntCard = ({mutate, navigation, groupId, displayToast, screen, data
     // }, [])
     return (
         <>
-            <ModalCard mutate={mutate} navigation={navigation} groupId={groupId} displayToast={displayToast} screen={screen} data={data} modalVisible={modalVisible} setModalVisible={setModalVisible} />
+            <ModalCard groups={groupsData} mutate={mutate} navigation={navigation} groupId={groupId} displayToast={displayToast} screen={screen} data={data} modalVisible={modalVisible} setModalVisible={setModalVisible} />
             <View style={customStyle.container}>
                 <View style={[styles.center, { width: '65%' }]}>
                     <Text numberOfLines={2} style={customStyle.footerName}>{savedRestaraunt ? data.name : data.poi.name}</Text>
@@ -42,14 +42,9 @@ const RestarauntCard = ({mutate, navigation, groupId, displayToast, screen, data
     )
 }
 
-const ModalCard = ({mutate, navigation, groupId, displayToast, screen, modalVisible, setModalVisible, data }) => {
+const ModalCard = ({ groupsData, mutate, navigation, groupId, displayToast, screen, modalVisible, setModalVisible, data }) => {
     const [modalHeight, setModalHeight] = useState(screen === 'home' ? 260 : 200)
     const [displayGroups, setDisplayGroups] = useState(false)
-    const { data: groupsData, isError, isLoading } = useActiveGroups()
-
-    if (isError) return <Text>{error.info}</Text>
-    if (isLoading) return <Text>loading...</Text>
-    if (!groupsData.groups) return <Text>error</Text>
 
     const addToGroup = async ({ groupId: groupid }) => {
         let toast = {
@@ -208,7 +203,7 @@ const ModalCard = ({mutate, navigation, groupId, displayToast, screen, modalVisi
                                     <Feather name="bookmark" size={35} color={globalColors.turquoise} />
                                     <Text style={customStyle.optionText}>Save to account</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => {navigation.navigate('RestarauntDetailed'); setModalVisible(false)}} style={customStyle.option}>
+                                <TouchableOpacity onPress={() => { navigation.navigate('RestarauntDetailed'); setModalVisible(false) }} style={customStyle.option}>
                                     <Feather name="list" size={35} color={globalColors.lightgreen} />
                                     <Text style={customStyle.optionText}>View more details</Text>
                                 </TouchableOpacity>
@@ -220,7 +215,7 @@ const ModalCard = ({mutate, navigation, groupId, displayToast, screen, modalVisi
                                     <Feather name="x" size={35} color={globalColors.red} />
                                     <Text style={customStyle.optionText}>Remove from group</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => {navigation.navigate('RestarauntDetailed'); setModalVisible(false)}} style={customStyle.option}>
+                                <TouchableOpacity onPress={() => { navigation.navigate('RestarauntDetailed'); setModalVisible(false) }} style={customStyle.option}>
                                     <Feather name="list" size={35} color={globalColors.lightgreen} />
                                     <Text style={customStyle.optionText}>View more details</Text>
                                 </TouchableOpacity>
