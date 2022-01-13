@@ -121,7 +121,7 @@ router.post('/place-vote', async (req: express.Request, res: express.Response) =
     const { body } = req;
     const { sessionId, vote } = body;
     try {
-        const session = await prisma.vote_Session.findUnique({ where: { id: sessionId }, include: { users: { select: { id: true, name: true } }, votes: { select: {id: true, user: { select: { id: true, name: true } } } } } })
+        const session = await prisma.vote_Session.findUnique({ where: { id: sessionId }, include: { users: { select: { id: true, name: true } }, votes: { select: { id: true, user: { select: { id: true, name: true } } } } } })
         if (session) {
             if (!session.ended) {
                 if (session.users.find(user => user.id === req.user.userId)) {
@@ -141,8 +141,8 @@ router.post('/place-vote', async (req: express.Request, res: express.Response) =
                             res.json({ success: false, message: 'Restaraunt not found' }).status(404)
                         }
                     } else {
-                        await prisma.vote.update({where: {id: findVote.id}, data: {restaraunt_name: vote}})
-                        res.json({ success: true}).status(200)
+                        await prisma.vote.update({ where: { id: findVote.id }, data: { restaraunt_name: vote } })
+                        res.json({ success: true }).status(200)
                     }
                 } else {
                     res.json({ success: false, message: 'You have not joined the session' }).status(403)
@@ -187,11 +187,40 @@ router.post('/delete', async () => {
     await prisma.vote.deleteMany()
 })
 
+router.post('/add-option', async (req: express.Request, res: express.Response) => {
+    const { body } = req;
+    const { sessionId, vote } = body
+    try {
+        const session = await prisma.vote_Session.findUnique({ where: { id: sessionId }, include: { users: true } })
+        if (session) {
+            if (session.users.find(user => user.id === req.user.userId)) {
+                if (session.add_options) {
+                    if (!session.restaurants.find(restaurant => restaurant === vote)) {
+                        await prisma.vote_Session.update({where: {id: sessionId}, data: {restaurants: [...session.restaurants, vote]}})
+                        res.json({success: true}).status(200)
+                    } else {
+                        res.json({ success: false, message: 'Option already added' }).status(400)
+                    }
+                } else {
+                    res.json({ success: false, message: 'New options can\'t be added' }).status(403)
+                }
+            } else {
+                res.json({ success: false, message: 'You have not joined this session' }).status(404)
+            }
+        } else {
+            res.json({ success: false, message: 'Vote session not found' }).status(404)
+        }
+    } catch (e) {
+        console.log(e)
+        res.json({ success: false, message: "An error has occurred" }).status(400)
+    }
+})
+
 router.post('/session/:id', async (req: express.Request, res: express.Response) => {
     const { body } = req;
     const { id } = body
     try {
-        const session = await prisma.vote_Session.findUnique({ where: { id }, include: { users: { select: { id: true, name: true } }, votes: {include: {user: {select: {id: true, name: true}}}} } })
+        const session = await prisma.vote_Session.findUnique({ where: { id }, include: { users: { select: { id: true, name: true } }, votes: { include: { user: { select: { id: true, name: true } } } } } })
         if (session) {
             if (session.users.find(user => user.id === req.user.userId)) {
                 res.json({ success: true, session }).status(200)

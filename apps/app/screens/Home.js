@@ -25,9 +25,9 @@ const Home = ({ navigation }) => {
     const [shouldFetch, setShouldFetch] = useState(true)
     const fetchMore = useCallback(() => setShouldFetch(true), [])
 
-    const { data: user, error, isLoading } = useUser()
+    const { data: user, isError, isLoading } = useUser()
 
-    if (error) return <Text>{error.info}</Text>
+    if (isError) return <Text>{error.info}</Text>
     if (isLoading) return <Text>loading...</Text>
     if (!user) return <Text>error</Text>
 
@@ -69,11 +69,11 @@ const Home = ({ navigation }) => {
                     <Text style={styles.title}>
                         Discover
                     </Text>
-                    {/* <TouchableOpacity style={styles.center} onPress={handleLogout}>
+                    <TouchableOpacity style={styles.center} onPress={handleLogout}>
                         <Text>
                             Logout
                         </Text>
-                    </TouchableOpacity> */}
+                    </TouchableOpacity>
                 </View>
                 <Search handleSearch={handleSearch} search={search} setSearch={setSearch} />
                 {isSearching ? <TouchableOpacity onPress={() => { setIsSearching(false); setSearch('') }}>

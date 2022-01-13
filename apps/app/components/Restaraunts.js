@@ -23,9 +23,9 @@ const Restaraunts = ({displayToast, navigation}) => {
     //     if (previousPageData && !previousPageData.length) return null
     //     return `${baseURL}/restaurant/search/trending/${categories.find(category => category.name === filter).categorySet}  /users?page=${pageIndex}&limit=10`                    // SWR key
     // }
-    const { data: data2, error, isLoading, fetchMore } = useTrending({ categorySet: categories.find(category => category.name === filter).categorySet, lat: 40.486165191337804, lon: -74.47346067573329, radius: 16093.4, limit: 100, offset: 0 })
+    const { data: data2, isError, isLoading, fetchMore } = useTrending({ categorySet: categories.find(category => category.name === filter).categorySet, lat: 40.486165191337804, lon: -74.47346067573329, radius: 16093.4, limit: 100, offset: 0 })
 
-    if (error) return <Text>{error.message}</Text>
+    if (isError) return <Text>{error.message}</Text>
     if (isLoading) return <Header selected={filter} setSelected={setFilter} />
     if (!data2) return <Text>error</Text>
 

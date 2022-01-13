@@ -24,8 +24,8 @@ const Group = ({ route, navigation }) => {
     const [filter, setFilter] = useState('saved')
     const { params } = route;
 
-    const { data: groupData, error: groupError, isLoading: groupLoading } = useGroup({ id: params.id })
-    const { data: userData, error: userError, isLoading: userLoading } = useUser()
+    const { data: groupData, isError: groupError, isLoading: groupLoading } = useGroup({ id: params.id })
+    const { data: userData, isError: userError, isLoading: userLoading } = useUser()
 
     if (groupError) return <Text>{error.info}</Text>
     if (groupLoading) return <Text>loading...</Text>
