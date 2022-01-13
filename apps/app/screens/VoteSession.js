@@ -9,8 +9,10 @@ import {
 } from 'react-native'
 import { useUser, useVoteSession } from '../utils/api';
 import { baseURL, getValue } from '../utils/globalVar';
-import { globalColors, styles } from '../utils/styles';
+import { globalColors, styles, toastConfig } from '../utils/styles';
 import { Feather, Ionicons } from '@expo/vector-icons';
+import AddNewOption from '../components/AddNewOption';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 const VoteSession = ({ route, navigation }) => {
     const { params } = route;
@@ -40,8 +42,13 @@ const VoteSession = ({ route, navigation }) => {
             })
         }
     }
+
+
     return (
         <>
+            <View style={{ zIndex: 1 }}>
+                <Toast position='top' config={toastConfig} />
+            </View>
             <View style={styles.container}>
                 <View style={{ flexDirection: 'row' }}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 5 }}>
@@ -51,7 +58,8 @@ const VoteSession = ({ route, navigation }) => {
                 </View>
                 <Text style={customStyle.title}>Current Results</Text>
                 <Text style={[customStyle.status, { color: session.ended ? globalColors.red : globalColors.darkgreen }]}>{session.ended ? 'Closed' : 'Open'}</Text>
-                <ScrollView>
+                <AddNewOption mutate={mutate} session={session} />
+                <ScrollView style={{marginTop: 50}}>
                     {session.restaurants.map((restaurant, index) => {
                         let count = 0
                         session.votes.length > 0 ? session.votes.forEach(vote => vote.restaraunt_name === restaurant ? count += 1 : null) : 0
@@ -86,10 +94,9 @@ const VoteSession = ({ route, navigation }) => {
                             </View>
                         )
                     })}
-                    <TouchableOpacity style={[customStyle.btn, { display: session.add_options && !session.ended ? 'flex' : 'none' }]} >
-                        <Text style={customStyle.btnText}>Add New Option</Text>
-                    </TouchableOpacity>
+
                 </ScrollView>
+
             </View>
         </>
     )
@@ -109,7 +116,7 @@ const customStyle = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         width: '100%',
-        marginTop: 50,
+        marginBottom: 50,
         // width: 100,
     },
     name: {
