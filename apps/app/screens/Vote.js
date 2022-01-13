@@ -7,16 +7,23 @@ import {
     StyleSheet
 } from 'react-native'
 import VoteSession from '../components/VoteSession'
-import { useVoteSessions } from '../utils/api'
+import { useUser, useVoteSessions } from '../utils/api'
 import { globalColors, styles } from '../utils/styles'
 
 const Vote = ({ navigation }) => {
     const { data: voteSessions, isError, isLoading } = useVoteSessions({ groupId: 'ckxe7vzev0051m20gxivtbvhy' })
+    const { data: userData, isError: userError, isLoading: userLoading, mutate } = useUser()
 
     if (isError) return <Text>{error.info}</Text>
     if (isLoading) return <Text>loading...</Text>
     if (!voteSessions.sessions) return <Text>error</Text>
 
+
+    if (userError) return <Text>{error.info}</Text>
+    if (userLoading) return <Text>loading...</Text>
+    if (!userData.user) return <Text>error</Text>
+
+    const user = userData.user
     return (
         <>
             <View style={styles.container}>
@@ -25,14 +32,14 @@ const Vote = ({ navigation }) => {
                     <Text style={customStyle.label}>Active Voting Sessions</Text>
                     {voteSessions.sessions.filter(session => session.ended === false).map((session, index) => (
                         <View key={index}>
-                            <VoteSession nav={navigation} data={session} />
+                            <VoteSession mutate={mutate} user={user} nav={navigation} data={session} />
                             <View style={customStyle.line} />
                         </View>
                     ))}
                     <Text style={[customStyle.label, {marginTop: 50}]}>Past Voting Sessions</Text>
                     {voteSessions.sessions.filter(session => session.ended === true).map((session, index) => (
                         <View key={index}>
-                            <VoteSession nav={navigation} data={session} />
+                            <VoteSession mutate={mutate} user={user} nav={navigation} data={session} />
                             <View style={customStyle.line} />
                         </View>
                     ))}

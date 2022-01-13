@@ -24,7 +24,7 @@ const Group = ({ route, navigation }) => {
     const [filter, setFilter] = useState('saved')
     const { params } = route;
 
-    const { data: groupData, isError: groupError, isLoading: groupLoading } = useGroup({ id: params.id })
+    const { data: groupData, isError: groupError, isLoading: groupLoading, mutate } = useGroup({ id: params.id })
     const { data: userData, isError: userError, isLoading: userLoading } = useUser()
 
     if (groupError) return <Text>{error.info}</Text>
@@ -57,8 +57,8 @@ const Group = ({ route, navigation }) => {
 
     const renderSessionItem = ({ item }) => (
         <>
-            <VoteSession group={group} nav={navigation} data={item} />
-            <View style={customStyle.line} />
+            <VoteSession mutate={mutate} user={user} group={group} nav={navigation} data={item} />
+            {/* <View style={customStyle.line} /> */}
         </>
     )
 

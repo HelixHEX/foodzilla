@@ -133,3 +133,46 @@ export const useSavedRestaraunts = params => {
         isError: error
     }
 }
+
+export const leaveGroup = async ({session, mutate, setModalHeight, setModalVisible, displayToast, navigation, creator}) => {
+    let toast = {
+        title: '',
+        type: '',
+        message: ''
+    }
+    try {
+        let res = await fetcher(`${baseURL}/vote/leave-session`, { sessionId: session.id })
+        if (res.success) {
+            toast = {
+                title: 'Success',
+                type: 'success',
+                message: 'You have left the session'
+            }
+        } else if (res.message) {
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: res.message
+            }
+        } else {
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: 'An error has occurred'
+            }
+        }
+    } catch (e) {
+        toast = {
+            title: 'Error',
+            type: 'error',
+            message: 'An error has occurred'
+        }
+    }
+    setModalHeight(creator ? 200 : 150)
+    setModalVisible(false)
+    displayToast({ toast })
+    if (toast.type === 'success') {
+        mutate()
+        navigation.goBack()
+    }
+}
