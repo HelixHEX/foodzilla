@@ -11,17 +11,68 @@ datasource db {
 }
 
 model User {
-  id                String      @id @default(cuid())
+  id                String          @id @default(cuid())
+  createdAt         DateTime        @default(now())
   name              String
-  email             String      @unique
+  email             String          @unique
   password          String
   groups            Group[]
+  votes             Vote[]          @relation("user")
+  voteSessions      Vote_Session[]
+  saved_restaraunts Restaurant[]
 }
 
 model Group {
-  id                String      @id @default(cuid())
+  id                String          @id @default(cuid())
+  createdAt         DateTime        @default(now())
   name              String      
   creatorId         String 
   users             User[]
-  active            Boolean     @default(true)
+  active            Boolean         @default(true)
+  voteSessions      Vote_Session[]  @relation("group")
+  restaurants       Restaurant[]
+}
+
+model Vote_Session {
+  id                String          @id @default(cuid())
+  createdAt         DateTime        @default(now())
+  restaurants       String[]
+  createdBy         String          
+  group             Group           @relation(name: "group", fields: [groupId], references: [id])
+  groupId           String
+  votes             Vote[]          @relation("vote_session") 
+  users             User[]
+  ended             Boolean         @default(false)
+  anonymous         Boolean         @default(false)
+  winner            String?
+  ends              Boolean         @default(false)
+  endsAt            String?
+  name              String          @default("Default Name")
+  add_options       Boolean         @default(true)
+}
+
+model Vote {
+  id                String          @id @default(cuid())
+  createdAt         DateTime        @default(now())
+  restaraunt_name   String        
+  user              User            @relation(name: "user", fields: [userId], references: [id])
+  userId            String
+  VoteSession       Vote_Session    @relation("vote_session", fields: [VoteSessionId], references: [id])
+  VoteSessionId     String
+}
+
+model Restaurant {
+  id                String          @id @default(cuid())
+  createdAt         DateTime        @default(now())
+  tomtom_id         String
+  name              String 
+  type              String
+  lon               Float
+  lat               Float 
+  address           String 
+  categorySet       Int
+  url               String?
+  phone             String?
+  groups            Group[]
+  users             User[]
 }
