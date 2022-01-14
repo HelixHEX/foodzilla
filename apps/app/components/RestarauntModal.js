@@ -156,7 +156,7 @@ const ModalCard = ({ groupsData, mutate, navigation, groupId, screen, modalVisib
                         <View style={{ flexDirection: 'row', marginTop: 10, justifyContent: 'space-between' }}>
                             <View style={{ flexDirection: 'row' }}>
                                 {displayGroups ? <TouchableOpacity style={{ alignSelf: 'center' }} onPress={() => { setModalHeight(260); setDisplayGroups(false) }}><Ionicons name="chevron-back" size={25} color="black" /></TouchableOpacity> : null}
-                                <Text numberOfLines={1} style={customStyle.modalTitle}>{screen === "home" ? displayGroups ? "Select group" : data.poi.name : data.name}</Text>
+                                <Text numberOfLines={1} style={customStyle.modalTitle}>{screen === "home" || screen === 'restaurant' ? displayGroups ? "Select group" : data.poi.name : data.name}</Text>
                             </View>
                             <Pressable
                                 style={[customStyle.modalBtn, customStyle.modalBtnClose]}
@@ -165,7 +165,7 @@ const ModalCard = ({ groupsData, mutate, navigation, groupId, screen, modalVisib
                                 <Feather name="x" size={25} color="black" />
                             </Pressable>
                         </View>
-                        {screen === 'home' && !displayGroups ?
+                        {screen === 'home' || screen === 'restaurant' && !displayGroups ?
                             <View>
                                 <TouchableOpacity onPress={() => { setDisplayGroups(true); setModalHeight('70%') }} style={customStyle.option}>
                                     <Feather name="users" size={20} style={{ alignSelf: 'center' }} color={globalColors.hotpink} />
@@ -175,7 +175,7 @@ const ModalCard = ({ groupsData, mutate, navigation, groupId, screen, modalVisib
                                     <Feather name="bookmark" size={20} style={{ alignSelf: 'center' }} color={globalColors.turquoise} />
                                     <Text style={customStyle.optionText}>Save to account</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => { navigation.navigate('RestarauntDetailed', { id: data.id }); setModalVisible(false) }} style={customStyle.option}>
+                                <TouchableOpacity onPress={() => { navigation.navigate('Restaurant', { id: data.id }); setModalVisible(false) }} style={[customStyle.option, {display: screen === 'restaurant' ? 'none' : 'flex'}]}>
                                     <Feather name="list" size={20} style={{ alignSelf: 'center' }} color={globalColors.lightgreen} />
                                     <Text style={customStyle.optionText}>View more details</Text>
                                 </TouchableOpacity>
@@ -187,14 +187,14 @@ const ModalCard = ({ groupsData, mutate, navigation, groupId, screen, modalVisib
                                     <Feather name="x" size={20} style={{ alignSelf: 'center' }} color={globalColors.red} />
                                     <Text style={customStyle.optionText}>Remove from group</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => { navigation.navigate('RestarauntDetailed', { id: data.id }); setModalVisible(false) }} style={customStyle.option}>
+                                <TouchableOpacity onPress={() => { navigation.navigate('Restaurant', { id: data.id }); setModalVisible(false) }} style={customStyle.option}>
                                     <Feather name="list" size={20} style={{ alignSelf: 'center' }} color={globalColors.lightgreen} />
                                     <Text style={customStyle.optionText}>View more details</Text>
                                 </TouchableOpacity>
                             </View>
                             : null
                         }
-                        {screen === 'home' && displayGroups ?
+                        {screen === 'home' || screen === 'restaurant' && displayGroups ?
                             <View style={{ marginTop: 10 }}>
                                 <FlatList
                                     data={groupsData.groups}

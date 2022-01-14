@@ -29,9 +29,6 @@ const Group = ({ route, navigation }) => {
 
     if (groupError) return <Text>{error.info}</Text>
     if (groupLoading) return <Text>loading...</Text>
-    // useEffect(() => {
-    //     if (groupData.message === "Not a member of group") navigation.navigate('Groups')
-    // }, [])
     if (!groupData.group) return <Text>error</Text>
 
     if (userError) return <Text>{error.info}</Text>

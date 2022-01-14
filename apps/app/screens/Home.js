@@ -50,10 +50,7 @@ const Home = ({ navigation }) => {
     // if (searchIsLoading) return <Text>loading...</Text>
     // if (!searchData) return <Text>search error</Text>
 
-    const handleLogout = () => {
-        logout()
-        navigation.navigate('Login')
-    }
+   
 
     const renderItem = ({ item }) => (
         <RestarauntCard navigation={navigation} screen="home" displayToast={displayToast} type={'Restaraunt'} data={item} />
@@ -68,11 +65,7 @@ const Home = ({ navigation }) => {
                     <Text style={styles.title}>
                         Discover
                     </Text>
-                    <TouchableOpacity onPress={handleLogout}>
-                        <Text>
-                            Logout
-                        </Text>
-                    </TouchableOpacity>
+                    
                 </View>
                 <Search handleSearch={handleSearch} search={search} setSearch={setSearch} />
                 {isSearching ? <TouchableOpacity onPress={() => { setIsSearching(false); setSearch('') }}>

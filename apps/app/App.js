@@ -12,7 +12,7 @@ import Groups from './screens/Groups'
 import Profile from './screens/Profile'
 import Vote from './screens/Vote'
 import VoteSession from "./screens/VoteSession";
-import RestarauntDetailed from './screens/RestarauntDetailed'
+import Restaurant from './screens/Restaurant'
 
 import { AntDesign, Feather, MaterialIcons } from '@expo/vector-icons'
 import SWR from "./SWR";
@@ -20,6 +20,7 @@ import { globalColors } from "./utils/styles";
 import Group from "./screens/Group";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import NewVoteSession from "./screens/NewVoteSession";
+// import Restauarant from "./screens/Restaurant"
 
 const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -87,7 +88,7 @@ const App = () => {
         <Stack.Screen options={{ gestureEnabled: false }} name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name='VoteSession' component={VoteSession} />
         <Stack.Screen name='Group' component={Group} />
-        <Stack.Screen name='RestarauntDetailed' component={RestarauntDetailed} />
+        <Stack.Screen name='Restaurant' component={Restaurant} />
         <Stack.Screen name='NewSession' component={NewVoteSession} />
       </Stack.Navigator>
     </NavigationContainer>

@@ -123,6 +123,19 @@ export const useSearch = params => {
     }
 }
 
+
+export const useRestaurant = params => {
+    const { data, error, mutate } = useSWRNative([baseURL + `/restaurant/details/${params.restarauntId}`, params], fetcher)
+
+    return {
+        data,
+        mutate,
+        isLoading: !error && !data,
+        isError: error
+    }
+
+}
+
 export const useSavedRestaraunts = params => {
     const { data, error, mutate } = useSWRNative([baseURL + `/group/saved-restaurants?id=${params.groupId}`, params], fetcher)
 
@@ -390,7 +403,7 @@ export const toggleAddOptions = async ({ session, mutate }) => {
             toast = {
                 title: 'Success',
                 type: 'success',
-                message: session.add_options ?  'Members cannot add options' :  'Members can add options'
+                message: session.add_options ? 'Members cannot add options' : 'Members can add options'
             }
             mutate()
         } else if (res.message) {

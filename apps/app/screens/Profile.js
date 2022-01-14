@@ -4,22 +4,35 @@ import {
     View,
     Text,
     StyleSheet,
+    TouchableOpacity
 } from 'react-native'
 import { useUser } from '../utils/api'
+import { logout } from '../utils/globalVar'
 import { styles } from '../utils/styles'
 
-const Profile = () => {
+const Profile = ({navigation}) => {
     const { data: userData, isError, isLoading } = useUser()
 
     if (isError) return <Text>{error.info}</Text>
     if (isLoading) return <Text>loading...</Text>
     if (!userData) return <Text>error</Text>
     const user = userData.user
+
+    const handleLogout = () => {
+        logout()
+        navigation.navigate('Login')
+    }
     return (
         <>
             <View style={styles.container}>
-                <Text style={styles.title}>Profile</Text>
-
+                <View style={{flexDirection: 'row'}}>
+                    <Text style={styles.title}>Profile</Text>
+                    <TouchableOpacity style={{ alignSelf: 'center', marginLeft: 10 }} onPress={handleLogout}>
+                        <Text>
+                            Logout
+                        </Text>
+                    </TouchableOpacity>
+                </View>
                 <View style={customStyle.info}>
                     <Text style={customStyle.name}>{user.name}</Text>
                 </View>
