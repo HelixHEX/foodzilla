@@ -165,5 +165,27 @@ router.post('/save-to-account', async (req: express.Request, res: express.Respon
     }
 })
 
+router.post('/details/:id', async (req: express.Request, res: express.Response) => {
+    const { body } = req;
+    const { restaurantId } = body;
+
+    try {
+        if (restaurantId) {
+            await axios.get(`${process.env.TOMTOMURL}/place.json?key=${process.env.TOMTOMAPIKEY}&entityId=${restaurantId}`).then((response: any) => {
+                if (response.data.summary) {
+                    console.log(response.data.summary)
+
+                    res.json({ success: true, restaurant: response.data.results[0] }).status(200)
+                } else {
+                    res.json({ success: false, message: 'An error has occurred' }).status(400)
+                }
+            })
+        }
+    } catch (e) {
+        console.log(e)
+        res.json({ success: false, message: "An error has occurred" }).status(400)
+    }
+})
+
 
 module.exports = router

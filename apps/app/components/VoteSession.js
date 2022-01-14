@@ -9,7 +9,7 @@ import {
 import { baseURL, displayToast, fetcher } from '../utils/globalVar'
 import { globalColors } from '../utils/styles'
 
-const VoteSession = ({ user, data, nav, group, mutate }) => {
+const VoteSession = ({ user, data, nav, mutate }) => {
     const joinSession = async () => {
         let toast = {
             title: '',
@@ -61,7 +61,7 @@ const VoteSession = ({ user, data, nav, group, mutate }) => {
                             {/* <Text style={styles.subtitle}>Group: {data.group.name}</Text> */}
                             <Text style={styles.subtitle}>Users: {data.users.length}</Text>
                         </View>
-                        <Text style={[styles.date, { color: data.ended ? globalColors.red : globalColors.darkgreen }]}>{data.ends ? FormatDate(data.endsAt) : "Joined"}</Text>
+                        <Text style={[styles.date, { color: data.ended ? globalColors.red : globalColors.darkgreen }]}>{data.ends ? FormatDate(data.endsAt) : data.ended ? "Closed" : "Joined"}</Text>
                     </TouchableOpacity>
                     <View style={styles.line} />
                 </>
@@ -106,14 +106,15 @@ const styles = StyleSheet.create({
 
     },
     title: {
-        fontSize: 20
+        fontSize: 18,
     },
     subtitle: {
-        fontSize: 15
+        fontSize: 12,
     },
     date: {
         alignSelf: 'center',
-        color: globalColors.hotpink
+        color: globalColors.hotpink,
+        fontSize: 12
     },
     btn: {
         alignSelf: 'center',

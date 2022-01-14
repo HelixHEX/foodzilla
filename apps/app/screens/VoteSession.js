@@ -9,7 +9,7 @@ import {
     Modal,
     Switch
 } from 'react-native'
-import { leaveGroup, useUser, useVoteSession } from '../utils/api';
+import { closeSession, leaveGroup, leaveSession, openSession, useUser, useVoteSession } from '../utils/api';
 import { baseURL, getValue, displayToast } from '../utils/globalVar';
 import { globalColors, styles, toastConfig } from '../utils/styles';
 import { Feather, FontAwesome5, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
@@ -38,7 +38,7 @@ const VoteSession = ({ route, navigation }) => {
         const placedVote = session.votes.find(oldVote => oldVote.user.id === user.user.id)
         if (placedVote) {
             if (placedVote.restaraunt_name !== vote) {
-                
+
             }
         } else {
             await axios.post(baseURL + '/vote/place-vote', { sessionId: session.id, vote }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
@@ -57,7 +57,7 @@ const VoteSession = ({ route, navigation }) => {
 
         return (
             <>
-                <TouchableOpacity onPress={() => setModalVisible(true)} style={{ marginTop: 15 }}>
+                <TouchableOpacity onPress={() => setModalVisible(true)} style={{ alignSelf: 'center' }}>
                     <Ionicons name="ellipsis-horizontal-sharp" size={30} color="black" />
                 </TouchableOpacity>
                 <MenuModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
@@ -67,7 +67,7 @@ const VoteSession = ({ route, navigation }) => {
 
     const MenuModal = ({ modalVisible, setModalVisible }) => {
         const [isEnable, setIsEnable] = useState(session.add_options)
-        const [modalHeight, setModalHeight] = useState(creator ? 200 : 150)
+        const [modalHeight, setModalHeight] = useState(230)
         return (
             <>
                 <Modal
@@ -88,7 +88,7 @@ const VoteSession = ({ route, navigation }) => {
                                     style={[customStyle.modalBtn, customStyle.modalBtnClose]}
                                     onPress={() => setModalVisible(!modalVisible)}
                                 >
-                                    <Feather name="x" size={35} color="black" />
+                                    <Feather name="x" size={20} color="black" />
                                 </TouchableOpacity>
 
                             </View>
@@ -96,25 +96,37 @@ const VoteSession = ({ route, navigation }) => {
                                 ? <View>
                                     <TouchableOpacity style={[customStyle.modalOption, { justifyContent: 'space-between' }]}>
                                         <View style={{ flexDirection: 'row' }}>
-                                            <FontAwesome5 name={isEnable ? 'unlock' : 'lock'} size={35} color={isEnable ? globalColors.lightgreen : globalColors.red} />
+                                            <FontAwesome5 style={{alignSelf: 'center'}} name={isEnable ? 'unlock' : 'lock'} size={20} color={isEnable ? globalColors.lightgreen : globalColors.red} />
                                             <Text style={customStyle.modalOptionText}>Allow new options</Text>
                                         </View>
                                         <Switch
+                                            style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }] }}
+                                            // style={{siz}}
                                             trackColor={{ false: "#767577", true: globalColors.lightgreen }}
                                             thumbColor={"white"}
                                             ios_backgroundColor="#3e3e3e"
-                                            onValueChange={() => setIsEnable(!isEnable)}
+                                            onValueChange={() => { setIsEnable(!isEnable) }}
                                             value={isEnable}
                                         />
                                     </TouchableOpacity>
+                                    {session.ended
+                                        ? <TouchableOpacity onPress={() => openSession({ session, mutate, setModalHeight, setModalVisible, creator })} style={customStyle.modalOption}>
+                                            <Feather name="check-circle" size={20} color={globalColors.lightgreen} />
+                                            <Text style={customStyle.modalOptionText}>Open session</Text>
+                                        </TouchableOpacity>
+                                        : <TouchableOpacity onPress={() => closeSession({ session, mutate, setModalHeight, setModalVisible, creator })} style={customStyle.modalOption}>
+                                            <Feather name="x" size={20} color={globalColors.red} />
+                                            <Text style={customStyle.modalOptionText}>Close session</Text>
+                                        </TouchableOpacity>
+                                    }
                                     <TouchableOpacity style={customStyle.modalOption}>
-                                        <Feather name="trash-2" size={35} color={globalColors.red} />
+                                        <Feather name="trash-2" size={20} color={globalColors.red} />
                                         <Text style={customStyle.modalOptionText}>Delete session</Text>
                                     </TouchableOpacity>
                                 </View>
                                 : <View>
-                                    <TouchableOpacity onPress={() => leaveGroup({ navigation, creator, setModalHeight, mutate, setModalVisible, session })} style={customStyle.modalOption}>
-                                        <SimpleLineIcons name="logout" size={35} color="black" />
+                                    <TouchableOpacity onPress={() => leaveSession({ navigation, creator, setModalHeight, mutate, setModalVisible, session })} style={customStyle.modalOption}>
+                                        <SimpleLineIcons name="logout" size={20} color="black" />
                                         <Text style={customStyle.modalOptionText}>Leave session</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -133,8 +145,8 @@ const VoteSession = ({ route, navigation }) => {
             </View>
             <View style={styles.container}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 5 }}>
-                        <Ionicons name="chevron-back" size={45} color="black" />
+                    <TouchableOpacity style={{alignSelf: 'center'}} onPress={() => navigation.goBack()} >
+                        <Ionicons name="chevron-back" size={25} color="black" />
                     </TouchableOpacity>
                     <Text numberOfLines={1} style={[styles.title]}>{session.name}</Text>
                     <Menu />
@@ -142,7 +154,7 @@ const VoteSession = ({ route, navigation }) => {
                 <Text style={customStyle.title}>Current Results</Text>
                 <Text style={[customStyle.status, { color: session.ended ? globalColors.red : globalColors.darkgreen }]}>{session.ended ? 'Closed' : 'Open'}</Text>
                 <AddNewOption mutate={mutate} session={session} />
-                <ScrollView style={{ marginTop: 50 }}>
+                <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: 50 }}>
                     {session.restaurants.map((restaurant, index) => {
                         let count = 0
                         session.votes.length > 0 ? session.votes.forEach(vote => vote.restaraunt_name === restaurant ? count += 1 : null) : 0
@@ -154,7 +166,7 @@ const VoteSession = ({ route, navigation }) => {
                                     ? <View style={customStyle.option}>
                                         <Text numberOfLines={2} style={customStyle.name}>{restaurant}</Text>
                                         <View style={customStyle.progressWrapper}>
-                                            <View style={[customStyle.progressInner, { backgroundColor: session.votes.find(vote => vote.user.id === user.user.id && restaurant === vote.restaraunt_name) ? '#48BB78' : globalColors.pink, width: percent <= 10 ? 30 : (percent * 250) / 100 }]} >
+                                            <View style={[customStyle.progressInner, { backgroundColor: session.votes.find(vote => vote.user.id === user.user.id && restaurant === vote.restaraunt_name) ? '#48BB78' : globalColors.pink, width: percent <= 10 ? 30 : (percent * 180) / 100 }]} >
                                                 <View style={[customStyle.selected, { display: session.winner === restaurant ? 'flex' : 'none' }]}>
                                                     <Feather name="check" size={20} color={voted ? globalColors.turquoise : globalColors.pink} />
                                                 </View>
@@ -165,7 +177,7 @@ const VoteSession = ({ route, navigation }) => {
                                     : <TouchableOpacity onPress={() => vote(restaurant)} style={customStyle.option}>
                                         <Text numberOfLines={2} style={customStyle.name}>{restaurant}</Text>
                                         <View style={customStyle.progressWrapper}>
-                                            <View style={[customStyle.progressInner, { backgroundColor: session.votes.find(vote => vote.user.id === user.user.id && restaurant === vote.restaraunt_name) ? '#48BB78' : globalColors.pink, width: percent <= 10 ? 30 : (percent * 250) / 100 }]} >
+                                            <View style={[customStyle.progressInner, { backgroundColor: session.votes.find(vote => vote.user.id === user.user.id && restaurant === vote.restaraunt_name) ? '#48BB78' : globalColors.pink, width: percent <= 10 ? 30 : (percent * 180) / 100 }]} >
                                                 <View style={[customStyle.selected, { display: session.winner === restaurant ? 'flex' : 'none' }]}>
                                                     <Feather name="check" size={20} color={voted ? globalColors.turquoise : globalColors.pink} />
                                                 </View>
@@ -187,35 +199,36 @@ const VoteSession = ({ route, navigation }) => {
 
 const customStyle = StyleSheet.create({
     title: {
-        fontSize: 25,
+        marginTop: 20,
+        fontSize: 20,
         textAlign: 'center',
     },
     status: {
         textAlign: 'center',
         marginTop: 10,
-        fontSize: 20
+        fontSize: 15
     },
     option: {
         flexDirection: 'row',
-        justifyContent: 'space-evenly',
+        justifyContent: 'space-between',
         width: '100%',
         marginBottom: 50,
         // width: 100,
     },
     name: {
-        width: 80,
+        width: 100,
         alignSelf: 'center'
     },
     progressWrapper: {
-        width: 250,
-        height: 30,
+        width: 180,
+        height: 20,
         borderWidth: 1,
         borderColor: globalColors.lightgray,
         borderRadius: 30
     },
     progressInner: {
         // width: Math.floor(Math.random() * 280) + 1,
-        height: 30,
+        height: 20,
         justifyContent: 'center',
         backgroundColor: globalColors.pink,
         borderRadius: 30,
@@ -223,8 +236,9 @@ const customStyle = StyleSheet.create({
         marginTop: -1,
     },
     percent: {
-        alignSelf: 'center',
-        width: 40,
+        // alignSelf: 'center',
+        // width: 50,
+        // backgroundColor: 'red'
     },
     btn: {
         alignSelf: 'flex-end',
@@ -285,7 +299,7 @@ const customStyle = StyleSheet.create({
         alignSelf: 'center',
         color: 'black',
         marginLeft: 10,
-        fontSize: 20
+        fontSize: 15
     },
 })
 

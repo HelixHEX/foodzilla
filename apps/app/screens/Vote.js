@@ -4,12 +4,14 @@ import {
     View,
     Text,
     ScrollView,
-    StyleSheet
+    StyleSheet,
+    TouchableOpacity
 } from 'react-native'
 import VoteSession from '../components/VoteSession'
 import { useUser, useVoteSessions } from '../utils/api'
 import { globalColors, styles, toastConfig } from '../utils/styles'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
+import { Feather } from '@expo/vector-icons'
 
 const Vote = ({ navigation }) => {
     const { data: voteSessions, isError, isLoading, mutate } = useVoteSessions({ groupId: 'ckxe7vzev0051m20gxivtbvhy' })
@@ -24,6 +26,8 @@ const Vote = ({ navigation }) => {
     if (userLoading) return <Text>loading...</Text>
     if (!userData.user) return <Text>error</Text>
 
+    const active = voteSessions.sessions.filter(session => session.ended === false)
+    const past = voteSessions.sessions.filter(session => session.ended === true && session.users.find(user => user.id === user.id))
     const user = userData.user
     return (
         <>
@@ -31,22 +35,37 @@ const Vote = ({ navigation }) => {
                 <Toast position='top' config={toastConfig} />
             </View>
             <View style={styles.container}>
-                <Text style={styles.title}>Voting Sessions</Text>
-                <ScrollView style={{ marginBottom: 50 }}>
-                    <Text style={customStyle.label}>Active Voting Sessions</Text>
-                    {voteSessions.sessions.filter(session => session.ended === false).map((session, index) => (
-                        <View key={index}>
-                            <VoteSession mutate={mutate} user={user} nav={navigation} data={session} />
-                            <View style={customStyle.line} />
-                        </View>
-                    ))}
-                    <Text style={[customStyle.label, { marginTop: 50 }]}>Past Voting Sessions</Text>
-                    {voteSessions.sessions.filter(session => session.ended === true).map((session, index) => (
-                        <View key={index}>
-                            <VoteSession mutate={mutate} user={user} nav={navigation} data={session} />
-                            <View style={customStyle.line} />
-                        </View>
-                    ))}
+                <View style={{ flexDirection: 'row' }}>
+                    <Text style={styles.title}>Voting Sessions</Text>
+                    <TouchableOpacity style={{ alignSelf: 'center', marginLeft: 10 }}>
+                        <Feather size={35} name='plus' />
+                    </TouchableOpacity>
+                </View>
+                <ScrollView style={{ marginTop: 20 }}>
+                    {active.length > 0
+                        ? <>
+                            <Text style={customStyle.label}>Active Voting Sessions</Text>
+                            {active.map((session, index) => (
+                                <View key={index}>
+                                    <VoteSession mutate={mutate} user={user} nav={navigation} data={session} />
+                                    <View style={customStyle.line} />
+                                </View>
+                            ))}
+                        </>
+                        : null
+                    }
+                    {past.length > 0
+                        ? <>
+                            <Text style={[customStyle.label, { marginTop: active.length > 0 ? 50 : 0 }]}>Past Voting Sessions</Text>
+                            {past.map((session, index) => (
+                                <View key={index}>
+                                    <VoteSession mutate={mutate} user={user} nav={navigation} data={session} />
+                                    <View style={customStyle.line} />
+                                </View>
+                            ))}
+                        </>
+                        : null
+                    }
                 </ScrollView>
             </View>
         </>
@@ -56,7 +75,7 @@ const Vote = ({ navigation }) => {
 const customStyle = StyleSheet.create({
     label: {
         color: globalColors.lightgray,
-        fontSize: 25,
+        fontSize: 20,
     },
     line: {
         borderBottomWidth: StyleSheet.hairlineWidth,

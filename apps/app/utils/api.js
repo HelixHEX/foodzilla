@@ -26,7 +26,7 @@ export const useVoteSessions = params => {
 }
 
 export const useActiveGroups = params => {
-    const { data, error, mutate } = useSWRNative([baseURL + `/group/active-groups`, params], fetcher, {focusThrottleInterval: 1000})
+    const { data, error, mutate } = useSWRNative([baseURL + `/group/active-groups`, params], fetcher, { focusThrottleInterval: 1000 })
 
     return {
         data,
@@ -123,6 +123,19 @@ export const useSearch = params => {
     }
 }
 
+
+export const useRestaurant = params => {
+    const { data, error, mutate } = useSWRNative([baseURL + `/restaurant/details/${params.restarauntId}`, params], fetcher)
+
+    return {
+        data,
+        mutate,
+        isLoading: !error && !data,
+        isError: error
+    }
+
+}
+
 export const useSavedRestaraunts = params => {
     const { data, error, mutate } = useSWRNative([baseURL + `/group/saved-restaurants?id=${params.groupId}`, params], fetcher)
 
@@ -174,7 +187,7 @@ export const leaveGroup = async ({ group, mutate, setModalHeight, setModalVisibl
     displayToast({ toast })
     if (toast.type === 'success') {
         mutate(`${baseURL}/group/active-groups`)
-        navigation.goBack('Groups')
+        navigation.goBack()
     }
     // let toast = {
     //     title: '',
@@ -218,6 +231,50 @@ export const leaveGroup = async ({ group, mutate, setModalHeight, setModalVisibl
     // }
 }
 
+export const leaveSession = async ({ session, mutate, setModalHeight, setModalVisible, navigation, creator }) => {
+    let toast = {
+        title: '',
+        type: '',
+        message: ''
+    }
+    try {
+        let res = await fetcher(`${baseURL}/vote/leave-session`, { sessionId: session.id })
+        console.log(res)
+        if (res.success) {
+            toast = {
+                title: 'Success',
+                type: 'success',
+                message: 'You have left the session'
+            }
+        } else if (res.message) {
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: res.message
+            }
+        } else {
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: 'An error has occurred'
+            }
+        }
+    } catch (e) {
+        toast = {
+            title: 'Error',
+            type: 'error',
+            message: 'An error has occurred'
+        }
+    }
+    // setModalHeight(creator ? 230 : 150)
+    setModalVisible(false)
+    displayToast({ toast })
+    if (toast.type === 'success') {
+        mutate()
+        navigation.goBack()
+    }
+}
+
 export const placeVote = async ({ session, vote, mutate }) => {
     let toast = {
         title: '',
@@ -249,12 +306,125 @@ export const placeVote = async ({ session, vote, mutate }) => {
         }
     }
     displayToast({ toast })
-    // await axios.post(baseURL + '', { sessionId: session.id, vote }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
-    //     if (res.data.success) {
-    //         mutate(`${baseURL}/vote/session/${session.id}`)
-    //     }
-    //     if (res.data.message) {
-    //         console.log(res.data.message)
-    //     }
-    // })
 }
+
+
+export const closeSession = async ({ session, mutate, setModalHeight, setModalVisible, creator }) => {
+    let toast = {
+        title: '',
+        type: '',
+        message: ''
+    }
+    try {
+        let res = await fetcher(`${baseURL}/vote/end-voting-session`, { sessionId: session.id })
+        if (res.success) {
+            toast = {
+                title: 'Success',
+                type: 'success',
+                message: 'Session closed!'
+            }
+        } else if (res.message) {
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: res.message
+            }
+        } else {
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: 'An error has occurred'
+            }
+        }
+    } catch (e) {
+        toast = {
+            title: 'Error',
+            type: 'error',
+            message: 'An error has occurred'
+        }
+    }
+    // setModalHeight(creator ? 280 : 150)
+    setModalVisible(false)
+    displayToast({ toast })
+    mutate()
+}
+
+
+export const openSession = async ({ session, mutate, setModalHeight, setModalVisible, creator }) => {
+    let toast = {
+        title: '',
+        type: '',
+        message: ''
+    }
+    try {
+        let res = await fetcher(`${baseURL}/vote/open-voting-session`, { sessionId: session.id })
+        if (res.success) {
+            toast = {
+                title: 'Success',
+                type: 'success',
+                message: 'Session opened!'
+            }
+        } else if (res.message) {
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: res.message
+            }
+        } else {
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: 'An error has occurred'
+            }
+        }
+    } catch (e) {
+        toast = {
+            title: 'Error',
+            type: 'error',
+            message: 'An error has occurred'
+        }
+    }
+    // setModalHeight(creator ? 280 : 150)
+    setModalVisible(false)
+    displayToast({ toast })
+    mutate()
+}
+
+
+export const toggleAddOptions = async ({ session, mutate }) => {
+    let toast = {
+        title: '',
+        type: '',
+        message: ''
+    }
+    try {
+        let res = await fetcher(`${baseURL}/vote/toggle-add-options`, { sessionId: session.id })
+        if (res.success) {
+            toast = {
+                title: 'Success',
+                type: 'success',
+                message: session.add_options ? 'Members cannot add options' : 'Members can add options'
+            }
+            mutate()
+        } else if (res.message) {
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: res.message
+            }
+        } else {
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: 'An error has occurred'
+            }
+        }
+    } catch (e) {
+        toast = {
+            title: 'Error',
+            type: 'error',
+            message: 'An error has occurred'
+        }
+    }
+    displayToast({ toast })
+} 

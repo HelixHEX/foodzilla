@@ -199,6 +199,9 @@ router.post('/add-member', async (req: express.Request, res: express.Response) =
                     const user = await prisma.user.findFirst({ where: { email } })
                     if (user) {
                         await prisma.group.update({ where: { id: groupId }, data: { users: { connect: { id: user.id } } } })
+                        const sessions = await prisma.vote_Session.findMany({where: {createdBy: req.user.userId}})
+                        let ids = sessions.map(session => {return {id: session.id}})
+                        await prisma.user.update({where: {id: req.user.userId}, data: {voteSessions: {connect: ids}}})
                         res.json({ success: true }).status(200)
                     } else {
                         res.json({ success: false, message: 'User not found' }).status(404)

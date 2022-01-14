@@ -29,7 +29,7 @@ const customStyle = StyleSheet.create({
             width: 0,
             height: 6,
         },
-        shadowOpacity: 0.37,
+        shadowOpacity: 0.20,
         shadowRadius: 7.49,
         elevation: 12,
     },

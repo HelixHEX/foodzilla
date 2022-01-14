@@ -13,7 +13,7 @@ import { baseURL } from "../utils/globalVar"
 
 
 
-const Restaraunts = ({displayToast, navigation}) => {
+const Restaraunts = ({ displayToast, navigation }) => {
     const [filter, setFilter] = useState('American')
     const [restaurants, setRestaraunts] = useState([])
     const [resultsError, setResultsError] = useState(null)
@@ -23,7 +23,7 @@ const Restaraunts = ({displayToast, navigation}) => {
     //     if (previousPageData && !previousPageData.length) return null
     //     return `${baseURL}/restaurant/search/trending/${categories.find(category => category.name === filter).categorySet}  /users?page=${pageIndex}&limit=10`                    // SWR key
     // }
-    const { data: data2, isError, isLoading, fetchMore } = useTrending({ categorySet: categories.find(category => category.name === filter).categorySet, lat: 40.486165191337804, lon: -74.47346067573329, radius: 16093.4, limit: 100, offset: 0 })
+    const { data: data2, isError, isLoading, fetchMore } = useTrending({ categorySet: categories.find(category => category.name === filter).categorySet, lat: 37.973535, lon: -122.531087, radius: 16093.4, limit: 100, offset: 0 })
     const { data: groupsData, isError: groupsError, isLoading: groupsLoading } = useActiveGroups()
 
     if (isError) return <Text>{error.message}</Text>

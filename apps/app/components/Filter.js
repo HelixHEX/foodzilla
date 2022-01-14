@@ -126,7 +126,8 @@ const customStyle = StyleSheet.create({
     },
     label: {
         marginTop: 5,
-        color: globalColors.lightgray
+        color: globalColors.lightgray,
+        fontSize: 12
     }
 })
 

@@ -31,11 +31,10 @@ const Home = ({ navigation }) => {
     if (isLoading) return <Text>loading...</Text>
     if (!user) return <Text>error</Text>
 
-
     const handleSearch = async () => {
         if (search.length > 0) {
             setIsSearching(true)
-            await axios.post(baseURL + `/restaurant/search/${search}`, { query: search, categorySet: 7315, lat: 40.486165191337804, lon: -74.47346067573329, radius: 16093.4, limit: 10, offset: 0 }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
+            await axios.post(baseURL + `/restaurant/search/${search}`, { query: search, categorySet: 7315, lat: 37.973535, lon: -122.531087, radius: 16093.4, limit: 100, offset: 0 }, { headers: { 'Authorization': `token ${await getValue('token')}` } }).then(res => {
                 if (res.data.success) {
                     setResults(res.data.results)
                     // console.log(res.data.results)
@@ -51,10 +50,7 @@ const Home = ({ navigation }) => {
     // if (searchIsLoading) return <Text>loading...</Text>
     // if (!searchData) return <Text>search error</Text>
 
-    const handleLogout = () => {
-        logout()
-        navigation.navigate('Login')
-    }
+   
 
     const renderItem = ({ item }) => (
         <RestarauntCard navigation={navigation} screen="home" displayToast={displayToast} type={'Restaraunt'} data={item} />
@@ -65,15 +61,11 @@ const Home = ({ navigation }) => {
                 <Toast position='top' config={toastConfig} />
             </View>
             <View style={styles.container}>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{ flexDirection: 'row', marginTop: 10 }}>
                     <Text style={styles.title}>
                         Discover
                     </Text>
-                    <TouchableOpacity style={styles.center} onPress={handleLogout}>
-                        <Text>
-                            Logout
-                        </Text>
-                    </TouchableOpacity>
+                    
                 </View>
                 <Search handleSearch={handleSearch} search={search} setSearch={setSearch} />
                 {isSearching ? <TouchableOpacity onPress={() => { setIsSearching(false); setSearch('') }}>

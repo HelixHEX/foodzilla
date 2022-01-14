@@ -21,7 +21,7 @@ const Groups = ({ navigation }) => {
             <View style={styles.container}>
                 <View style={{ flexDirection: 'row' }}>
                     <Text style={styles.title}>Groups</Text>
-                    <TouchableOpacity style={{ marginTop: 13, marginLeft: 10 }}>
+                    <TouchableOpacity style={{ alignSelf: 'center', marginLeft: 10 }}>
                         <Feather size={35} name='plus' />
                     </TouchableOpacity>
                 </View>
