@@ -9,7 +9,7 @@ import {
     Modal,
     Switch
 } from 'react-native'
-import { closeSession, leaveGroup, leaveSession, useUser, useVoteSession } from '../utils/api';
+import { closeSession, leaveGroup, leaveSession, openSession, useUser, useVoteSession } from '../utils/api';
 import { baseURL, getValue, displayToast } from '../utils/globalVar';
 import { globalColors, styles, toastConfig } from '../utils/styles';
 import { Feather, FontAwesome5, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
@@ -108,11 +108,11 @@ const VoteSession = ({ route, navigation }) => {
                                         />
                                     </TouchableOpacity>
                                     {session.ended
-                                        ? <TouchableOpacity style={customStyle.modalOption}>
+                                        ? <TouchableOpacity onPress={() => openSession({ session, mutate, setModalHeight, setModalVisible, creator })} style={customStyle.modalOption}>
                                             <Feather name="check-circle" size={35} color={globalColors.lightgreen} />
                                             <Text style={customStyle.modalOptionText}>Open session</Text>
                                         </TouchableOpacity>
-                                        : <TouchableOpacity onPress={() => closeSession({session, mutate, setModalHeight, setModalVisible, creator})} style={customStyle.modalOption}>
+                                        : <TouchableOpacity onPress={() => closeSession({ session, mutate, setModalHeight, setModalVisible, creator })} style={customStyle.modalOption}>
                                             <Feather name="x" size={35} color={globalColors.red} />
                                             <Text style={customStyle.modalOptionText}>Close session</Text>
                                         </TouchableOpacity>
@@ -142,12 +142,12 @@ const VoteSession = ({ route, navigation }) => {
                 <Toast position='top' config={toastConfig} />
             </View>
             <View style={styles.container}>
-                <View style={{ flexDirection: 'row', justifyContent: !session.ended ? 'space-between' : null, width: '100%' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
                     <TouchableOpacity onPress={() => navigation.goBack()} >
                         <Ionicons name="chevron-back" size={45} color="black" />
                     </TouchableOpacity>
                     <Text numberOfLines={1} style={[styles.title]}>{session.name}</Text>
-                    {!session.ended ? <Menu /> : null}
+                    <Menu />
                 </View>
                 <Text style={customStyle.title}>Current Results</Text>
                 <Text style={[customStyle.status, { color: session.ended ? globalColors.red : globalColors.darkgreen }]}>{session.ended ? 'Closed' : 'Open'}</Text>

@@ -96,6 +96,45 @@ router.post('/end-voting-session', async (req: express.Request, res: express.Res
 })
 
 
+router.post('/open-voting-session', async (req: express.Request, res: express.Response) => {
+    const { body } = req;
+    const { sessionId } = body
+    try {
+        const session = await prisma.vote_Session.findUnique({ where: { id: sessionId }, include: { votes: true } })
+        if (session) {
+            if (session.ended) {
+                if (session.createdBy === req.user.userId) {
+                    // let votes = [{ restaraunt_name: 'Wendys', votes: 1 }, { restaraunt_name: 'Chic-fil-a', votes: 4 }, { restaraunt_name: 'Jack in the box', votes: 2 }] as any
+                    // session.votes.forEach(vote1 => {
+                    //     let index = votes.findIndex((vote: any) => vote.restaraunt_name === vote1.restaraunt_name)
+                    //     if (index >= 0) {
+                    //         votes[index].votes += 1;
+                    //     } else {
+                    //         votes.push({
+                    //             restaraunt_name: vote1.restaraunt_name,
+                    //             votes: 1
+                    //         })
+                    //     }s
+                    // })
+                    // votes = votes.sort((a: any, b: any) => b.votes - a.votes)
+                    await prisma.vote_Session.update({ where: { id: sessionId }, data: { ended: false } })
+                    res.json({ success: true }).status(200)
+                } else {
+                    res.json({ success: false, message: 'Only the creator can end a session' }).status(403)
+                }
+            } else {
+                res.json({ success: false, message: 'Vote session already opened' }).status(400)
+            }
+        } else {
+            res.json({ success: false, message: 'Vote session not found' }).status(404)
+        }
+    } catch (e) {
+        console.log(e)
+        res.json({ success: false, message: "An error has occurred" }).status(400)
+    }
+})
+
+
 
 router.post('/join-voting-session', async (req: express.Request, res: express.Response) => {
     const { body } = req;

@@ -336,3 +336,44 @@ export const closeSession = async ({ session, mutate, setModalHeight, setModalVi
     displayToast({ toast })
 }
 
+
+export const openSession = async ({ session, mutate, setModalHeight, setModalVisible, creator }) => {
+    let toast = {
+        title: '',
+        type: '',
+        message: ''
+    }
+    try {
+        let res = await fetcher(`${baseURL}/vote/open-voting-session`, { sessionId: session.id })
+        if (res.success) {
+            toast = {
+                title: 'Success',
+                type: 'success',
+                message: 'Session opened!'
+            }
+            mutate()
+        } else if (res.message) {
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: res.message
+            }
+        } else {
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: 'An error has occurred'
+            }
+        }
+    } catch (e) {
+        toast = {
+            title: 'Error',
+            type: 'error',
+            message: 'An error has occurred'
+        }
+    }
+    setModalHeight(creator ? 280 : 150)
+    setModalVisible(false)
+    displayToast({ toast })
+}
+
