@@ -13,7 +13,7 @@ import { styles } from '../utils/styles'
 const Profile = ({navigation}) => {
     const { data: userData, isError, isLoading } = useUser()
 
-    if (isError) return <Text>{error.info}</Text>
+    if (isError) return <Text>{isError.info}</Text>
     if (isLoading) return <Text>loading...</Text>
     if (!userData) return <Text>error</Text>
     const user = userData.user

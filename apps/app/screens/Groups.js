@@ -21,9 +21,9 @@ const Groups = ({ navigation }) => {
             <View style={styles.container}>
                 <View style={{ flexDirection: 'row' }}>
                     <Text style={styles.title}>Groups</Text>
-                    <TouchableOpacity style={{ alignSelf: 'center', marginLeft: 10 }}>
+                    {/* <TouchableOpacity style={{ alignSelf: 'center', marginLeft: 10 }}>
                         <Feather size={35} name='plus' />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
                 <GroupsList nav={navigation} />
             </View>

@@ -427,4 +427,47 @@ export const toggleAddOptions = async ({ session, mutate }) => {
         }
     }
     displayToast({ toast })
-} 
+}
+
+
+export const createSession = async ({ setName, groupId, name, navigation, add_options }) => {
+    if (name.length > 0) {
+        let toast = {
+            title: '',
+            type: '',
+            message: ''
+        }
+        try {
+            let res = await fetcher(`${baseURL}/vote/new-voting-session`, { groupId, name, add_options })
+            console.log(res)
+            if (res.success) {
+                toast = {
+                    title: 'Success',
+                    type: 'success',
+                    message: 'Session created'
+                }
+                navigation.navigate('VoteSession', { id: res.id })
+            } else if (res.message) {
+                toast = {
+                    title: 'Error',
+                    type: 'error',
+                    message: res.message
+                }
+            } else {
+                toast = {
+                    title: 'Error',
+                    type: 'error',
+                    message: 'An error has occurred'
+                }
+            }
+        } catch (e) {
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: 'An error has occurred'
+            }
+        }
+        setName('')
+        displayToast({ toast })
+    }
+}

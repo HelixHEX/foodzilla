@@ -10,9 +10,9 @@ import GroupCard from "./GroupCard";
 const GroupsList = ({nav}) => {
     const { data: groups, isError, isLoading } = useActiveGroups()
 
-    if (isError) return <Text>{error.info}</Text>
+    if (isError) return <Text>{isError.info}</Text>
     if (isLoading) return <Text>loading...</Text>
-    if (!groups.groups) return <Text>error</Text>
+    if (!groups.groups) return <Text>An error has occurred</Text>
 
     const renderItem = ({ item }) => (
         <GroupCard data={item} nav={nav} />

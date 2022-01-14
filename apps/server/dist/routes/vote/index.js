@@ -18,21 +18,22 @@ const prisma = new client_1.PrismaClient();
 const router = express_1.default.Router();
 router.post('/new-voting-session', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
-    const { groupId, options } = body;
+    const { groupId, name, add_options } = body;
     try {
         const group = yield prisma.group.findUnique({ where: { id: groupId }, include: { users: { select: { id: true, name: true } } } });
         if (group) {
             let exists = group.users.find(user => user.id === req.user.userId);
             if (exists) {
-                yield prisma.vote_Session.create({
+                let session = yield prisma.vote_Session.create({
                     data: {
                         createdBy: req.user.userId,
                         group: { connect: { id: group.id } },
-                        restaurants: options,
+                        name,
+                        add_options,
                         users: { connect: { id: req.user.userId } }
                     }
                 });
-                res.json({ success: true }).status(200);
+                res.json({ success: true, id: session.id }).status(200);
             }
             else {
                 res.json({ success: false, message: 'Invalid access' }).status(403);
