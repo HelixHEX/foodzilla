@@ -108,12 +108,12 @@ const customStyle = StyleSheet.create({
         width: '90%'
     },
     label: {
-        fontSize: Platform.OS === 'ios' ? 20 : 25,
+        fontSize: Platform.OS === 'ios' ? 20 : 23,
     },
     data: {
         color: globalColors.pink,
         alignSelf: 'center',
-        fontSize: Platform.OS === 'ios' ? 15 : 20,
+        fontSize: Platform.OS === 'ios' ? 15 : 18,
         width: '80%'
     }
 })

@@ -7,7 +7,7 @@ const router = express.Router()
 
 router.post('/new-voting-session', async (req: express.Request, res: express.Response) => {
     const { body } = req;
-    const { groupId, options } = body;
+    const { groupId, name, add_options } = body;
     try {
         const group = await prisma.group.findUnique({ where: { id: groupId }, include: { users: { select: { id: true, name: true } } } })
         if (group) {
@@ -17,7 +17,9 @@ router.post('/new-voting-session', async (req: express.Request, res: express.Res
                     data: {
                         createdBy: req.user.userId,
                         group: { connect: { id: group.id } },
-                        restaurants: options,
+                        name,
+                        add_options,
+                        // restaurants: options,
                         users: { connect: { id: req.user.userId } }
                     }
                 })
@@ -296,4 +298,16 @@ router.post('/leave-session', async (req: express.Request, res: express.Response
         res.json({ success: false, message: "An error has occurred" }).status(400)
     }
 })
+
+// router.post('/leave-session', async (req: express.Request, res: express.Response) => {
+//     const {body} = req;
+//     const {}
+//     try {
+
+//     } catch (e) {
+//         console.log(e)
+//         res.json({ success: false, message: "An error has occurred" }).status(400)
+//     }
+// })
+
 module.exports = router

@@ -17,7 +17,7 @@ const Vote = ({ navigation }) => {
     const { data: voteSessions, isError, isLoading, mutate } = useVoteSessions({ groupId: 'ckxe7vzev0051m20gxivtbvhy' })
     const { data: userData, isError: userError, isLoading: userLoading } = useUser()
 
-    if (isError) return <Text>{error.info}</Text>
+    if (isError) return <Text>{isError.info}</Text>
     if (isLoading) return <Text>loading...</Text>
     if (!voteSessions.sessions) return <Text>error</Text>
 
@@ -37,7 +37,7 @@ const Vote = ({ navigation }) => {
             <View style={styles.container}>
                 <View style={{ flexDirection: 'row' }}>
                     <Text style={styles.title}>Voting Sessions</Text>
-                    <TouchableOpacity style={{ alignSelf: 'center', marginLeft: 10 }}>
+                    <TouchableOpacity onPress={() => navigation.navigate('NewSession')} style={{ alignSelf: 'center', marginLeft: 10 }}>
                         <Feather size={35} name='plus' />
                     </TouchableOpacity>
                 </View>
