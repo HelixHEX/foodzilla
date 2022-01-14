@@ -106,14 +106,15 @@ const styles = StyleSheet.create({
 
     },
     title: {
-        fontSize: 20
+        fontSize: 18,
     },
     subtitle: {
-        fontSize: 15
+        fontSize: 12,
     },
     date: {
         alignSelf: 'center',
-        color: globalColors.hotpink
+        color: globalColors.hotpink,
+        fontSize: 12
     },
     btn: {
         alignSelf: 'center',

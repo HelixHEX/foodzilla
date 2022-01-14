@@ -64,11 +64,11 @@ const Home = ({ navigation }) => {
                 <Toast position='top' config={toastConfig} />
             </View>
             <View style={styles.container}>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{ flexDirection: 'row', marginTop: 10 }}>
                     <Text style={styles.title}>
                         Discover
                     </Text>
-                    <TouchableOpacity style={styles.center} onPress={handleLogout}>
+                    <TouchableOpacity onPress={handleLogout}>
                         <Text>
                             Logout
                         </Text>

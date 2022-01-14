@@ -14,7 +14,7 @@ const Search = ({ handleSearch, setSearch, search }) => {
             <View style={customStyle.bar}>
                 <TextInput value={search} onChangeText={e => setSearch(e)} style={[styles.center, { width: '90%' }]} placeholder='What are you looking?' />
                 <TouchableOpacity onPress={() => handleSearch()} style={styles.center}>
-                    <Feather name="search" size={24} color={search.length > 0 ? globalColors.pink : globalColors.lightgray} />
+                    <Feather name="search" size={20} color={search.length > 0 ? globalColors.pink : globalColors.lightgray} />
                 </TouchableOpacity>
             </View>
         </>
@@ -23,10 +23,11 @@ const Search = ({ handleSearch, setSearch, search }) => {
 
 const customStyle = StyleSheet.create({
     bar: {
+        marginTop: 20,
         marginBottom: 10,
-        borderRadius: 30,
+        borderRadius: 50,
         width: '100%',
-        height: 50,
+        height: 40,
         borderWidth: 1,
         borderColor: globalColors.lightgray,
         justifyContent: 'space-between',

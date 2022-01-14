@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native"
-import {ErrorToast, SuccessToast} from 'react-native-toast-message'
+import { ErrorToast, SuccessToast } from 'react-native-toast-message'
 export const globalColors = {
     'gray': '#1f1f1f',
     'pink': '#f75483',
@@ -17,14 +17,14 @@ export const styles = StyleSheet.create({
         flex: 1,
         marginLeft: '5%',
         marginRight: '5%',
-        marginTop: '5%',
+        marginTop: '8%',
         height: '100%'
     },
     title: {
         color: globalColors.gray,
-        fontSize: 35,
+        fontSize: 30,
         fontWeight: '200',
-        marginBottom: 50,
+        // marginBottom: 20,
     },
     center: {
         alignSelf: 'center'
@@ -39,12 +39,12 @@ export const toastConfig = {
     success: (props) => (
         <SuccessToast
             {...props}
-            style={{height: 75, borderLeftColor: globalColors.lightgreen}}
+            // style={{ height: 75, borderLeftColor: globalColors.lightgreen }}
             text1Style={{
-                fontSize: 23,
+                fontSize: 18,
             }}
             text2Style={{
-                fontSize: 20
+                fontSize: 12
             }}
         />
     ),
@@ -55,12 +55,12 @@ export const toastConfig = {
     error: (props) => (
         <ErrorToast
             {...props}
-            style={{height: 75, borderLeftColor: 'red'}}
+            // style={{ height: 75, borderLeftColor: 'red' }}
             text1Style={{
-                fontSize: 23,
+                fontSize: 18,
             }}
             text2Style={{
-                fontSize: 20
+                fontSize: 12
             }}
         />
     )

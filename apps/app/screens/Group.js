@@ -52,7 +52,7 @@ const Group = ({ route, navigation }) => {
         }
     ]
     const renderMemberItem = ({ item }) => (
-        <ProfileImg userStyle={{ fontSize: 35 }} user={item} style={{ marginRight: 30, width: 100, height: 100 }} />
+        <ProfileImg userStyle={{ fontSize: 20, fontWeight: '200' }} user={item} style={{ marginRight: 30, width: 60, height: 60 }} />
     );
 
     const renderSessionItem = ({ item }) => (
@@ -71,8 +71,8 @@ const Group = ({ route, navigation }) => {
 
         return (
             <>
-                <TouchableOpacity onPress={() => setModalVisible(true)} style={{ marginTop: 15 }}>
-                    <Ionicons name="ellipsis-horizontal-sharp" size={30} color="black" />
+                <TouchableOpacity onPress={() => setModalVisible(true)} style={{ alignSelf: 'center' }}>
+                    <Ionicons name="ellipsis-horizontal-sharp" size={25} color="black" />
                 </TouchableOpacity>
                 <MenuModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
             </>
@@ -83,7 +83,7 @@ const Group = ({ route, navigation }) => {
 
     const MenuModal = ({ modalVisible, setModalVisible }) => {
         let creator = group.creatorId === user.id;
-        const [modalHeight, setModalHeight] = useState(creator ? 200 : 150)
+        const [modalHeight, setModalHeight] = useState(200)
 
         // const leaveGroup = async () => {
         //     let toast = {
@@ -150,24 +150,24 @@ const Group = ({ route, navigation }) => {
                                     style={[customStyle.modalBtn, customStyle.modalBtnClose]}
                                     onPress={() => setModalVisible(!modalVisible)}
                                 >
-                                    <Feather name="x" size={35} color="black" />
+                                    <Feather name="x" size={25} color="black" />
                                 </TouchableOpacity>
 
                             </View>
                             {creator
                                 ? <View>
                                     <TouchableOpacity onPress={() => removeFromGroup()} style={customStyle.modalOption}>
-                                        <Feather name="plus" size={35} color={globalColors.lightgreen} />
+                                        <Feather style={{alignSelf: 'center'}} name="plus" size={20} color={globalColors.lightgreen} />
                                         <Text style={customStyle.modalOptionText}>Add members</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity onPress={() => removeFromGroup()} style={customStyle.modalOption}>
-                                        <Feather name="trash-2" size={35} color={globalColors.red} />
+                                        <Feather style={{alignSelf: 'center'}} name="trash-2" size={20} color={globalColors.red} />
                                         <Text style={customStyle.modalOptionText}>Delete group</Text>
                                     </TouchableOpacity>
                                 </View>
                                 : <View>
                                     <TouchableOpacity onPress={() => leaveGroup({ group, mutate, setModalHeight, setModalVisible, navigation, creator })} style={customStyle.modalOption}>
-                                        <Feather name="x" size={35} color={globalColors.red} />
+                                        <Feather style={{alignSelf: 'center'}} name="x" size={20} color={globalColors.red} />
                                         <Text style={customStyle.modalOptionText}>Leave group</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -183,16 +183,14 @@ const Group = ({ route, navigation }) => {
         return (
             <>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <View style={{ flexDirection: 'row' }}>
-                        <TouchableOpacity onPress={() => navigation.goBack()} >
-                            <Ionicons name="chevron-back" size={45} color="black" />
-                        </TouchableOpacity>
-                        <Text numberOfLines={1} style={[styles.title, styles.center]}>{group.name}</Text>
-                    </View>
+                    <TouchableOpacity style={{ alignSelf: 'center' }} onPress={() => navigation.goBack()} >
+                        <Ionicons name="chevron-back" size={25} color="black" />
+                    </TouchableOpacity>
+                    <Text numberOfLines={1} style={[styles.title, styles.center]}>{group.name}</Text>
                     <Menu />
                 </View>
                 <Text style={customStyle.subtitle}>Members</Text>
-                <View style={{ marginTop: 30, height: 150 }}>
+                <View style={{ marginTop: 30, height: 80 }}>
                     <FlatList
                         horizontal
                         data={group.users}
@@ -249,13 +247,14 @@ const Group = ({ route, navigation }) => {
 
 const customStyle = StyleSheet.create({
     subtitle: {
-        fontSize: 20
+        fontSize: 20,
+        marginTop: 20,
     },
     filters: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: '80%',
-        marginTop: 50,
+        width: '90%',
+        marginTop: 10,
         alignSelf: 'center'
     },
 
@@ -264,7 +263,7 @@ const customStyle = StyleSheet.create({
     },
     label: {
         color: globalColors.lightgray,
-        fontSize: 25,
+        fontSize: 20,
         marginTop: 50,
     },
     line: {

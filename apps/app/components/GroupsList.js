@@ -19,7 +19,7 @@ const GroupsList = ({nav}) => {
     );
     return (
         <>
-            <View>
+            <View style={{marginTop: 20}}>
                 <FlatList
                     data={groups.groups}
                     renderItem={renderItem}

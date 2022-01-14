@@ -253,7 +253,7 @@ export const leaveSession = async ({ session, mutate, setModalHeight, setModalVi
             message: 'An error has occurred'
         }
     }
-    setModalHeight(creator ? 200 : 150)
+    // setModalHeight(creator ? 230 : 150)
     setModalVisible(false)
     displayToast({ toast })
     if (toast.type === 'success') {
@@ -310,7 +310,6 @@ export const closeSession = async ({ session, mutate, setModalHeight, setModalVi
                 type: 'success',
                 message: 'Session closed!'
             }
-            mutate()
         } else if (res.message) {
             toast = {
                 title: 'Error',
@@ -331,9 +330,10 @@ export const closeSession = async ({ session, mutate, setModalHeight, setModalVi
             message: 'An error has occurred'
         }
     }
-    setModalHeight(creator ? 280 : 150)
+    // setModalHeight(creator ? 280 : 150)
     setModalVisible(false)
     displayToast({ toast })
+    mutate()
 }
 
 
@@ -351,6 +351,47 @@ export const openSession = async ({ session, mutate, setModalHeight, setModalVis
                 type: 'success',
                 message: 'Session opened!'
             }
+        } else if (res.message) {
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: res.message
+            }
+        } else {
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: 'An error has occurred'
+            }
+        }
+    } catch (e) {
+        toast = {
+            title: 'Error',
+            type: 'error',
+            message: 'An error has occurred'
+        }
+    }
+    // setModalHeight(creator ? 280 : 150)
+    setModalVisible(false)
+    displayToast({ toast })
+    mutate()
+}
+
+
+export const toggleAddOptions = async ({ session, mutate }) => {
+    let toast = {
+        title: '',
+        type: '',
+        message: ''
+    }
+    try {
+        let res = await fetcher(`${baseURL}/vote/toggle-add-options`, { sessionId: session.id })
+        if (res.success) {
+            toast = {
+                title: 'Success',
+                type: 'success',
+                message: session.add_options ?  'Members cannot add options' :  'Members can add options'
+            }
             mutate()
         } else if (res.message) {
             toast = {
@@ -372,8 +413,5 @@ export const openSession = async ({ session, mutate, setModalHeight, setModalVis
             message: 'An error has occurred'
         }
     }
-    setModalHeight(creator ? 280 : 150)
-    setModalVisible(false)
     displayToast({ toast })
-}
-
+} 

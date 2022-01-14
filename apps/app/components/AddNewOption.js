@@ -92,15 +92,15 @@ const customStyle = StyleSheet.create({
         alignSelf: 'flex-end',
         backgroundColor: globalColors.hotpink,
         width: 100,
-        height: 50,
+        height: 40,
         marginTop: 30,
         marginLeft: 20,
-        borderRadius: 10,
+        borderRadius: 5,
         justifyContent: 'center'
     },
     btnText: {
         color: 'white',
-        fontSize: 15,
+        fontSize: 12,
         alignSelf: 'center'
     },
     input: {
