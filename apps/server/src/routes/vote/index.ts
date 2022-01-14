@@ -13,7 +13,7 @@ router.post('/new-voting-session', async (req: express.Request, res: express.Res
         if (group) {
             let exists = group.users.find(user => user.id === req.user.userId)
             if (exists) {
-                await prisma.vote_Session.create({
+                let session = await prisma.vote_Session.create({
                     data: {
                         createdBy: req.user.userId,
                         group: { connect: { id: group.id } },
@@ -23,7 +23,7 @@ router.post('/new-voting-session', async (req: express.Request, res: express.Res
                         users: { connect: { id: req.user.userId } }
                     }
                 })
-                res.json({ success: true }).status(200)
+                res.json({ success: true, id: session.id }).status(200)
             } else {
                 res.json({ success: false, message: 'Invalid access' }).status(403)
             }
@@ -42,7 +42,7 @@ router.post('/all-voting-sessions', async (req: express.Request, res: express.Re
     try {
         // const sessions = await prisma.user.findUnique({ where: { id: req.user.userId }, include: { voteSessions: { include: { group: true, users: { select: { id: true, email: true, name: true } } } } } })
         console.log(req.user.userId)
-        const sessions = await prisma.vote_Session.findMany({ where: { OR: [{ended: true}, {createdBy: req.user.userId}], AND: { group: { users: { some: { id: req.user.userId } } } } }, include: { users: { select: { id: true, email: true, name: true } }, group: true } })
+        const sessions = await prisma.vote_Session.findMany({ where: { OR: [{ ended: true }, { createdBy: req.user.userId }], AND: { group: { users: { some: { id: req.user.userId } } } } }, include: { users: { select: { id: true, email: true, name: true } }, group: true } })
         // const sessions = await prisma.vote_Session.findMany({ where: { group: { users: { some: { id: req.user.userId } } } }, include: { users: { select: { id: true, email: true, name: true } }, group: true } })
         // const group = await prisma.group.findUnique({ where: { id: groupId }, include: { voteSessions: { include: { users: { select: { id: true, name: true } } } } } })
         if (sessions) {
