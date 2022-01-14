@@ -112,12 +112,20 @@ router.post('/leave-group', (req, res) => __awaiter(void 0, void 0, void 0, func
     const { body } = req;
     const { groupId } = body;
     try {
-        const group = yield prisma.group.findUnique({ where: { id: groupId }, include: { users: true, voteSessions: true } });
+        const group = yield prisma.group.findUnique({ where: { id: groupId }, include: { users: true, voteSessions: { include: { votes: true } } } });
         if (group) {
             if (group.users.find(user => user.id === req.user.userId)) {
                 yield prisma.group.update({ where: { id: groupId }, data: { users: { disconnect: { id: req.user.userId } } } });
-                let ids = group.voteSessions.map(session => { return { id: session.id }; });
-                yield prisma.user.update({ where: { id: req.user.userId }, data: { voteSessions: { disconnect: ids } } });
+                let sessionIds = group.voteSessions.map(session => { return { id: session.id }; });
+                let voteIds = [];
+                group.voteSessions.forEach(session => {
+                    session.votes.forEach(vote => {
+                        if (vote.userId === req.user.userId) {
+                            voteIds.push({ id: vote.id });
+                        }
+                    });
+                });
+                console.log(yield prisma.user.update({ where: { id: req.user.userId }, data: { voteSessions: { disconnect: sessionIds }, votes: { deleteMany: voteIds } } }));
                 res.json({ success: true }).status(200);
             }
             else {
@@ -208,8 +216,9 @@ router.post('/add-member', (req, res) => __awaiter(void 0, void 0, void 0, funct
                     const user = yield prisma.user.findFirst({ where: { email } });
                     if (user) {
                         yield prisma.group.update({ where: { id: groupId }, data: { users: { connect: { id: user.id } } } });
-                        const ids = group.voteSessions.map(session => { return { id: session.id }; });
-                        yield prisma.user.update({ where: { id: user.id }, data: { voteSessions: { connect: ids } } });
+                        const sessions = yield prisma.vote_Session.findMany({ where: { createdBy: req.user.userId } });
+                        let ids = sessions.map(session => { return { id: session.id }; });
+                        yield prisma.user.update({ where: { id: req.user.userId }, data: { voteSessions: { connect: ids } } });
                         res.json({ success: true }).status(200);
                     }
                     else {
