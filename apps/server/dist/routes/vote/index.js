@@ -49,12 +49,11 @@ router.post('/new-voting-session', (req, res) => __awaiter(void 0, void 0, void 
 }));
 router.post('/all-voting-sessions', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const sessions = yield prisma.vote_Session.findMany({ where: { users: { some: { id: req.user.userId } } }, include: { users: { select: { id: true, name: true } }, group: true } });
+        console.log(req.user.userId);
+        const sessions = yield prisma.vote_Session.findMany({ where: { OR: [{ ended: true }, { createdBy: req.user.userId }], AND: { group: { users: { some: { id: req.user.userId } } } } }, include: { users: { select: { id: true, email: true, name: true } }, group: true } });
         if (sessions) {
+            console.log(sessions);
             res.json({ success: true, sessions }).status(200);
-        }
-        else {
-            res.json({ success: false, message: 'Group not found' }).status(404);
         }
     }
     catch (e) {
@@ -84,7 +83,7 @@ router.post('/end-voting-session', (req, res) => __awaiter(void 0, void 0, void 
                         }
                     });
                     votes = votes.sort((a, b) => b.votes - a.votes);
-                    console;
+                    yield prisma.vote_Session.update({ where: { id: sessionId }, data: { ended: true } });
                     res.json({ success: true, votes }).status(200);
                 }
                 else {
@@ -93,6 +92,34 @@ router.post('/end-voting-session', (req, res) => __awaiter(void 0, void 0, void 
             }
             else {
                 res.json({ success: false, message: 'Vote session already ended' }).status(400);
+            }
+        }
+        else {
+            res.json({ success: false, message: 'Vote session not found' }).status(404);
+        }
+    }
+    catch (e) {
+        console.log(e);
+        res.json({ success: false, message: "An error has occurred" }).status(400);
+    }
+}));
+router.post('/open-voting-session', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { body } = req;
+    const { sessionId } = body;
+    try {
+        const session = yield prisma.vote_Session.findUnique({ where: { id: sessionId }, include: { votes: true } });
+        if (session) {
+            if (session.ended) {
+                if (session.createdBy === req.user.userId) {
+                    yield prisma.vote_Session.update({ where: { id: sessionId }, data: { ended: false } });
+                    res.json({ success: true }).status(200);
+                }
+                else {
+                    res.json({ success: false, message: 'Only the creator can end a session' }).status(403);
+                }
+            }
+            else {
+                res.json({ success: false, message: 'Vote session already opened' }).status(400);
             }
         }
         else {
@@ -215,7 +242,7 @@ router.post('/add-option', (req, res) => __awaiter(void 0, void 0, void 0, funct
         const session = yield prisma.vote_Session.findUnique({ where: { id: sessionId }, include: { users: true } });
         if (session) {
             if (session.users.find(user => user.id === req.user.userId)) {
-                if (session.add_options) {
+                if (session.add_options || session.createdBy === req.user.userId) {
                     if (!session.restaurants.find(restaurant => restaurant === vote)) {
                         yield prisma.vote_Session.update({ where: { id: sessionId }, data: { restaurants: [...session.restaurants, vote] } });
                         res.json({ success: true }).status(200);
@@ -247,15 +274,37 @@ router.post('/session/:id', (req, res) => __awaiter(void 0, void 0, void 0, func
     try {
         const session = yield prisma.vote_Session.findUnique({ where: { id }, include: { users: { select: { id: true, name: true } }, votes: { include: { user: { select: { id: true, name: true } } } } } });
         if (session) {
-            if (session.users.find(user => user.id === req.user.userId)) {
+            if (session.users.find(user => user.id === req.user.userId) || session.ended) {
                 res.json({ success: true, session }).status(200);
-                console.log(session);
             }
             else
                 res.json({ success: false, message: 'Invalid access' }).status(403);
         }
         else
             res.json({ success: false, message: 'Vote session not found' }).status(404);
+    }
+    catch (e) {
+        console.log(e);
+        res.json({ success: false, message: "An error has occurred" }).status(400);
+    }
+}));
+router.post('/leave-session', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { body } = req;
+    const { sessionId } = body;
+    try {
+        const session = yield prisma.vote_Session.findUnique({ where: { id: sessionId }, include: { users: true } });
+        if (session) {
+            if (session.users.find(user => user.id === req.user.userId)) {
+                yield prisma.vote_Session.update({ where: { id: sessionId }, data: { users: { disconnect: { id: req.user.userId } } } });
+                res.json({ success: true }).status(200);
+            }
+            else {
+                res.json({ success: false, message: 'Have not joined session' }).status(400);
+            }
+        }
+        else {
+            res.json({ success: false, message: 'Vote session not found' }).status(404);
+        }
     }
     catch (e) {
         console.log(e);

@@ -186,5 +186,26 @@ router.post('/save-to-account', (req, res) => __awaiter(void 0, void 0, void 0, 
         res.json({ success: false, message: "An error has occurred" }).status(400);
     }
 }));
+router.post('/details/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { body } = req;
+    const { restaurantId } = body;
+    try {
+        if (restaurantId) {
+            yield axios_1.default.get(`${process.env.TOMTOMURL}/place.json?key=${process.env.TOMTOMAPIKEY}&entityId=${restaurantId}`).then((response) => {
+                if (response.data.summary) {
+                    console.log(response.data.summary);
+                    res.json({ success: true, restaurant: response.data.results[0] }).status(200);
+                }
+                else {
+                    res.json({ success: false, message: 'An error has occurred' }).status(400);
+                }
+            });
+        }
+    }
+    catch (e) {
+        console.log(e);
+        res.json({ success: false, message: "An error has occurred" }).status(400);
+    }
+}));
 module.exports = router;
 //# sourceMappingURL=index.js.map
