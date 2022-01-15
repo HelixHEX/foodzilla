@@ -77,10 +77,10 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     });
     const cronJob = new cron.CronJob("0 */01 * * * *", () => __awaiter(void 0, void 0, void 0, function* () {
         yield axios_1.default.get('https://foodzillary.herokuapp.com/').then((res) => {
-            console.log(`response-ok: ${res.ok}, status: ${res.status}`);
+            console.log(`url: prod, response-ok: ${res.statusText}, status: ${res.status}`);
         }).catch((err) => console.log(err));
         yield axios_1.default.get('https://dev-foodzillary.herokuapp.com/').then((res) => {
-            console.log(`response-ok: ${res.ok}, status: ${res.status}`);
+            console.log(`url: dev, response-ok: ${res.statusText}, status: ${res.status}`);
         }).catch((err) => console.log(err));
     }));
     cronJob.start();
