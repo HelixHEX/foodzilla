@@ -28,11 +28,13 @@
     "axios": "^0.24.0",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
+    "cron": "^1.8.2",
     "dotenv-safe": "^8.2.0",
     "esbuild": "^0.14.5",
     "express": "^4.17.2",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
+    "node-fetch": "^3.1.0",
     "pg": "^8.7.1",
     "reflect-metadata": "^0.1.13",
     "twitter": "^1.7.1"
