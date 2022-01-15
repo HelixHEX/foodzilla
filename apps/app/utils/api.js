@@ -22,7 +22,7 @@ export const useVoteSessions = params => {
         mutate,
         isLoading: !error && !data,
         isError: error
-    } 
+    }
 }
 
 export const useActiveGroups = params => {
@@ -472,4 +472,48 @@ export const createSession = async ({ setName, groupId, name, navigation, add_op
         setName('')
         displayToast({ toast })
     }
+}
+
+
+export const addMember = async ({ groupId, mutate, email, setEmail }) => {
+    if (email.length > 0) {
+        let toast = {
+            title: '',
+            type: '',
+            message: ''
+        }
+        try {
+            let res = await fetcher(`${baseURL}/group/add-member`, { groupId, email })
+            if (res.success) {
+                toast = {
+                    title: 'Success',
+                    type: 'success',
+                    message: 'Member added'
+                }
+                mutate()
+            } else if (res.message) {
+                toast = {
+                    title: 'Error',
+                    type: 'error',
+                    message: res.message
+                }
+            } else {
+                toast = {
+                    title: 'Error',
+                    type: 'error',
+                    message: 'An error has occurred'
+                }
+            }
+        } catch (e) {
+            console.log(e)
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: 'An error has occurred'
+            }
+        }
+        setEmail('')
+        displayToast({ toast })
+    }
+    // mutate()
 }
