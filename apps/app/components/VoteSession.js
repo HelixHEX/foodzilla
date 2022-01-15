@@ -60,10 +60,9 @@ const VoteSession = ({ user, data, nav, mutate }) => {
             {data.users.find(sessionUser => sessionUser.id === user.id)
                 ? <>
                     <TouchableOpacity onPress={() => nav.navigate('VoteSession', { id: data.id })} style={styles.container}>
-                        {/* <Text>{data.}</Text> */}
                         <View style={{ justifyContent: 'center' }}>
                             <Text style={styles.title}>{data.name}</Text>
-                            {/* <Text style={styles.subtitle}>Group: {data.group.name}</Text> */}
+                            <Text style={styles.subtitle}>Group: {data.group.name}</Text>
                             <Text style={styles.subtitle}>Users: {data.users.length}</Text>
                         </View>
                         <Text style={[styles.date, { color: data.ended ? globalColors.red : globalColors.darkgreen }]}>{data.ends ? FormatDate(data.endsAt) : data.ended ? "Closed" : "Joined"}</Text>
@@ -75,8 +74,9 @@ const VoteSession = ({ user, data, nav, mutate }) => {
                         {/* <Text>{data.}</Text> */}
                         <View style={{ justifyContent: 'center' }}>
                             <Text style={styles.title}>{data.name}</Text>
-                            {/* <Text style={styles.subtitle}>Group: {data.group.name}</Text> */}
+                            <Text style={styles.subtitle}>Group: {data.group.name}</Text>
                             <Text style={styles.subtitle}>Users: {data.users.length}</Text>
+                        
                         </View>
                         {!data.ended
                             ? <TouchableOpacity onPress={() => joinSession()} style={styles.btn}>

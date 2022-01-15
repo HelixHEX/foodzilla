@@ -74,7 +74,7 @@ const Vote = ({ navigation }) => {
 
 const customStyle = StyleSheet.create({
     label: {
-        color: globalColors.lightgray,
+        color: globalColors.pink,
         fontSize: 20,
     },
     line: {
