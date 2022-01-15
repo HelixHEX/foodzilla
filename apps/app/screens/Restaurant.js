@@ -78,7 +78,7 @@ const Restaurant = ({ route, navigation }) => {
                     ? <View style={customStyle.detail}>
                         <Text style={customStyle.label}>Address: </Text>
                         <TouchableOpacity onPress={() => openMap(restaurant.address.streetNumber + restaurant.address.streetName, restaurant.address.municipality, restaurant.address.postalCode)} style={{alignSelf: 'center'}}>
-                            <Text numberOfLines={2} style={[customStyle.data, {alignSelf: 'flex-start', textDecorationLine: 'underline'}]}>{restaurant.address.freeformAddress}</Text>
+                            <Text numberOfLines={2} style={[customStyle.data, {alignSelf: 'flex-start', textDecorationLine: 'underline', width: '70%'}]}>{restaurant.address.freeformAddress}</Text>
                         </TouchableOpacity>
                     </View>
                     : null

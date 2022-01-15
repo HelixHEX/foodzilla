@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 import { useUser } from '../utils/api'
 import { logout } from '../utils/globalVar'
-import { styles } from '../utils/styles'
+import { globalColors, styles } from '../utils/styles'
 
 const Profile = ({navigation}) => {
     const { data: userData, isError, isLoading } = useUser()
@@ -35,6 +35,7 @@ const Profile = ({navigation}) => {
                 </View>
                 <View style={customStyle.info}>
                     <Text style={customStyle.name}>{user.name}</Text>
+                    <Text style={customStyle.email}>{user.email}</Text>
                 </View>
             </View>
         </>
@@ -47,7 +48,13 @@ const customStyle = StyleSheet.create({
     },
     name: {
         alignSelf: 'center',
-        fontSize: 20
+        fontSize: 20,
+        color: 'black'
+    },
+    email: {
+        alignSelf: 'center',
+        fontSize: 20,
+        color: globalColors.lightgray
     }
 })
 
