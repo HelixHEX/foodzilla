@@ -19,6 +19,7 @@ import { Toast } from "react-native-toast-message/lib/src/Toast";
 import { baseURL, displayToast, fetcher } from "../utils/globalVar";
 import axios from "axios";
 import { mutate } from "swr";
+import AddMember from "../components/AddMember";
 
 const Group = ({ route, navigation }) => {
     const [filter, setFilter] = useState('saved')
@@ -38,6 +39,8 @@ const Group = ({ route, navigation }) => {
     const group = groupData.group
     const user = userData.user
 
+    const creator = group.creatorId === user.id
+
     const sections = [
         {
             title: 'Active Voting Sessions',
@@ -55,7 +58,6 @@ const Group = ({ route, navigation }) => {
     const renderSessionItem = ({ item }) => (
         <>
             <VoteSession mutate={mutate} user={user} group={group} nav={navigation} data={item} />
-            {/* <View style={customStyle.line} /> */}
         </>
     )
 
@@ -154,17 +156,17 @@ const Group = ({ route, navigation }) => {
                             {creator
                                 ? <View>
                                     <TouchableOpacity onPress={() => removeFromGroup()} style={customStyle.modalOption}>
-                                        <Feather style={{alignSelf: 'center'}} name="plus" size={20} color={globalColors.lightgreen} />
+                                        <Feather style={{ alignSelf: 'center' }} name="plus" size={20} color={globalColors.lightgreen} />
                                         <Text style={customStyle.modalOptionText}>Add members</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity onPress={() => removeFromGroup()} style={customStyle.modalOption}>
-                                        <Feather style={{alignSelf: 'center'}} name="trash-2" size={20} color={globalColors.red} />
+                                        <Feather style={{ alignSelf: 'center' }} name="trash-2" size={20} color={globalColors.red} />
                                         <Text style={customStyle.modalOptionText}>Delete group</Text>
                                     </TouchableOpacity>
                                 </View>
                                 : <View>
                                     <TouchableOpacity onPress={() => leaveGroup({ group, mutate, setModalHeight, setModalVisible, navigation, creator })} style={customStyle.modalOption}>
-                                        <Feather style={{alignSelf: 'center'}} name="x" size={20} color={globalColors.red} />
+                                        <Feather style={{ alignSelf: 'center' }} name="x" size={20} color={globalColors.red} />
                                         <Text style={customStyle.modalOptionText}>Leave group</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -187,6 +189,9 @@ const Group = ({ route, navigation }) => {
                     <Menu />
                 </View>
                 <Text style={customStyle.subtitle}>Members</Text>
+                <View style={{ width: '100%' }}>
+                    <AddMember mutate={mutate} creator={creator} groupId={group.id} />
+                </View>
                 <View style={{ marginTop: 30, height: 80 }}>
                     <FlatList
                         horizontal

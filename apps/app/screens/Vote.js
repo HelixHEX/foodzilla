@@ -38,10 +38,10 @@ const Vote = ({ navigation }) => {
                 <View style={{ flexDirection: 'row' }}>
                     <Text style={styles.title}>Voting Sessions</Text>
                     <TouchableOpacity onPress={() => navigation.navigate('NewSession')} style={{ alignSelf: 'center', marginLeft: 10 }}>
-                        <Feather size={35} name='plus' />
+                        <Feather size={25} name='plus' />
                     </TouchableOpacity>
                 </View>
-                <ScrollView style={{ marginTop: 20 }}>
+                <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: 20 }}>
                     {active.length > 0
                         ? <>
                             <Text style={customStyle.label}>Active Voting Sessions</Text>
@@ -74,7 +74,7 @@ const Vote = ({ navigation }) => {
 
 const customStyle = StyleSheet.create({
     label: {
-        color: globalColors.lightgray,
+        color: globalColors.pink,
         fontSize: 20,
     },
     line: {

@@ -18,34 +18,16 @@ const prisma = new client_1.PrismaClient();
 const router = express_1.default.Router();
 router.post('/create-group', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
-    const { emails, name } = body;
+    const { name } = body;
     try {
-        let users = [];
-        let emailError = false;
-        for (var email of emails) {
-            if (email !== req.user.email) {
-                const user = yield prisma.user.findUnique({ where: { email } });
-                if (user) {
-                    users.push(user);
-                }
-                else
-                    emailError = true;
+        let group = yield prisma.group.create({
+            data: {
+                name,
+                creatorId: req.user.userId,
+                users: { connect: { id: req.user.userId } }
             }
-        }
-        if (!emailError) {
-            users.push(req.user);
-            console.log(req.user.userId);
-            let group = yield prisma.group.create({
-                data: {
-                    name,
-                    creatorId: req.user.userId,
-                    users: { connect: { id: req.user.userId } }
-                }
-            });
-            res.json({ success: true, group }).status(200);
-        }
-        else
-            res.json({ success: false, message: "One or more emails could not be found" }).status(400);
+        });
+        res.json({ success: true, id: group.id }).status(200);
     }
     catch (e) {
         console.log(e);

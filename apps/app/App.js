@@ -20,6 +20,7 @@ import { globalColors } from "./utils/styles";
 import Group from "./screens/Group";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import NewVoteSession from "./screens/NewVoteSession";
+import NewGroup from "./screens/NewGroup";
 // import Restauarant from "./screens/Restaurant"
 
 const Stack = createNativeStackNavigator()
@@ -90,6 +91,7 @@ const App = () => {
         <Stack.Screen name='Group' component={Group} />
         <Stack.Screen name='Restaurant' component={Restaurant} />
         <Stack.Screen name='NewSession' component={NewVoteSession} />
+        <Stack.Screen name='NewGroup' component={NewGroup} />
       </Stack.Navigator>
     </NavigationContainer>
   );
