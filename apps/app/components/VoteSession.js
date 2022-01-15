@@ -10,11 +10,6 @@ import { baseURL, displayToast, fetcher } from '../utils/globalVar'
 import { globalColors } from '../utils/styles'
 
 const VoteSession = ({ user, data, nav, mutate }) => {
-    useEffect(() => {
-        if (!data.ended) {
-            console.log(data)
-        }
-    }, [])
     const joinSession = async () => {
         let toast = {
             title: '',
@@ -54,19 +49,20 @@ const VoteSession = ({ user, data, nav, mutate }) => {
             mutate()
         }
     }
+
+    const creator = data.createdBy === user.id
     
     return (
         <>
             {data.users.find(sessionUser => sessionUser.id === user.id)
                 ? <>
                     <TouchableOpacity onPress={() => nav.navigate('VoteSession', { id: data.id })} style={styles.container}>
-                        {/* <Text>{data.}</Text> */}
                         <View style={{ justifyContent: 'center' }}>
                             <Text style={styles.title}>{data.name}</Text>
-                            {/* <Text style={styles.subtitle}>Group: {data.group.name}</Text> */}
+                            <Text style={styles.subtitle}>Group: {data.group.name}</Text>
                             <Text style={styles.subtitle}>Users: {data.users.length}</Text>
                         </View>
-                        <Text style={[styles.date, { color: data.ended ? globalColors.red : globalColors.darkgreen }]}>{data.ends ? FormatDate(data.endsAt) : data.ended ? "Closed" : "Joined"}</Text>
+                        <Text style={[styles.date, { color: data.ended ? globalColors.red : globalColors.darkgreen }]}>{data.ends ? FormatDate(data.endsAt) : data.ended ? "Closed" : creator ? 'Creator' : 'Joined'}</Text>
                     </TouchableOpacity>
                     <View style={styles.line} />
                 </>
@@ -75,8 +71,9 @@ const VoteSession = ({ user, data, nav, mutate }) => {
                         {/* <Text>{data.}</Text> */}
                         <View style={{ justifyContent: 'center' }}>
                             <Text style={styles.title}>{data.name}</Text>
-                            {/* <Text style={styles.subtitle}>Group: {data.group.name}</Text> */}
+                            <Text style={styles.subtitle}>Group: {data.group.name}</Text>
                             <Text style={styles.subtitle}>Users: {data.users.length}</Text>
+                        
                         </View>
                         {!data.ended
                             ? <TouchableOpacity onPress={() => joinSession()} style={styles.btn}>

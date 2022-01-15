@@ -3,7 +3,7 @@ import * as SecureStore from 'expo-secure-store';
 import { Platform, Linking } from 'react-native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
-export const baseURL = process.env.NODE_ENV === 'development' ? 'http://192.168.1.39:5001/api/v1' : 'http://192.168.1.39:5001/api/v1'
+export const baseURL = process.env.NODE_ENV === 'development' ? 'http://192.168.1.39:5001/api/v1' : 'https://foodzillary.herokuapp.com'
 
 export const save = async (key, value) => {
     Platform.OS !== 'web' ? await SecureStore.setItemAsync(key, value) : localStorage.setItem(key, value);

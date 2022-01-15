@@ -22,7 +22,7 @@ export const useVoteSessions = params => {
         mutate,
         isLoading: !error && !data,
         isError: error
-    } 
+    }
 }
 
 export const useActiveGroups = params => {
@@ -449,6 +449,93 @@ export const createSession = async ({ setName, groupId, name, navigation, add_op
                     message: 'Session created'
                 }
                 navigation.navigate('VoteSession', { id: res.id })
+            } else if (res.message) {
+                toast = {
+                    title: 'Error',
+                    type: 'error',
+                    message: res.message
+                }
+            } else {
+                toast = {
+                    title: 'Error',
+                    type: 'error',
+                    message: 'An error has occurred'
+                }
+            }
+        } catch (e) {
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: 'An error has occurred'
+            }
+        }
+        setName('')
+        displayToast({ toast })
+    }
+}
+
+
+export const addMember = async ({ groupId, mutate, email, setEmail }) => {
+    if (email.length > 0) {
+        let toast = {
+            title: '',
+            type: '',
+            message: ''
+        }
+        try {
+            let res = await fetcher(`${baseURL}/group/add-member`, { groupId, email })
+            if (res.success) {
+                toast = {
+                    title: 'Success',
+                    type: 'success',
+                    message: 'Member added'
+                }
+                mutate()
+            } else if (res.message) {
+                toast = {
+                    title: 'Error',
+                    type: 'error',
+                    message: res.message
+                }
+            } else {
+                toast = {
+                    title: 'Error',
+                    type: 'error',
+                    message: 'An error has occurred'
+                }
+            }
+        } catch (e) {
+            console.log(e)
+            toast = {
+                title: 'Error',
+                type: 'error',
+                message: 'An error has occurred'
+            }
+        }
+        setEmail('')
+        displayToast({ toast })
+    }
+    // mutate()
+}
+
+
+export const createGroup = async ({ setName, name, navigation }) => {
+    if (name.length > 0) {
+        let toast = {
+            title: '',
+            type: '',
+            message: ''
+        }
+        try {
+            let res = await fetcher(`${baseURL}/group/create-group`, { name })
+            console.log(res)
+            if (res.success) {
+                toast = {
+                    title: 'Success',
+                    type: 'success',
+                    message: 'Session created'
+                }
+                navigation.navigate('Group', { id: res.id })
             } else if (res.message) {
                 toast = {
                     title: 'Error',
