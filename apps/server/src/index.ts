@@ -88,10 +88,10 @@ const main = async () => {
 
     const cronJob = new cron.CronJob("0 */01 * * * *", async () => {
         await axios.get('https://foodzillary.herokuapp.com/').then((res: any) => {
-            console.log(`response-ok: ${res.ok}, status: ${res.status}`)
+            console.log(`url: prod, response-ok: ${res.statusText}, status: ${res.status}`)
         }).catch((err: any) => console.log(err));
         await axios.get('https://dev-foodzillary.herokuapp.com/').then((res: any) => {
-            console.log(`response-ok: ${res.ok}, status: ${res.status}`)
+            console.log(`url: dev, response-ok: ${res.statusText}, status: ${res.status}`)
         }).catch((err: any) => console.log(err));
 
     });
