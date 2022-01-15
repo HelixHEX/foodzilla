@@ -9,7 +9,6 @@ const cors = require('cors')
 import morgan from 'morgan'
 //prisma
 import { PrismaClient } from '@prisma/client'
-// const cron = require("cron");
 
 const user = require('./routes/user')
 const auth = require('./routes/auth')
@@ -18,6 +17,10 @@ const restaurant = require('./routes/restaurant')
 const vote = require('./routes/vote')
 
 import jwt from 'jsonwebtoken'
+import axios from 'axios';
+
+const cron = require("cron");
+// const fetch = require("node-fetch");
 
 
 export const prisma = new PrismaClient()
@@ -82,6 +85,18 @@ const main = async () => {
     app.use((_, res: express.Response) => {
         res.status(404).json({ status: "404" });
     });
+
+    const cronJob = new cron.CronJob("0 */01 * * * *", async () => {
+        await axios.get('https://foodzillary.herokuapp.com/').then((res: any) => {
+            console.log(`url: prod, response-ok: ${res.statusText}, status: ${res.status}`)
+        }).catch((err: any) => console.log(err));
+        await axios.get('https://dev-foodzillary.herokuapp.com/').then((res: any) => {
+            console.log(`url: dev, response-ok: ${res.statusText}, status: ${res.status}`)
+        }).catch((err: any) => console.log(err));
+
+    });
+
+    cronJob.start();
 
     app.listen(process.env.PORT, () => {
         console.log(`🚀 Server ready at http://localhost:${process.env.PORT}`);

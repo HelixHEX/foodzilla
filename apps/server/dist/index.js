@@ -25,6 +25,8 @@ const group = require('./routes/group');
 const restaurant = require('./routes/restaurant');
 const vote = require('./routes/vote');
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const axios_1 = __importDefault(require("axios"));
+const cron = require("cron");
 exports.prisma = new client_1.PrismaClient();
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const app = (0, express_1.default)();
@@ -73,6 +75,15 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     app.use((_, res) => {
         res.status(404).json({ status: "404" });
     });
+    const cronJob = new cron.CronJob("0 */01 * * * *", () => __awaiter(void 0, void 0, void 0, function* () {
+        yield axios_1.default.get('https://foodzillary.herokuapp.com/').then((res) => {
+            console.log(`url: prod, response-ok: ${res.statusText}, status: ${res.status}`);
+        }).catch((err) => console.log(err));
+        yield axios_1.default.get('https://dev-foodzillary.herokuapp.com/').then((res) => {
+            console.log(`url: dev, response-ok: ${res.statusText}, status: ${res.status}`);
+        }).catch((err) => console.log(err));
+    }));
+    cronJob.start();
     app.listen(process.env.PORT, () => {
         console.log(`🚀 Server ready at http://localhost:${process.env.PORT}`);
     });
