@@ -38,7 +38,7 @@ const Vote = ({ navigation }) => {
                 <View style={{ flexDirection: 'row' }}>
                     <Text style={styles.title}>Voting Sessions</Text>
                     <TouchableOpacity onPress={() => navigation.navigate('NewSession')} style={{ alignSelf: 'center', marginLeft: 10 }}>
-                        <Feather size={35} name='plus' />
+                        <Feather size={25} name='plus' />
                     </TouchableOpacity>
                 </View>
                 <ScrollView style={{ marginTop: 20 }}>
