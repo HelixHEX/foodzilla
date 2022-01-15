@@ -51,7 +51,7 @@ router.post('/new-voting-session', (req, res) => __awaiter(void 0, void 0, void 
 router.post('/all-voting-sessions', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log(req.user.userId);
-        const sessions = yield prisma.vote_Session.findMany({ where: { OR: [{ ended: true }, { createdBy: req.user.userId }], AND: { group: { users: { some: { id: req.user.userId } } } } }, include: { users: { select: { id: true, email: true, name: true } }, group: true } });
+        const sessions = yield prisma.vote_Session.findMany({ where: { group: { users: { some: { id: req.user.userId } } } }, include: { users: { select: { id: true, email: true, name: true } }, group: true } });
         if (sessions) {
             console.log(sessions);
             res.json({ success: true, sessions }).status(200);
@@ -301,6 +301,29 @@ router.post('/leave-session', (req, res) => __awaiter(void 0, void 0, void 0, fu
             }
             else {
                 res.json({ success: false, message: 'Have not joined session' }).status(400);
+            }
+        }
+        else {
+            res.json({ success: false, message: 'Vote session not found' }).status(404);
+        }
+    }
+    catch (e) {
+        console.log(e);
+        res.json({ success: false, message: "An error has occurred" }).status(400);
+    }
+}));
+router.post('/toggle-add-options', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { body } = req;
+    const { sessionId } = body;
+    try {
+        const session = yield prisma.vote_Session.findUnique({ where: { id: sessionId } });
+        if (session) {
+            if (session.createdBy === req.user.userId) {
+                yield prisma.vote_Session.update({ where: { id: sessionId }, data: { add_options: !session.add_options } });
+                res.json({ success: true }).status(200);
+            }
+            else {
+                res.json({ success: false, message: 'Only the creator can change this setting' }).status(403);
             }
         }
         else {

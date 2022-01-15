@@ -7,11 +7,11 @@ import {
     StyleSheet,
     TextInput,
     Switch,
-    Picker
 } from "react-native"
 import { createSession, useActiveGroups } from '../utils/api'
 import { globalColors, styles, toastConfig } from '../utils/styles'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
+import {Picker} from '@react-native-picker/picker';
 
 const NewVoteSession = ({ navigation }) => {
     const [name, setName] = useState('')
@@ -59,7 +59,7 @@ const NewVoteSession = ({ navigation }) => {
                         <Text style={customStyle.label}>Group:</Text>
                         <Picker
                             selectedValue={groupId}
-                            style={{ height: 50, width: '100%' }}
+                            style={{ marginTop: -50, height: 100, width: '100%' }}
                             onValueChange={(itemValue, _) => setGroupId(itemValue)}
                         >
                             {groups.map((group, index) => (
@@ -94,7 +94,7 @@ const customStyle = StyleSheet.create({
         backgroundColor: globalColors.hotpink,
         width: 100,
         height: 40,
-        marginTop: 30,
+        marginTop: 80,
         marginLeft: 20,
         borderRadius: 5,
         justifyContent: 'center'

@@ -10,7 +10,7 @@ import {
 import RestarauntCard from '../components/RestarauntCard'
 import Restaraunts from '../components/Restaraunts'
 import Search from '../components/Search'
-import { useSearch, useUser } from '../utils/api'
+import { useActiveGroups, useSearch, useUser } from '../utils/api'
 import { baseURL, displayToast, getValue, logout } from '../utils/globalVar'
 import { globalColors, styles, toastConfig } from '../utils/styles'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
@@ -23,13 +23,18 @@ const Home = ({ navigation }) => {
     const [results, setResults] = useState([])
     const [offset, setOffset] = useState(1)
     const [shouldFetch, setShouldFetch] = useState(true)
-    const fetchMore = useCallback(() => setShouldFetch(true), [])
+    // const fetchMore = useCallback(() => setShouldFetch(true), [])
 
     const { data: user, isError, isLoading } = useUser()
+    const { data: groupsData, isError: groupsError, isLoading: groupsLoading } = useActiveGroups()
 
-    if (isError) return <Text>{isError.info}</Text>
+    if (isError) return <Text>{error.info}</Text>
     if (isLoading) return <Text>loading...</Text>
     if (!user) return <Text>error</Text>
+
+    if (groupsError) return <Text>{error.info}</Text>
+    if (groupsLoading) return <Text>loading...</Text>
+    if (!groupsData.groups) return <Text>error</Text>
 
     const handleSearch = async () => {
         if (search.length > 0) {
@@ -53,7 +58,7 @@ const Home = ({ navigation }) => {
    
 
     const renderItem = ({ item }) => (
-        <RestarauntCard navigation={navigation} screen="home" displayToast={displayToast} type={'Restaraunt'} data={item} />
+        <RestarauntCard groupsData={groupsData} navigation={navigation} screen="home" displayToast={displayToast} type={'Restaraunt'} data={item} />
     );
     return (
         <>
@@ -61,7 +66,7 @@ const Home = ({ navigation }) => {
                 <Toast position='top' config={toastConfig} />
             </View>
             <View style={styles.container}>
-                <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                <View style={{ flexDirection: 'row' }}>
                     <Text style={styles.title}>
                         Discover
                     </Text>
