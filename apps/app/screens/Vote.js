@@ -41,7 +41,7 @@ const Vote = ({ navigation }) => {
                         <Feather size={25} name='plus' />
                     </TouchableOpacity>
                 </View>
-                <ScrollView style={{ marginTop: 20 }}>
+                <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: 20 }}>
                     {active.length > 0
                         ? <>
                             <Text style={customStyle.label}>Active Voting Sessions</Text>
