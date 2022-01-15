@@ -9,7 +9,7 @@ import {
     Modal,
     Switch
 } from 'react-native'
-import { closeSession, leaveGroup, leaveSession, openSession, useUser, useVoteSession } from '../utils/api';
+import { closeSession, leaveGroup, leaveSession, openSession, toggleAddOptions, useUser, useVoteSession } from '../utils/api';
 import { baseURL, getValue, displayToast } from '../utils/globalVar';
 import { globalColors, styles, toastConfig } from '../utils/styles';
 import { Feather, FontAwesome5, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
@@ -94,39 +94,41 @@ const VoteSession = ({ route, navigation }) => {
                             </View>
                             {creator
                                 ? <View>
-                                    <TouchableOpacity style={[customStyle.modalOption, { justifyContent: 'space-between' }]}>
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <FontAwesome5 style={{alignSelf: 'center'}} name={isEnable ? 'unlock' : 'lock'} size={20} color={isEnable ? globalColors.lightgreen : globalColors.red} />
-                                            <Text style={customStyle.modalOptionText}>Allow new options</Text>
-                                        </View>
-                                        <Switch
-                                            style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }] }}
-                                            // style={{siz}}
-                                            trackColor={{ false: "#767577", true: globalColors.lightgreen }}
-                                            thumbColor={"white"}
-                                            ios_backgroundColor="#3e3e3e"
-                                            onValueChange={() => { setIsEnable(!isEnable) }}
-                                            value={isEnable}
-                                        />
-                                    </TouchableOpacity>
                                     {session.ended
                                         ? <TouchableOpacity onPress={() => openSession({ session, mutate, setModalHeight, setModalVisible, creator })} style={customStyle.modalOption}>
-                                            <Feather name="check-circle" size={20} color={globalColors.lightgreen} />
+                                            <Feather  style={{alignSelf: 'center'}} name="check-circle" size={20} color={globalColors.lightgreen} />
                                             <Text style={customStyle.modalOptionText}>Open session</Text>
                                         </TouchableOpacity>
-                                        : <TouchableOpacity onPress={() => closeSession({ session, mutate, setModalHeight, setModalVisible, creator })} style={customStyle.modalOption}>
-                                            <Feather name="x" size={20} color={globalColors.red} />
-                                            <Text style={customStyle.modalOptionText}>Close session</Text>
-                                        </TouchableOpacity>
+                                        : <>
+                                            <TouchableOpacity style={[customStyle.modalOption, { justifyContent: 'space-between' }]}>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <FontAwesome5  style={{alignSelf: 'center'}} style={{ alignSelf: 'center' }} name={isEnable ? 'unlock' : 'lock'} size={20} color={isEnable ? globalColors.lightgreen : globalColors.red} />
+                                                    <Text style={customStyle.modalOptionText}>Allow new options</Text>
+                                                </View>
+                                                <Switch
+                                                    style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }] }}
+                                                    // style={{siz}}
+                                                    trackColor={{ false: "#767577", true: globalColors.lightgreen }}
+                                                    thumbColor={"white"}
+                                                    ios_backgroundColor="#3e3e3e"
+                                                    onValueChange={() => { toggleAddOptions({session, mutate, setIsEnable, isEnable}) }}
+                                                    value={isEnable}
+                                                />
+                                            </TouchableOpacity>
+                                            <TouchableOpacity onPress={() => closeSession({ session, mutate, setModalHeight, setModalVisible, creator })} style={customStyle.modalOption}>
+                                                <Feather  style={{alignSelf: 'center'}} name="x" size={20} color={globalColors.red} />
+                                                <Text style={customStyle.modalOptionText}>Close session</Text>
+                                            </TouchableOpacity>
+                                        </>
                                     }
                                     <TouchableOpacity style={customStyle.modalOption}>
-                                        <Feather name="trash-2" size={20} color={globalColors.red} />
+                                        <Feather  style={{alignSelf: 'center'}} name="trash-2" size={20} color={globalColors.red} />
                                         <Text style={customStyle.modalOptionText}>Delete session</Text>
                                     </TouchableOpacity>
                                 </View>
                                 : <View>
                                     <TouchableOpacity onPress={() => leaveSession({ navigation, creator, setModalHeight, mutate, setModalVisible, session })} style={customStyle.modalOption}>
-                                        <SimpleLineIcons name="logout" size={20} color="black" />
+                                        <SimpleLineIcons style={{alignSelf: 'center'}} name="logout" size={20} color="black" />
                                         <Text style={customStyle.modalOptionText}>Leave session</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -145,7 +147,7 @@ const VoteSession = ({ route, navigation }) => {
             </View>
             <View style={styles.container}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-                    <TouchableOpacity style={{alignSelf: 'center'}} onPress={() => navigation.goBack()} >
+                    <TouchableOpacity style={{ alignSelf: 'center' }} onPress={() => navigation.goBack()} >
                         <Ionicons name="chevron-back" size={25} color="black" />
                     </TouchableOpacity>
                     <Text numberOfLines={1} style={[styles.title]}>{session.name}</Text>
@@ -293,7 +295,8 @@ const customStyle = StyleSheet.create({
     },
     modalOption: {
         flexDirection: 'row',
-        marginTop: 30
+        marginTop: 20,
+        height: 30
     },
     modalOptionText: {
         alignSelf: 'center',

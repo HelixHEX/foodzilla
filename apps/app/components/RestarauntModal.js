@@ -175,7 +175,7 @@ const ModalCard = ({ groupsData, mutate, navigation, groupId, screen, modalVisib
                                     <Feather name="bookmark" size={20} style={{ alignSelf: 'center' }} color={globalColors.turquoise} />
                                     <Text style={customStyle.optionText}>Save to account</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => { navigation.navigate('Restaurant', { id: data.id }); setModalVisible(false) }} style={[customStyle.option, {display: screen === 'restaurant' ? 'none' : 'flex'}]}>
+                                <TouchableOpacity onPress={() => { navigation.navigate('Restaurant', { id: screen === 'group' ?  data.tomtom_id : data.id }); setModalVisible(false) }} style={[customStyle.option, {display: screen === 'restaurant' ? 'none' : 'flex'}]}>
                                     <Feather name="list" size={20} style={{ alignSelf: 'center' }} color={globalColors.lightgreen} />
                                     <Text style={customStyle.optionText}>View more details</Text>
                                 </TouchableOpacity>
@@ -187,7 +187,7 @@ const ModalCard = ({ groupsData, mutate, navigation, groupId, screen, modalVisib
                                     <Feather name="x" size={20} style={{ alignSelf: 'center' }} color={globalColors.red} />
                                     <Text style={customStyle.optionText}>Remove from group</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => { navigation.navigate('Restaurant', { id: data.id }); setModalVisible(false) }} style={customStyle.option}>
+                                <TouchableOpacity onPress={() => { navigation.navigate('Restaurant', { id: screen === 'group' ?  data.tomtom_id : data.id }); setModalVisible(false) }} style={customStyle.option}>
                                     <Feather name="list" size={20} style={{ alignSelf: 'center' }} color={globalColors.lightgreen} />
                                     <Text style={customStyle.optionText}>View more details</Text>
                                 </TouchableOpacity>

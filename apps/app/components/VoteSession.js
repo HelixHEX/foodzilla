@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import {
     View,
@@ -10,6 +10,11 @@ import { baseURL, displayToast, fetcher } from '../utils/globalVar'
 import { globalColors } from '../utils/styles'
 
 const VoteSession = ({ user, data, nav, mutate }) => {
+    useEffect(() => {
+        if (!data.ended) {
+            console.log(data)
+        }
+    }, [])
     const joinSession = async () => {
         let toast = {
             title: '',
@@ -49,7 +54,7 @@ const VoteSession = ({ user, data, nav, mutate }) => {
             mutate()
         }
     }
-
+    
     return (
         <>
             {data.users.find(sessionUser => sessionUser.id === user.id)

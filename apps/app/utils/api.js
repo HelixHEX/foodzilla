@@ -22,7 +22,7 @@ export const useVoteSessions = params => {
         mutate,
         isLoading: !error && !data,
         isError: error
-    }
+    } 
 }
 
 export const useActiveGroups = params => {
@@ -391,7 +391,7 @@ export const openSession = async ({ session, mutate, setModalHeight, setModalVis
 }
 
 
-export const toggleAddOptions = async ({ session, mutate }) => {
+export const toggleAddOptions = async ({ session, mutate, setIsEnable, isEnable }) => {
     let toast = {
         title: '',
         type: '',
@@ -405,7 +405,7 @@ export const toggleAddOptions = async ({ session, mutate }) => {
                 type: 'success',
                 message: session.add_options ? 'Members cannot add options' : 'Members can add options'
             }
-            mutate()
+            setIsEnable(!isEnable)
         } else if (res.message) {
             toast = {
                 title: 'Error',
@@ -420,6 +420,7 @@ export const toggleAddOptions = async ({ session, mutate }) => {
             }
         }
     } catch (e) {
+        console.log(e)
         toast = {
             title: 'Error',
             type: 'error',
@@ -427,6 +428,7 @@ export const toggleAddOptions = async ({ session, mutate }) => {
         }
     }
     displayToast({ toast })
+    // mutate()
 }
 
 
